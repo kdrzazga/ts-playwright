@@ -41,39 +41,20 @@ class CircularMenu {
   }
 }
 
-
-const items: MenuItem[] = [
-  {
-    title: "Option 1",
+var items: MenuItem[] = [];
+[
+  {title: "Option 1", selected: "Option 1 selected."},
+  {title: "Option 2", selected: "Option 2 chosen."},
+  {title: "Option 3", selected: "Option 3 picked."},
+  {title: "Option 4", selected: "Option 4 clicked."}
+].forEach((option) => {
+  items.push({
+    title: option.title,
     action: () => {
-      console.log("Option 1 selected");
-    },
-  },
-  {
-    title: "Option 2",
-    action: () => {
-      console.log("Option 2 selected");
-    },
-  },
-  {
-    title: "Option 3",
-    action: () => {
-      console.log("Option 3 selected");
-    },
-  },
-  {
-    title: "Option 4",
-    action: () => {
-      console.log("Option 4 selected");
-    },
-  },
-  {
-    title: "Option 5",
-    action: () => {
-      console.log("Option 5 selected");
-    },
-  },
-];
+      console.log(option.title);
+      console.log(option.selected);
+    }
+  })});
 
 
 const circularMenu = new CircularMenu(items);

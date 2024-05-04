@@ -30,37 +30,20 @@ var CircularMenu = /** @class */ (function () {
     };
     return CircularMenu;
 }());
-var items = [
-    {
-        title: "Option 1",
+var items = [];
+[
+    { title: "Option 1", selected: "Option 1 selected." },
+    { title: "Option 2", selected: "Option 2 chosen." },
+    { title: "Option 3", selected: "Option 3 picked." },
+    { title: "Option 4", selected: "Option 4 clicked." }
+].forEach(function (option) {
+    items.push({
+        title: option.title,
         action: function () {
-            console.log("Option 1 selected");
-        },
-    },
-    {
-        title: "Option 2",
-        action: function () {
-            console.log("Option 2 selected");
-        },
-    },
-    {
-        title: "Option 3",
-        action: function () {
-            console.log("Option 3 selected");
-        },
-    },
-    {
-        title: "Option 4",
-        action: function () {
-            console.log("Option 4 selected");
-        },
-    },
-    {
-        title: "Option 5",
-        action: function () {
-            console.log("Option 5 selected");
-        },
-    },
-];
+            console.log(option.title);
+            console.log(option.selected);
+        }
+    });
+});
 var circularMenu = new CircularMenu(items);
 circularMenu.displayMenu();
