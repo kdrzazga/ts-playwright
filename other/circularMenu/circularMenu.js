@@ -13,14 +13,14 @@ var CircularMenu = /** @class */ (function () {
             var y = centerY + radius * Math.sin(angle);
             var menuItem = document.createElement("div");
             menuItem.innerText = item.title;
+            menuItem.classList.add("menu-item");
             menuItem.style.position = "absolute";
             menuItem.style.left = "".concat(x, "px");
             menuItem.style.top = "".concat(y, "px");
             menuItem.style.padding = "10px";
             menuItem.style.border = "1px solid black";
             menuItem.style.borderRadius = "50%";
-            menuItem.style.background = "lightblue";
-            menuItem.style.transform = "rotate(".concat((angle * 180) / Math.PI - 90, "deg)"); // Tilt text
+            menuItem.style.transform = "rotate(".concat((angle * 180) / Math.PI - 90, "deg)");
             document.body.appendChild(menuItem);
             menuItem.addEventListener("click", function () {
                 alert('click');
@@ -30,7 +30,6 @@ var CircularMenu = /** @class */ (function () {
     };
     return CircularMenu;
 }());
-// Define menu items
 var items = [
     {
         title: "Option 1",
@@ -51,19 +50,17 @@ var items = [
         },
     },
     {
-        title: "Option 3",
+        title: "Option 4",
         action: function () {
-            console.log("Option 3 selected");
+            console.log("Option 4 selected");
         },
     },
     {
         title: "Option 5",
         action: function () {
-            console.log("Option 3 selected");
+            console.log("Option 5 selected");
         },
     },
 ];
-// Create circular menu
 var circularMenu = new CircularMenu(items);
-// Display the menu
 circularMenu.displayMenu();

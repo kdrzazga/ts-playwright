@@ -1,0 +1,12 @@
+div.menu-item {
+  position: absolute;
+  padding: 10px;
+  border: 1px solid black;
+  border-radius: 50%;
+  background: lightblue;
+  transform-origin: center;
+}
+
+div.menu-item:hover {
+  background: lightgreen;
+}
