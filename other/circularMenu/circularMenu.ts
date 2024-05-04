@@ -56,7 +56,6 @@ var items: MenuItem[] = [];
     }
   })});
 
-
 const circularMenu = new CircularMenu(items);
 
 
