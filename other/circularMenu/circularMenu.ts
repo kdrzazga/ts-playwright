@@ -23,14 +23,14 @@ class CircularMenu {
 
       const menuItem = document.createElement("div");
       menuItem.innerText = item.title;
+	  menuItem.classList.add("menu-item");
       menuItem.style.position = "absolute";
       menuItem.style.left = `${x}px`;
       menuItem.style.top = `${y}px`;
       menuItem.style.padding = "10px";
       menuItem.style.border = "1px solid black";
       menuItem.style.borderRadius = "50%";
-      menuItem.style.background = "lightblue";
-	  menuItem.style.transform = `rotate(${(angle * 180) / Math.PI - 90}deg)`; // Tilt text
+	  menuItem.style.transform = `rotate(${(angle * 180) / Math.PI - 90}deg)`;
       document.body.appendChild(menuItem);
 
       menuItem.addEventListener("click", () => {
@@ -41,42 +41,23 @@ class CircularMenu {
   }
 }
 
-// Define menu items
-const items: MenuItem[] = [
-  {
-    title: "Option 1",
+var items: MenuItem[] = [];
+[
+  {title: "Option 1", selected: "Option 1 selected."},
+  {title: "Option 2", selected: "Option 2 chosen."},
+  {title: "Option 3", selected: "Option 3 picked."},
+  {title: "Option 4", selected: "Option 4 clicked."}
+].forEach((option) => {
+  items.push({
+    title: option.title,
     action: () => {
-      console.log("Option 1 selected");
-    },
-  },
-  {
-    title: "Option 2",
-    action: () => {
-      console.log("Option 2 selected");
-    },
-  },
-  {
-    title: "Option 3",
-    action: () => {
-      console.log("Option 3 selected");
-    },
-  },
-  {
-    title: "Option 3",
-    action: () => {
-      console.log("Option 3 selected");
-    },
-  },
-  {
-    title: "Option 5",
-    action: () => {
-      console.log("Option 3 selected");
-    },
-  },
-];
+      console.log(option.title);
+      console.log(option.selected);
+    }
+  })});
 
-// Create circular menu
+
 const circularMenu = new CircularMenu(items);
 
-// Display the menu
+
 circularMenu.displayMenu();
