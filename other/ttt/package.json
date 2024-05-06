@@ -1,0 +1,11 @@
+{
+  "name": "ttt",
+  "version": "1.0.0",
+  "description": "ttt",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^27.5.1"
+  }
+}
