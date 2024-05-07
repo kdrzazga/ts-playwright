@@ -67,14 +67,53 @@ var Board = /** @class */ (function () {
     Board.SIZE_Y = 3;
     return Board;
 }());
+var Grapher = /** @class */ (function () {
+    function Grapher() {
+    }
+    Grapher.prototype.drawGrid = function (ctx, board) {
+        var coeff = 1 - 0.15;
+        var coeffY = 1 + 0.15;
+        for (var x = 1; x < Board.SIZE_X; x++) {
+            ctx.beginPath();
+            ctx.moveTo(coeff * x * Grapher.CELL_SIZE, 0);
+            ctx.lineTo(coeff * x * Grapher.CELL_SIZE, Grapher.CELL_SIZE * Board.SIZE_Y);
+            ctx.stroke(); // Stroke the path to actually draw the line
+        }
+        for (var y = 1; y < Board.SIZE_Y; y++) {
+            ctx.beginPath();
+            ctx.moveTo(0, coeffY * y * Grapher.CELL_SIZE);
+            ctx.lineTo(Grapher.CELL_SIZE * Board.SIZE_X, coeffY * y * Grapher.CELL_SIZE);
+            ctx.stroke(); // Stroke the path to actually draw the line
+        }
+    };
+    Grapher.prototype.draw = function (board) {
+        var canvas = document.getElementById("tttCanvas");
+        var ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.font = '30px Cursive';
+        for (var x = 0; x < Board.SIZE_X; x++) {
+            for (var y = 0; y < Board.SIZE_Y; y++) {
+                var content = board.getFieldContent(x, y);
+                if (content !== FieldContent.none) {
+                    ctx.fillText(Helper.fieldContentToString(content), x * Grapher.CELL_SIZE, y * Grapher.CELL_SIZE); // Adjust position as needed
+                }
+            }
+        }
+        this.drawGrid(ctx, board);
+    };
+    Grapher.CELL_SIZE = 50;
+    return Grapher;
+}());
 var Game = /** @class */ (function () {
     function Game() {
         this.turn = new TicTacToeTurn();
         this.board = new Board();
+        this.grapher = new Grapher();
     }
     Game.prototype.click = function (x, y) {
         var currentPlayer = this.turn.next();
         this.board.setFieldContent(x, y, currentPlayer);
+        this.grapher.draw(this.board);
     };
     return Game;
 }());
