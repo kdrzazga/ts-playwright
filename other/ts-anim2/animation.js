@@ -18,19 +18,15 @@ var Pictures = /** @class */ (function () {
     return Pictures;
 }());
 var pic = new Pictures();
-var lastRenderTime = 0; // Initialize the last render time to 0
-var frameRate = 2; // Desired frame rate (2 frames per second)
+var lastRenderTime = 0;
+var fps = 5;
 function animate(currentTime) {
     var timeSinceLastRender = currentTime - lastRenderTime;
-    // Check if enough time has elapsed for the desired frame rate
-    if (timeSinceLastRender > 1000 / frameRate) {
+    if (timeSinceLastRender > 1000 / fps) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         pic.update();
-        // Update the last render time
         lastRenderTime = currentTime;
     }
-    // Request the next animation frame
     requestAnimationFrame(animate);
 }
-// Start the animation loop
 requestAnimationFrame(animate);

@@ -26,7 +26,7 @@ class Pictures {
 const pic = new Pictures();
 
 let lastRenderTime = 0;
-const fps = 2;
+const fps = 5;
 
 function animate(currentTime) {
     const timeSinceLastRender = currentTime - lastRenderTime;
