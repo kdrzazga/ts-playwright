@@ -3,31 +3,40 @@ document.body.appendChild(canvas);
 const ctx = canvas.getContext('2d');
 
 class Pictures {
-  private current_pic: string;
+  private current_pic_index: number;
+  private readonly pic_sequence: string[] = ['1', '2'];
 
   constructor() {
-    this.current_pic = 'pic.png';
+    this.current_pic_index = 0; 
+  }
+
+  update() {
+	this.current_pic_index = (this.current_pic_index + 1) % this.pic_sequence.length;
+	this.draw();
   }
 
   private draw() {
     const image = new Image();
-	image.src = this.current_pic;
-			ctx.drawImage(image, 0, 0);
+	image.src = 'resources/' + this.pic_sequence[this.current_pic_index] + '.png';
+	ctx.drawImage(image, 0, 0);
   }
-
-  update() {
-	this.current_pic = 'pic.png';
-	this.draw();
-  }
+  
 }
 
 const pic = new Pictures();
 
-function animate() {
-  requestAnimationFrame(animate);
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+let lastRenderTime = 0;
+const fps = 2;
 
-  pic.update();
+function animate(currentTime) {
+    const timeSinceLastRender = currentTime - lastRenderTime;
+
+    if (timeSinceLastRender > 1000 / fps) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+		pic.update();
+        lastRenderTime = currentTime;
+    }
+    requestAnimationFrame(animate);
 }
 
-animate();
+requestAnimationFrame(animate);
