@@ -1,9 +1,13 @@
 var canvas = document.createElement('canvas');
 document.body.appendChild(canvas);
+canvas.style.position = 'absolute';
+canvas.style.top = '10px';
+canvas.width = 400;
+canvas.height = 600;
 var ctx = canvas.getContext('2d');
 var Pictures = /** @class */ (function () {
     function Pictures() {
-        this.pic_sequence = ['1', '2'];
+        this.pic_sequence = ['1', '2', '3', '4', '5', '6', '7', '8'];
         this.current_pic_index = 0;
     }
     Pictures.prototype.update = function () {
@@ -19,7 +23,7 @@ var Pictures = /** @class */ (function () {
 }());
 var pic = new Pictures();
 var lastRenderTime = 0;
-var fps = 5;
+var fps = 15;
 function animate(currentTime) {
     var timeSinceLastRender = currentTime - lastRenderTime;
     if (timeSinceLastRender > 1000 / fps) {
