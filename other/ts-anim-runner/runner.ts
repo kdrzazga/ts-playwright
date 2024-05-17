@@ -30,7 +30,7 @@ class Pictures {
 const pic = new Pictures();
 
 let lastRenderTime = 0;
-const fps = 15;
+const fps = 9;
 
 function animate(currentTime) {
     const timeSinceLastRender = currentTime - lastRenderTime;
