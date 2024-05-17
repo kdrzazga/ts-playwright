@@ -1,10 +1,14 @@
 const canvas = document.createElement('canvas');
 document.body.appendChild(canvas);
+canvas.style.position = 'absolute';
+canvas.style.top = '10px';
+canvas.width = 400;
+canvas.height = 600;
 const ctx = canvas.getContext('2d');
 
 class Pictures {
   private current_pic_index: number;
-  private readonly pic_sequence: string[] = ['1', '2'];
+  private readonly pic_sequence: string[] = ['1', '2', '3', '4', '5', '6', '7', '8'];
 
   constructor() {
     this.current_pic_index = 0; 
@@ -26,7 +30,7 @@ class Pictures {
 const pic = new Pictures();
 
 let lastRenderTime = 0;
-const fps = 5;
+const fps = 15;
 
 function animate(currentTime) {
     const timeSinceLastRender = currentTime - lastRenderTime;
