@@ -12,8 +12,6 @@ export const Greet = (props: GreetProps) => {
 				 ? "Welcome " + props.name + "! You have " + props.messageCount + " unread messages."
 				: 'Welcome Guest !'	}
 			</h2>
-			
-			
 		</div>
 	)
 }
