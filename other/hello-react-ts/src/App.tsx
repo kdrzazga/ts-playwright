@@ -2,6 +2,8 @@ import './App.css';
 import { Greet } from './components/Greet'
 import { Person } from './components/Person'
 import { PersonList } from './components/PersonList'
+import Button from './components/button'
+import LightSwitch from './components/lightswitch'
 
 function App() {
   const personName = {
@@ -28,6 +30,8 @@ function App() {
 		<Greet name='Zbychu' messageCount = {20} loggedIn= {true}/>
 		<Person name ={personName}/>	
         <PersonList names={nameList} />
+		<Button/>
+		<LightSwitch/>
     </div>
   );
 }
