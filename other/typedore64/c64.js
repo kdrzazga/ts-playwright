@@ -4,7 +4,12 @@ var Commodore64 = /** @class */ (function () {
             "    **** COMMODORE 64 BASIC V2 ****    ",
             "",
             " 64K RAM SYSTEM  38911 BASIC BYTES FREE ",
+            "",
+            "READY."
         ];
+        for (var i = 5; i < 40; i++) {
+            this.tableContent.push("");
+        }
     }
     Commodore64.prototype.generateHtml = function () {
         var html = [];

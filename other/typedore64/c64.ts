@@ -6,7 +6,12 @@ class Commodore64 {
       "    **** COMMODORE 64 BASIC V2 ****    ",
       "",
       " 64K RAM SYSTEM  38911 BASIC BYTES FREE ",
+	  "",
+	  "READY."
     ];
+	for (let i = 5; i < 40; i++) {
+      this.tableContent.push("");
+    }
   }
 
   generateHtml(): string {
