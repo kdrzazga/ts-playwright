@@ -1,5 +1,10 @@
 body {
-    background: #6060c0
+    background-color: #6060c0
+	font-family: 'c64mono', sans-serif;
+}
+
+.inter-frame {
+    background-color: #200080
 	font-family: 'c64mono', sans-serif;
 }
 
