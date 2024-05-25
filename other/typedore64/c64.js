@@ -1,6 +1,7 @@
 var Commodore64 = /** @class */ (function () {
     function Commodore64() {
         this.tableContent = [
+            "&nbsp",
             "<center>    &nbsp**** COMMODORE 64 BASIC V2 ****&nbsp    </center>",
             "&nbsp",
             "<center> &nbsp64K RAM SYSTEM  38911 BASIC BYTES FREE&nbsp </center>",
