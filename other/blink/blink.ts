@@ -1,5 +1,4 @@
 const canvas = document.createElement('canvas');
-document.body.appendChild(canvas);
 canvas.style.position = 'relative';
 canvas.style.top = '0px';
 canvas.style.left = '0px';
