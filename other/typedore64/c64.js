@@ -14,9 +14,12 @@ var Commodore64 = /** @class */ (function () {
     }
     Commodore64.prototype.generateHtml = function () {
         var html = [];
+        var number = 0;
         html.push("<table id=\"main\" bgcolor=\"#200080\">");
         this.tableContent.forEach(function (line) {
-            html.push("<tr><td>" + line + "</td></tr>");
+            var strNumber = String(number);
+            html.push("<tr><td id=\"row" + strNumber + "\">" + line + "</td></tr>");
+            number++;
         });
         html.push("</table>");
         return html.join("");

@@ -17,9 +17,12 @@ class Commodore64 {
 
   generateHtml(): string {
     const html = [];
+	let number = 0;
     html.push("<table id=\"main\" bgcolor=\"#200080\">");
     this.tableContent.forEach((line) => {
-      html.push("<tr><td>" + line + "</td></tr>");
+	  let strNumber = String(number);
+      html.push("<tr><td id=\"row" + strNumber + "\">" + line + "</td></tr>");
+	  number++;
     });
     html.push("</table>");
     return html.join("");
