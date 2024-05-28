@@ -1,6 +1,9 @@
 class Commodore64 {
+  static FPS = 2;
+
   private tableContent: string[];
   private blink = true;
+  private lastRenderTime;
 
   constructor() {
     this.tableContent = [
@@ -11,9 +14,11 @@ class Commodore64 {
 	  "&nbsp",
 	  "READY."
     ];
+	
 	for (let i = 5; i < 20; i++) {
       this.tableContent.push("&nbsp");
     }
+	this.lastRenderTime = 0;
   }
 
   generateHtml(): string {
@@ -40,9 +45,16 @@ class Commodore64 {
   }
   
   blinker() {
-    this.blink = !this.blink;
-    requestAnimationFrame(() => this.blinker());
-	console.log("blink = " + this.blink);
+	const currentTime = performance.now();
+	const timeSinceLastRender = currentTime - this.lastRenderTime;
+	
+	if (timeSinceLastRender > 1000 / Commodore64.FPS) {
+		this.blink = !this.blink;
+		this.lastRenderTime = currentTime;
+	}
+	
+		console.log("blink = " + this.blink);
+    requestAnimationFrame(() => this.blinker());	
   }
 }
 

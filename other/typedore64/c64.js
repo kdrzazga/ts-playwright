@@ -12,6 +12,7 @@ var Commodore64 = /** @class */ (function () {
         for (var i = 5; i < 20; i++) {
             this.tableContent.push("&nbsp");
         }
+        this.lastRenderTime = 0;
     }
     Commodore64.prototype.generateHtml = function () {
         var html = [];
@@ -36,10 +37,16 @@ var Commodore64 = /** @class */ (function () {
     };
     Commodore64.prototype.blinker = function () {
         var _this = this;
-        this.blink = !this.blink;
-        requestAnimationFrame(function () { return _this.blinker(); });
+        var currentTime = performance.now();
+        var timeSinceLastRender = currentTime - this.lastRenderTime;
+        if (timeSinceLastRender > 1000 / Commodore64.FPS) {
+            this.blink = !this.blink;
+            this.lastRenderTime = currentTime;
+        }
         console.log("blink = " + this.blink);
+        requestAnimationFrame(function () { return _this.blinker(); });
     };
+    Commodore64.FPS = 2;
     return Commodore64;
 }());
 var commodore64 = new Commodore64();
