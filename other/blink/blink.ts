@@ -1,5 +1,4 @@
 const canvas = document.createElement('canvas');
-document.body.appendChild(canvas);
 canvas.style.position = 'relative';
 canvas.style.top = '0px';
 canvas.style.left = '0px';
@@ -9,7 +8,7 @@ const ctx = canvas.getContext('2d');
 
 let lastRenderTime = 0;
 const fps = 2;
-let blink = false;
+let blink = true;
 
 function animate(currentTime) {
     const timeSinceLastRender = currentTime - lastRenderTime;
@@ -23,18 +22,13 @@ function animate(currentTime) {
         }
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         lastRenderTime = currentTime;
+
+        blink = !blink;
     }
     requestAnimationFrame(animate);
 }
 
-blink = true;
 requestAnimationFrame(animate);
 
 const canvasContainer = document.getElementById('blinking-square');
 canvasContainer.appendChild(canvas);
-
-function blinker() {
-    blink = !blink;
-    requestAnimationFrame(blinker);
-}
-requestAnimationFrame(blinker);

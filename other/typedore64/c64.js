@@ -1,5 +1,6 @@
 var Commodore64 = /** @class */ (function () {
     function Commodore64() {
+        this.blink = true;
         this.tableContent = [
             "&nbsp",
             "<center>    &nbsp**** COMMODORE 64 BASIC V2 ****&nbsp    </center>",
@@ -11,12 +12,16 @@ var Commodore64 = /** @class */ (function () {
         for (var i = 5; i < 20; i++) {
             this.tableContent.push("&nbsp");
         }
+        this.lastRenderTime = 0;
     }
     Commodore64.prototype.generateHtml = function () {
         var html = [];
+        var number = 0;
         html.push("<table id=\"main\" bgcolor=\"#200080\">");
         this.tableContent.forEach(function (line) {
-            html.push("<tr><td>" + line + "</td></tr>");
+            var strNumber = String(number);
+            html.push("<tr><td id=\"row" + strNumber + "\">" + line + "</td></tr>");
+            number++;
         });
         html.push("</table>");
         return html.join("");
@@ -30,6 +35,18 @@ var Commodore64 = /** @class */ (function () {
         html.push("</table>");
         return html.join("");
     };
+    Commodore64.prototype.blinker = function () {
+        var _this = this;
+        var currentTime = performance.now();
+        var timeSinceLastRender = currentTime - this.lastRenderTime;
+        if (timeSinceLastRender > 1000 / Commodore64.FPS) {
+            this.blink = !this.blink;
+            this.lastRenderTime = currentTime;
+        }
+        console.log("blink = " + this.blink);
+        requestAnimationFrame(function () { return _this.blinker(); });
+    };
+    Commodore64.FPS = 2;
     return Commodore64;
 }());
 var commodore64 = new Commodore64();
@@ -40,3 +57,4 @@ var bottomBorderDiv = document.getElementById('bottom-border');
 div.innerHTML = html;
 topBorderDiv.innerHTML = commodore64.generateBorder();
 bottomBorderDiv.innerHTML = commodore64.generateBorder();
+commodore64.blinker();

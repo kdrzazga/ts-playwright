@@ -1,5 +1,4 @@
 var canvas = document.createElement('canvas');
-document.body.appendChild(canvas);
 canvas.style.position = 'relative';
 canvas.style.top = '0px';
 canvas.style.left = '0px';
@@ -8,7 +7,7 @@ canvas.height = 60;
 var ctx = canvas.getContext('2d');
 var lastRenderTime = 0;
 var fps = 2;
-var blink = false;
+var blink = true;
 function animate(currentTime) {
     var timeSinceLastRender = currentTime - lastRenderTime;
     if (timeSinceLastRender > 1000 / fps) {
@@ -21,15 +20,10 @@ function animate(currentTime) {
         }
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         lastRenderTime = currentTime;
+        blink = !blink; // toggle blink state
     }
     requestAnimationFrame(animate);
 }
-blink = true;
 requestAnimationFrame(animate);
 var canvasContainer = document.getElementById('blinking-square');
 canvasContainer.appendChild(canvas);
-function blinker() {
-    blink = !blink;
-    requestAnimationFrame(blinker);
-}
-requestAnimationFrame(blinker);

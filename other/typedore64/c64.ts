@@ -1,5 +1,9 @@
 class Commodore64 {
+  static FPS = 2;
+
   private tableContent: string[];
+  private blink = true;
+  private lastRenderTime;
 
   constructor() {
     this.tableContent = [
@@ -10,16 +14,21 @@ class Commodore64 {
 	  "&nbsp",
 	  "READY."
     ];
+	
 	for (let i = 5; i < 20; i++) {
       this.tableContent.push("&nbsp");
     }
+	this.lastRenderTime = 0;
   }
 
   generateHtml(): string {
     const html = [];
+	let number = 0;
     html.push("<table id=\"main\" bgcolor=\"#200080\">");
     this.tableContent.forEach((line) => {
-      html.push("<tr><td>" + line + "</td></tr>");
+	  let strNumber = String(number);
+      html.push("<tr><td id=\"row" + strNumber + "\">" + line + "</td></tr>");
+	  number++;
     });
     html.push("</table>");
     return html.join("");
@@ -34,6 +43,19 @@ class Commodore64 {
 	html.push("</table>");
     return html.join("");  
   }
+  
+  blinker() {
+	const currentTime = performance.now();
+	const timeSinceLastRender = currentTime - this.lastRenderTime;
+	
+	if (timeSinceLastRender > 1000 / Commodore64.FPS) {
+		this.blink = !this.blink;
+		this.lastRenderTime = currentTime;
+	}
+	
+		console.log("blink = " + this.blink);
+    requestAnimationFrame(() => this.blinker());	
+  }
 }
 
 const commodore64 = new Commodore64();
@@ -44,3 +66,4 @@ const bottomBorderDiv = document.getElementById('bottom-border');
 div.innerHTML = html;
 topBorderDiv.innerHTML = commodore64.generateBorder();
 bottomBorderDiv.innerHTML = commodore64.generateBorder();
+commodore64.blinker();
