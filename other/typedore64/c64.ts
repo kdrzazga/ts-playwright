@@ -54,7 +54,7 @@ class Commodore64 {
 	}
 	
 		console.log("blink = " + this.blink);
-    requestAnimationFrame(() => this.blinker());	
+    requestAnimationFrame(() => this.blinker());
   }
 }
 
