@@ -1,5 +1,6 @@
 class Commodore64 {
   private tableContent: string[];
+  private blink = true;
 
   constructor() {
     this.tableContent = [
@@ -37,6 +38,12 @@ class Commodore64 {
 	html.push("</table>");
     return html.join("");  
   }
+  
+  blinker() {
+    this.blink = !this.blink;
+    requestAnimationFrame(() => this.blinker());
+	console.log("blink = " + this.blink);
+  }
 }
 
 const commodore64 = new Commodore64();
@@ -47,3 +54,4 @@ const bottomBorderDiv = document.getElementById('bottom-border');
 div.innerHTML = html;
 topBorderDiv.innerHTML = commodore64.generateBorder();
 bottomBorderDiv.innerHTML = commodore64.generateBorder();
+commodore64.blinker();

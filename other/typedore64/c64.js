@@ -1,5 +1,6 @@
 var Commodore64 = /** @class */ (function () {
     function Commodore64() {
+        this.blink = true;
         this.tableContent = [
             "&nbsp",
             "<center>    &nbsp**** COMMODORE 64 BASIC V2 ****&nbsp    </center>",
@@ -33,6 +34,12 @@ var Commodore64 = /** @class */ (function () {
         html.push("</table>");
         return html.join("");
     };
+    Commodore64.prototype.blinker = function () {
+        var _this = this;
+        this.blink = !this.blink;
+        requestAnimationFrame(function () { return _this.blinker(); });
+        console.log("blink = " + this.blink);
+    };
     return Commodore64;
 }());
 var commodore64 = new Commodore64();
@@ -43,3 +50,4 @@ var bottomBorderDiv = document.getElementById('bottom-border');
 div.innerHTML = html;
 topBorderDiv.innerHTML = commodore64.generateBorder();
 bottomBorderDiv.innerHTML = commodore64.generateBorder();
+commodore64.blinker();
