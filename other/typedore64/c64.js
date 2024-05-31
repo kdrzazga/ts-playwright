@@ -48,10 +48,6 @@ var Commodore64 = /** @class */ (function () {
     };
     Commodore64.prototype.blinker = function () {
         var _this = this;
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> bf38bbb (typedore4.4)
         var currentTime = performance.now();
         var timeSinceLastRender = currentTime - this.lastRenderTime;
         if (timeSinceLastRender >= 1000 / Commodore64.FPS) {
@@ -66,29 +62,12 @@ var Commodore64 = /** @class */ (function () {
             this.blink = !this.blink;
             this.lastRenderTime = currentTime;
         }
-<<<<<<< HEAD
         console.log("blink = " + this.blink);
         requestAnimationFrame(function () { return _this.blinker(); });
     };
     Commodore64.FPS = 2;
-<<<<<<< HEAD
-=======
-        this.blink = !this.blink;
-        requestAnimationFrame(function () { return _this.blinker(); });
-=======
->>>>>>> bf38bbb (typedore4.4)
-        console.log("blink = " + this.blink);
-        requestAnimationFrame(function () { return _this.blinker(); });
-    };
-<<<<<<< HEAD
->>>>>>> 5b3d4ec (typedore4.3)
-=======
-    Commodore64.FPS = 2;
->>>>>>> bf38bbb (typedore4.4)
-=======
     Commodore64.BLUE = "#200080";
     Commodore64.LIGHTBLUE = "#6060c0";
->>>>>>> e6d2ca2 (typedore5)
     return Commodore64;
 }());
 var commodore64 = new Commodore64();
