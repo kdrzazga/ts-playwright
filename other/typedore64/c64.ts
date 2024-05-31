@@ -1,9 +1,14 @@
 class Commodore64 {
   static FPS = 2;
+  static BLUE = "#200080";
+  static LIGHTBLUE = "#6060c0";
 
   private tableContent: string[];
   private blink = true;
   private lastRenderTime;
+  private canvas;
+  private canvasContainer;
+  private ctx;
 
   constructor() {
     this.tableContent = [
@@ -19,12 +24,20 @@ class Commodore64 {
       this.tableContent.push("&nbsp");
     }
 	this.lastRenderTime = 0;
+	
+	this.canvas = document.createElement('canvas');
+	this.canvas.style.position = 'relative';
+	this.canvas.style.top = '-1px';
+	this.canvas.style.left = '-14px';
+	this.canvas.width = 17;
+	this.canvas.height = 17;
+	this.ctx = this.canvas.getContext('2d');
   }
 
   generateHtml(): string {
     const html = [];
 	let number = 0;
-    html.push("<table id=\"main\" bgcolor=\"#200080\">");
+    html.push("<table id=\"main\" bgcolor=\"" + Commodore64.BLUE + "\">");
     this.tableContent.forEach((line) => {
 	  let strNumber = String(number);
       html.push("<tr><td id=\"row" + strNumber + "\">" + line + "</td></tr>");
@@ -36,7 +49,7 @@ class Commodore64 {
   
   generateBorder(): string {
     const html = [];
-	html.push("<table bgcolor=\"#6060c0\" width=\"100%\">")
+	html.push("<table bgcolor=\"" + Commodore64.LIGHTBLUE + "\" width=\"100%\">")
 	for (let i = 0; i < 3; i++){
 		html.push("<tr><td width=\"10%\">&nbsp</td><td width=\"80%\">&nbsp</td><td width=\"10%\">&nbsp</td></tr>");
 	}
@@ -44,11 +57,24 @@ class Commodore64 {
     return html.join("");  
   }
   
+  initBlinker(){
+	this.canvasContainer = document.getElementById('row6');
+	this.canvasContainer.appendChild(this.canvas);
+  }
+  
   blinker() {
 	const currentTime = performance.now();
 	const timeSinceLastRender = currentTime - this.lastRenderTime;
 	
-	if (timeSinceLastRender > 1000 / Commodore64.FPS) {
+	if (timeSinceLastRender >= 1000 / Commodore64.FPS) {
+	    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        if (this.blink) {
+          this.ctx.fillStyle = Commodore64.LIGHTBLUE;
+        } else {
+          this.ctx.fillStyle = Commodore64.BLUE;
+        }
+		
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 		this.blink = !this.blink;
 		this.lastRenderTime = currentTime;
 	}
@@ -66,4 +92,5 @@ const bottomBorderDiv = document.getElementById('bottom-border');
 div.innerHTML = html;
 topBorderDiv.innerHTML = commodore64.generateBorder();
 bottomBorderDiv.innerHTML = commodore64.generateBorder();
+commodore64.initBlinker();
 commodore64.blinker();
