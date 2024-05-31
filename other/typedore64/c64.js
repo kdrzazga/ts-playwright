@@ -15,10 +15,10 @@ var Commodore64 = /** @class */ (function () {
         this.lastRenderTime = 0;
         this.canvas = document.createElement('canvas');
         this.canvas.style.position = 'relative';
-        this.canvas.style.top = '-1px';
-        this.canvas.style.left = '-14px';
-        this.canvas.width = 17;
-        this.canvas.height = 17;
+        this.canvas.style.top = '-2px';
+        this.canvas.style.left = '-16px';
+        this.canvas.width = 16;
+        this.canvas.height = 16;
         this.ctx = this.canvas.getContext('2d');
     }
     Commodore64.prototype.generateHtml = function () {
@@ -70,6 +70,10 @@ var Commodore64 = /** @class */ (function () {
     Commodore64.LIGHTBLUE = "#6060c0";
     return Commodore64;
 }());
+var width = 800;
+var height = 600;
+window.innerWidth = width;
+window.innerHeight = height;
 var commodore64 = new Commodore64();
 var html = commodore64.generateHtml();
 var div = document.getElementById('commodore64');
