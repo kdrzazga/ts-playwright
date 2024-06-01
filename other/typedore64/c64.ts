@@ -27,10 +27,10 @@ class Commodore64 {
 	
 	this.canvas = document.createElement('canvas');
 	this.canvas.style.position = 'relative';
-	this.canvas.style.top = '-1px';
-	this.canvas.style.left = '-14px';
-	this.canvas.width = 17;
-	this.canvas.height = 17;
+	this.canvas.style.top = '-2px';
+	this.canvas.style.left = '-16px';
+	this.canvas.width = 16;
+	this.canvas.height = 16;
 	this.ctx = this.canvas.getContext('2d');
   }
 
@@ -83,6 +83,12 @@ class Commodore64 {
     requestAnimationFrame(() => this.blinker());
   }
 }
+
+let width = 800;
+let height = 600;
+
+window.innerWidth = width;
+window.innerHeight = height;
 
 const commodore64 = new Commodore64();
 const html = commodore64.generateHtml();
