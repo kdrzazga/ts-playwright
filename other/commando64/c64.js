@@ -1,11 +1,13 @@
 var Commodore64 = /** @class */ (function () {
     function Commodore64() {
         this.blink = true;
-        this.tableContent = [
+        this.tableContentHeader = [
             "&nbsp",
             "<center>    &nbsp**** COMMODORE 64 BASIC V2 ****&nbsp    </center>",
             "&nbsp",
-            "<center> &nbsp64K RAM SYSTEM  38911 BASIC BYTES FREE&nbsp </center>",
+            "<center> &nbsp64K RAM SYSTEM  38911 BASIC BYTES FREE&nbsp </center>"
+        ];
+        this.tableContent = [
             "READY.",
             "LOAD",
             "&nbsp",
@@ -36,9 +38,14 @@ var Commodore64 = /** @class */ (function () {
         var html = [];
         var number = 0;
         html.push("<table id=\"main\" bgcolor=\"" + Commodore64.BLUE + "\">");
+        this.tableContentHeader.forEach(function (line) {
+            var strNumber = String(number);
+            html.push("<tr><td id=\"row" + strNumber + "\" colspan=\"2\">" + line + "</td></tr>");
+            number++;
+        });
         this.tableContent.forEach(function (line) {
             var strNumber = String(number);
-            html.push("<tr><td id=\"row" + strNumber + "\">" + line + "</td></tr>");
+            html.push("<tr><td id=\"row" + strNumber + "col1\">" + line + "</td><td id=\"row" + strNumber + "col2\"></td></tr>");
             number++;
         });
         html.push("</table>");
@@ -54,7 +61,7 @@ var Commodore64 = /** @class */ (function () {
         return html.join("");
     };
     Commodore64.prototype.initBlinker = function () {
-        this.canvasContainer = document.getElementById('row17');
+        this.canvasContainer = document.getElementById('row17col1');
         this.canvasContainer.appendChild(this.canvas);
     };
     Commodore64.prototype.blinker = function () {
@@ -76,6 +83,11 @@ var Commodore64 = /** @class */ (function () {
         console.log("blink = " + this.blink);
         requestAnimationFrame(function () { return _this.blinker(); });
     };
+    Commodore64.prototype.drawKomandos = function () {
+        var komandosCell = document.getElementById('row5col2');
+        komandosCell.innerHTML = "<img src = \"resources/komandos.png\"/>";
+        komandosCell.setAttribute("rowspan", "12");
+    };
     Commodore64.FPS = 2;
     Commodore64.BLUE = "#200080";
     Commodore64.LIGHTBLUE = "#6060c0";
@@ -93,5 +105,6 @@ var bottomBorderDiv = document.getElementById('bottom-border');
 div.innerHTML = html;
 topBorderDiv.innerHTML = commodore64.generateBorder();
 bottomBorderDiv.innerHTML = commodore64.generateBorder();
+commodore64.drawKomandos();
 commodore64.initBlinker();
 commodore64.blinker();

@@ -3,6 +3,7 @@ class Commodore64 {
   static BLUE = "#200080";
   static LIGHTBLUE = "#6060c0";
 
+  private tableContentHeader: string[];
   private tableContent: string[];
   private blink = true;
   private lastRenderTime;
@@ -11,11 +12,14 @@ class Commodore64 {
   private ctx;
 
   constructor() {
-    this.tableContent = [
+    this.tableContentHeader = [
       "&nbsp",		
       "<center>    &nbsp**** COMMODORE 64 BASIC V2 ****&nbsp    </center>",
       "&nbsp",
-      "<center> &nbsp64K RAM SYSTEM  38911 BASIC BYTES FREE&nbsp </center>",
+      "<center> &nbsp64K RAM SYSTEM  38911 BASIC BYTES FREE&nbsp </center>"
+	];
+	
+	this.tableContent = [
 	  "READY.",
 	  "LOAD",
 	  "&nbsp",
@@ -50,9 +54,14 @@ class Commodore64 {
     const html = [];
 	let number = 0;
     html.push("<table id=\"main\" bgcolor=\"" + Commodore64.BLUE + "\">");
+    this.tableContentHeader.forEach((line) => {
+	  let strNumber = String(number);
+      html.push("<tr><td id=\"row" + strNumber + "\" colspan=\"2\">" + line + "</td></tr>");
+	  number++;
+    });
     this.tableContent.forEach((line) => {
 	  let strNumber = String(number);
-      html.push("<tr><td id=\"row" + strNumber + "\">" + line + "</td></tr>");
+      html.push("<tr><td id=\"row" + strNumber + "col1\">" + line + "</td><td id=\"row" + strNumber + "col2\"></td></tr>");
 	  number++;
     });
     html.push("</table>");
@@ -70,7 +79,7 @@ class Commodore64 {
   }
   
   initBlinker(){
-	this.canvasContainer = document.getElementById('row17');
+	this.canvasContainer = document.getElementById('row17col1');
 	this.canvasContainer.appendChild(this.canvas);
   }
   
@@ -94,6 +103,12 @@ class Commodore64 {
 	console.log("blink = " + this.blink);
     requestAnimationFrame(() => this.blinker());
   }
+  
+  drawKomandos(){
+	let komandosCell = document.getElementById('row5col2');
+	komandosCell.innerHTML = "<img src = \"resources/komandos.png\"/>";
+	komandosCell.setAttribute("rowspan", "12");
+  }
 }
 
 let width = 800;
@@ -110,5 +125,6 @@ const bottomBorderDiv = document.getElementById('bottom-border');
 div.innerHTML = html;
 topBorderDiv.innerHTML = commodore64.generateBorder();
 bottomBorderDiv.innerHTML = commodore64.generateBorder();
+commodore64.drawKomandos();
 commodore64.initBlinker();
 commodore64.blinker();
