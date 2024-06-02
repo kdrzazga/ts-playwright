@@ -3,6 +3,9 @@ var Commodore64 = /** @class */ (function () {
         this.blink = true;
         this.frameIndex = 0;
         this.frames = ['kw1', 'kw2', 'kw3'];
+        this.direction = -1;
+        this.stepCounter = 0;
+        this.stepMax = 12 + Math.floor(Math.random() * 38);
         this.tableContentHeader = [
             "&nbsp",
             "<center>    &nbsp**** COMMODORE 64 BASIC V2 ****&nbsp    </center>",
@@ -34,7 +37,8 @@ var Commodore64 = /** @class */ (function () {
         html.push("<table id=\"main\" bgcolor=\"" + Commodore64.BLUE + "\">");
         this.tableContentHeader.forEach(function (line) {
             var strNumber = String(number);
-            html.push("<tr><td id=\"row" + strNumber + "\" colspan=\"2\">" + line + "</td></tr>");
+            var style = line === "&nbsp" ? "" : "style='white-space: nowrap;'";
+            html.push("<tr><td id=\"row" + strNumber + "\" colspan=\"2\" " + style + ">" + line + "</td></tr>");
             number++;
         });
         this.tableContent.forEach(function (line) {
@@ -54,26 +58,36 @@ var Commodore64 = /** @class */ (function () {
         html.push("</table>");
         return html.join("");
     };
-    Commodore64.prototype.initBlinker = function () {
+    Commodore64.prototype.initAnim = function () {
         this.karatekaCell = document.getElementById('row5col2');
         this.karatekaCell.innerHTML = "<img src = \"resources/k.png\"/>";
         this.karatekaCell.setAttribute("rowspan", "12");
     };
-    Commodore64.prototype.blinker = function () {
+    Commodore64.prototype.anim = function () {
         var _this = this;
         var currentTime = performance.now();
         var timeSinceLastRender = currentTime - this.lastRenderTime;
         if (timeSinceLastRender >= 1000 / Commodore64.FPS) {
             this.frameIndex = (this.frameIndex + 1) % this.frames.length;
-            this.karatekaCell.innerHTML = "<img src = \"resources/" + this.frames[this.frameIndex] + ".png\"/>";
+            this.karatekaCell.innerHTML = "<img src = \"resources/" + this.frames[this.frameIndex] + ".png\" style='transform: scale(" + String(this.direction) + ", 1);'/>";
             this.lastRenderTime = currentTime;
+            this.stepCounter++;
+            if (this.stepCounter > this.stepMax) {
+                this.changeDirection();
+                this.stepMax = 12 + Math.floor(Math.random() * 38);
+                console.log("Frames before direction change: " + this.stepMax);
+            }
         }
         console.log("frame number = " + this.frameIndex);
-        requestAnimationFrame(function () { return _this.blinker(); });
+        requestAnimationFrame(function () { return _this.anim(); });
+    };
+    Commodore64.prototype.changeDirection = function () {
+        this.direction = -this.direction;
+        this.stepCounter = 0;
     };
     Commodore64.FPS = 4;
-    Commodore64.BLUE = "#200080";
-    Commodore64.LIGHTBLUE = "#6060c0";
+    Commodore64.BLUE = "#352879";
+    Commodore64.LIGHTBLUE = "#6c5eb5";
     return Commodore64;
 }());
 var width = 800;
@@ -88,5 +102,5 @@ var bottomBorderDiv = document.getElementById('bottom-border');
 div.innerHTML = html;
 topBorderDiv.innerHTML = commodore64.generateBorder();
 bottomBorderDiv.innerHTML = commodore64.generateBorder();
-commodore64.initBlinker();
-commodore64.blinker();
+commodore64.initAnim();
+commodore64.anim();
