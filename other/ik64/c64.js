@@ -10,6 +10,7 @@ var Commodore64 = /** @class */ (function () {
             "<center> &nbsp64K RAM SYSTEM  38911 BASIC BYTES FREE&nbsp </center>"
         ];
         this.tableContent = [
+            "&nbsp",
             "READY.",
             "LOAD",
             "&nbsp",

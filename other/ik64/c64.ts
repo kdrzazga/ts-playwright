@@ -23,6 +23,7 @@ class Commodore64 {
 	];
 	
 	this.tableContent = [
+	  "&nbsp",
 	  "READY.",
 	  "LOAD",
 	  "&nbsp",

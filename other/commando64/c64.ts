@@ -20,6 +20,7 @@ class Commodore64 {
 	];
 	
 	this.tableContent = [
+	  "&nbsp",
 	  "READY.",
 	  "LOAD",
 	  "&nbsp",
@@ -79,7 +80,7 @@ class Commodore64 {
   }
   
   initBlinker(){
-	this.canvasContainer = document.getElementById('row17col1');
+	this.canvasContainer = document.getElementById('row18col1');
 	this.canvasContainer.appendChild(this.canvas);
   }
   
