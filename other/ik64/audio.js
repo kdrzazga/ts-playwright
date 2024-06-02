@@ -3,7 +3,7 @@ function play() {
   audio.play();
   setInterval(function() {
     audio.play();
-  }, 8130);
+  }, 10037);
   console.log('Music started.');
 }
 
