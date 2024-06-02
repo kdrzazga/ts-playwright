@@ -26,13 +26,6 @@ var Commodore64 = /** @class */ (function () {
             this.tableContent.push("&nbsp");
         }
         this.lastRenderTime = 0;
-        this.canvas = document.createElement('canvas');
-        this.canvas.style.position = 'relative';
-        this.canvas.style.top = '-2px';
-        this.canvas.style.left = '-16px';
-        this.canvas.width = 16;
-        this.canvas.height = 16;
-        this.ctx = this.canvas.getContext('2d');
     }
     Commodore64.prototype.generateHtml = function () {
         var html = [];
@@ -71,9 +64,7 @@ var Commodore64 = /** @class */ (function () {
         var timeSinceLastRender = currentTime - this.lastRenderTime;
         if (timeSinceLastRender >= 1000 / Commodore64.FPS) {
             this.frameIndex = (this.frameIndex + 1) % this.frames.length;
-            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.karatekaCell.innerHTML = "<img src = \"resources/" + this.frames[this.frameIndex] + ".png\"/>";
-            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
             this.lastRenderTime = currentTime;
         }
         console.log("frame number = " + this.frameIndex);
