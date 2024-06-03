@@ -8,6 +8,7 @@ var Commodore64 = /** @class */ (function () {
             "<center> &nbsp64K RAM SYSTEM  38911 BASIC BYTES FREE&nbsp </center>"
         ];
         this.tableContent = [
+            "&nbsp",
             "READY.",
             "LOAD",
             "&nbsp",
@@ -61,7 +62,7 @@ var Commodore64 = /** @class */ (function () {
         return html.join("");
     };
     Commodore64.prototype.initBlinker = function () {
-        this.canvasContainer = document.getElementById('row17col1');
+        this.canvasContainer = document.getElementById('row18col1');
         this.canvasContainer.appendChild(this.canvas);
     };
     Commodore64.prototype.blinker = function () {
