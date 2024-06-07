@@ -9,7 +9,7 @@ var Commodore64 = /** @class */ (function () {
             "&nbsp",
             "READY."
         ];
-        for (var i = 5; i < 20; i++) {
+        for (var i = 5; i < 21; i++) {
             this.tableContent.push("&nbsp");
         }
         this.lastRenderTime = 0;

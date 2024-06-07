@@ -20,7 +20,7 @@ class Commodore64 {
 	  "READY."
     ];
 	
-	for (let i = 5; i < 20; i++) {
+	for (let i = 5; i < 21; i++) {
       this.tableContent.push("&nbsp");
     }
 	this.lastRenderTime = 0;
