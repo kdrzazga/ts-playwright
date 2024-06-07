@@ -1,7 +1,7 @@
 class Commodore64 {
   static FPS = 2;
-  static BLUE = "#200080";
-  static LIGHTBLUE = "#6060c0";
+  static BLUE = "#352879";
+  static LIGHTBLUE = "#6c5eb5";
 
   private tableContent: string[];
   private blink = true;

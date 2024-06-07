@@ -27,7 +27,7 @@ var Commodore64 = /** @class */ (function () {
         html.push("<table id=\"main\" bgcolor=\"" + Commodore64.BLUE + "\">");
         this.tableContent.forEach(function (line) {
             var strNumber = String(number);
-            html.push("<tr><td id=\"row" + strNumber + "\">" + line + "</td></tr>");
+            html.push("<tr><td id=\"row" + strNumber + "col1\">" + line + "</td></tr>");
             number++;
         });
         html.push("</table>");
@@ -35,15 +35,17 @@ var Commodore64 = /** @class */ (function () {
     };
     Commodore64.prototype.generateBorder = function () {
         var html = [];
+        html.push("<center>");
         html.push("<table bgcolor=\"" + Commodore64.LIGHTBLUE + "\" width=\"100%\">");
         for (var i = 0; i < 3; i++) {
             html.push("<tr><td width=\"10%\">&nbsp</td><td width=\"80%\">&nbsp</td><td width=\"10%\">&nbsp</td></tr>");
         }
         html.push("</table>");
+        html.push("</center>");
         return html.join("");
     };
     Commodore64.prototype.initBlinker = function () {
-        this.canvasContainer = document.getElementById('row6');
+        this.canvasContainer = document.getElementById('row18col1');
         this.canvasContainer.appendChild(this.canvas);
     };
     Commodore64.prototype.blinker = function () {
@@ -65,6 +67,11 @@ var Commodore64 = /** @class */ (function () {
         console.log("blink = " + this.blink);
         requestAnimationFrame(function () { return _this.blinker(); });
     };
+    Commodore64.prototype.drawCzacha = function () {
+        var komandosCell = document.getElementById('row6col1');
+        komandosCell.innerHTML = "<img src = \"resources/czacha3.jpg\"/>";
+        komandosCell.setAttribute("rowspan", "12");
+    };
     Commodore64.FPS = 2;
     Commodore64.BLUE = "#352879";
     Commodore64.LIGHTBLUE = "#6c5eb5";
@@ -82,5 +89,6 @@ var bottomBorderDiv = document.getElementById('bottom-border');
 div.innerHTML = html;
 topBorderDiv.innerHTML = commodore64.generateBorder();
 bottomBorderDiv.innerHTML = commodore64.generateBorder();
+commodore64.drawCzacha();
 commodore64.initBlinker();
 commodore64.blinker();
