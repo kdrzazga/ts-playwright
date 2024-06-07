@@ -41,7 +41,8 @@ var Commodore64 = /** @class */ (function () {
         html.push("<table id=\"main\" bgcolor=\"" + Commodore64.BLUE + "\">");
         this.tableContentHeader.forEach(function (line) {
             var strNumber = String(number);
-            html.push("<tr><td id=\"row" + strNumber + "\" colspan=\"2\">" + line + "</td></tr>");
+            var style = line === "&nbsp" ? "" : "style='white-space: nowrap;'";
+            html.push("<tr><td id=\"row" + strNumber + "\" colspan=\"2\" " + style + ">" + line + "</td></tr>");
             number++;
         });
         this.tableContent.forEach(function (line) {

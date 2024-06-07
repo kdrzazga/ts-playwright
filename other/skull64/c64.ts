@@ -17,7 +17,9 @@ class Commodore64 {
       "&nbsp",
       "<center> &nbsp64K RAM SYSTEM  38911 BASIC BYTES FREE&nbsp </center>",
       "&nbsp",
-	  "READY."
+	  "READY.",
+	  "&nbsp",
+	  "&nbsp"
 	];
 	
 	for (let i = 5; i < 20; i++) {
@@ -40,7 +42,8 @@ class Commodore64 {
     html.push("<table id=\"main\" bgcolor=\"" + Commodore64.BLUE + "\">");
     this.tableContent.forEach((line) => {
 	  let strNumber = String(number);
-      html.push("<tr><td id=\"row" + strNumber + "col1\">" + line + "</td></tr>");
+	  let style = line === "&nbsp" ? "" : "style='white-space: nowrap;'";
+	  html.push("<tr><td id=\"row" + strNumber + "\" colspan=\"2\" " + style + ">" + line + "</td></tr>");
 	  number++;
     });
     html.push("</table>");
@@ -60,7 +63,7 @@ class Commodore64 {
   }
   
   initBlinker(){
-	this.canvasContainer = document.getElementById('row18col1');
+	this.canvasContainer = document.getElementById('row6');
 	this.canvasContainer.appendChild(this.canvas);
   }
   
@@ -86,9 +89,9 @@ class Commodore64 {
   }
   
   drawCzacha(){
-	let komandosCell = document.getElementById('row6col1');
+	let komandosCell = document.getElementById('row7');
 	komandosCell.innerHTML = "<img src = \"resources/czacha3.jpg\"/>";
-	komandosCell.setAttribute("rowspan", "12");
+	komandosCell.setAttribute("rowspan", "15");
   }
 }
 

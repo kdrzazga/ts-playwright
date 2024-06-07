@@ -7,7 +7,9 @@ var Commodore64 = /** @class */ (function () {
             "&nbsp",
             "<center> &nbsp64K RAM SYSTEM  38911 BASIC BYTES FREE&nbsp </center>",
             "&nbsp",
-            "READY."
+            "READY.",
+            "&nbsp",
+            "&nbsp"
         ];
         for (var i = 5; i < 20; i++) {
             this.tableContent.push("&nbsp");
@@ -27,7 +29,8 @@ var Commodore64 = /** @class */ (function () {
         html.push("<table id=\"main\" bgcolor=\"" + Commodore64.BLUE + "\">");
         this.tableContent.forEach(function (line) {
             var strNumber = String(number);
-            html.push("<tr><td id=\"row" + strNumber + "col1\">" + line + "</td></tr>");
+            var style = line === "&nbsp" ? "" : "style='white-space: nowrap;'";
+            html.push("<tr><td id=\"row" + strNumber + "\" colspan=\"2\" " + style + ">" + line + "</td></tr>");
             number++;
         });
         html.push("</table>");
@@ -45,7 +48,7 @@ var Commodore64 = /** @class */ (function () {
         return html.join("");
     };
     Commodore64.prototype.initBlinker = function () {
-        this.canvasContainer = document.getElementById('row18col1');
+        this.canvasContainer = document.getElementById('row6');
         this.canvasContainer.appendChild(this.canvas);
     };
     Commodore64.prototype.blinker = function () {
@@ -68,9 +71,9 @@ var Commodore64 = /** @class */ (function () {
         requestAnimationFrame(function () { return _this.blinker(); });
     };
     Commodore64.prototype.drawCzacha = function () {
-        var komandosCell = document.getElementById('row6col1');
+        var komandosCell = document.getElementById('row7');
         komandosCell.innerHTML = "<img src = \"resources/czacha3.jpg\"/>";
-        komandosCell.setAttribute("rowspan", "12");
+        komandosCell.setAttribute("rowspan", "15");
     };
     Commodore64.FPS = 2;
     Commodore64.BLUE = "#352879";

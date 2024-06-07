@@ -24,7 +24,10 @@ var Commodore64 = /** @class */ (function () {
             "FOUND INTER.KARATE+",
             "LOADING",
             "READY",
-            "RUN"
+            "RUN",
+            "&nbsp",
+            "&nbsp",
+            "&nbsp"
         ];
         for (var i = 17; i < 20; i++) {
             this.tableContent.push("&nbsp");
