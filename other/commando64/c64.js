@@ -90,8 +90,8 @@ var Commodore64 = /** @class */ (function () {
         komandosCell.setAttribute("rowspan", "12");
     };
     Commodore64.FPS = 2;
-    Commodore64.BLUE = "#200080";
-    Commodore64.LIGHTBLUE = "#6060c0";
+    Commodore64.BLUE = "#352879";
+    Commodore64.LIGHTBLUE = "#6c5eb5";
     return Commodore64;
 }());
 var width = 800;

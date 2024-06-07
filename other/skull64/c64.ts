@@ -3,7 +3,6 @@ class Commodore64 {
   static BLUE = "#352879";
   static LIGHTBLUE = "#6c5eb5";
 
-  private tableContentHeader: string[];
   private tableContent: string[];
   private blink = true;
   private lastRenderTime;
@@ -12,32 +11,16 @@ class Commodore64 {
   private ctx;
 
   constructor() {
-    this.tableContentHeader = [
+    this.tableContent = [
       "&nbsp",		
       "<center>    &nbsp**** COMMODORE 64 BASIC V2 ****&nbsp    </center>",
       "&nbsp",
-      "<center> &nbsp64K RAM SYSTEM  38911 BASIC BYTES FREE&nbsp </center>"
+      "<center> &nbsp64K RAM SYSTEM  38911 BASIC BYTES FREE&nbsp </center>",
+      "&nbsp",
+	  "READY."
 	];
 	
-	this.tableContent = [
-	  "&nbsp",
-	  "READY.",
-	  "LOAD",
-	  "&nbsp",
-	  "PRESS PLAY ON TAPE",
-	  "OK",
-	  "&nbsp",
-	  "SEARCHING",
-	  "FOUND COMMANDO",
-	  "LOADING",
-	  "READY",
-	  "RUN",
-	  "&nbsp",
-	  "READY"
-	  
-    ];
-	
-	for (let i = 17; i < 20; i++) {
+	for (let i = 5; i < 20; i++) {
       this.tableContent.push("&nbsp");
     }
 	this.lastRenderTime = 0;
@@ -55,15 +38,9 @@ class Commodore64 {
     const html = [];
 	let number = 0;
     html.push("<table id=\"main\" bgcolor=\"" + Commodore64.BLUE + "\">");
-    this.tableContentHeader.forEach((line) => {
-	  let strNumber = String(number);
-	  let style = line === "&nbsp" ? "" : "style='white-space: nowrap;'";
-	  html.push("<tr><td id=\"row" + strNumber + "\" colspan=\"2\" " + style + ">" + line + "</td></tr>");
-	  number++;
-    });
     this.tableContent.forEach((line) => {
 	  let strNumber = String(number);
-      html.push("<tr><td id=\"row" + strNumber + "col1\">" + line + "</td><td id=\"row" + strNumber + "col2\"></td></tr>");
+      html.push("<tr><td id=\"row" + strNumber + "col1\">" + line + "</td></tr>");
 	  number++;
     });
     html.push("</table>");
@@ -72,11 +49,13 @@ class Commodore64 {
   
   generateBorder(): string {
     const html = [];
+	html.push("<center>");
 	html.push("<table bgcolor=\"" + Commodore64.LIGHTBLUE + "\" width=\"100%\">")
 	for (let i = 0; i < 3; i++){
 		html.push("<tr><td width=\"10%\">&nbsp</td><td width=\"80%\">&nbsp</td><td width=\"10%\">&nbsp</td></tr>");
 	}
 	html.push("</table>");
+	html.push("</center>");
     return html.join("");  
   }
   
@@ -106,9 +85,9 @@ class Commodore64 {
     requestAnimationFrame(() => this.blinker());
   }
   
-  drawKomandos(){
-	let komandosCell = document.getElementById('row5col2');
-	komandosCell.innerHTML = "<img src = \"resources/komandos.png\"/>";
+  drawCzacha(){
+	let komandosCell = document.getElementById('row6col1');
+	komandosCell.innerHTML = "<img src = \"resources/czacha3.jpg\"/>";
 	komandosCell.setAttribute("rowspan", "12");
   }
 }
@@ -127,6 +106,6 @@ const bottomBorderDiv = document.getElementById('bottom-border');
 div.innerHTML = html;
 topBorderDiv.innerHTML = commodore64.generateBorder();
 bottomBorderDiv.innerHTML = commodore64.generateBorder();
-commodore64.drawKomandos();
+commodore64.drawCzacha();
 commodore64.initBlinker();
 commodore64.blinker();
