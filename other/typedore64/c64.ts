@@ -20,7 +20,7 @@ class Commodore64 {
 	  "READY."
     ];
 	
-	for (let i = 5; i < 20; i++) {
+	for (let i = 5; i < 21; i++) {
       this.tableContent.push("&nbsp");
     }
 	this.lastRenderTime = 0;
@@ -40,7 +40,8 @@ class Commodore64 {
     html.push("<table id=\"main\" bgcolor=\"" + Commodore64.BLUE + "\">");
     this.tableContent.forEach((line) => {
 	  let strNumber = String(number);
-      html.push("<tr><td id=\"row" + strNumber + "\">" + line + "</td></tr>");
+	  let style = line === "&nbsp" ? "" : "style='white-space: nowrap;'";
+	  html.push("<tr><td id=\"row" + strNumber + "\" colspan=\"2\" " + style + ">" + line + "</td></tr>");
 	  number++;
     });
     html.push("</table>");

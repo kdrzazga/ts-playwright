@@ -36,7 +36,10 @@ class Commodore64 {
 	  "FOUND INTER.KARATE+",
 	  "LOADING",
 	  "READY",
-	  "RUN"
+	  "RUN",
+	  "&nbsp",
+	  "&nbsp",
+	  "&nbsp"
 	  
     ];
 	

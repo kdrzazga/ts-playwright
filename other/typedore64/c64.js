@@ -9,7 +9,7 @@ var Commodore64 = /** @class */ (function () {
             "&nbsp",
             "READY."
         ];
-        for (var i = 5; i < 20; i++) {
+        for (var i = 5; i < 21; i++) {
             this.tableContent.push("&nbsp");
         }
         this.lastRenderTime = 0;
@@ -27,7 +27,8 @@ var Commodore64 = /** @class */ (function () {
         html.push("<table id=\"main\" bgcolor=\"" + Commodore64.BLUE + "\">");
         this.tableContent.forEach(function (line) {
             var strNumber = String(number);
-            html.push("<tr><td id=\"row" + strNumber + "\">" + line + "</td></tr>");
+            var style = line === "&nbsp" ? "" : "style='white-space: nowrap;'";
+            html.push("<tr><td id=\"row" + strNumber + "\" colspan=\"2\" " + style + ">" + line + "</td></tr>");
             number++;
         });
         html.push("</table>");
