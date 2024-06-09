@@ -6,8 +6,8 @@ class Commodore64 {
   private tableContent: string[];
   private blink = true;
   private lastRenderTime;
-  private canvas;
-  private canvasContainer;
+  private cursorCanvas;
+  private cursorContainer;
   private ctx;
   private delay;
 
@@ -21,18 +21,18 @@ class Commodore64 {
 	  "READY."
     ];
 	
-	for (let i = 5; i < 21; i++) {
+	for (let i = 5; i < 22; i++) {
       this.tableContent.push("&nbsp");
     }
 	this.lastRenderTime = 0;
 	
-	this.canvas = document.createElement('canvas');
-	this.canvas.style.position = 'relative';
-	this.canvas.style.top = '-2px';
-	this.canvas.style.left = '-16px';
-	this.canvas.width = 16;
-	this.canvas.height = 16;
-	this.ctx = this.canvas.getContext('2d');
+	this.cursorCanvas = document.createElement('canvas');
+	this.cursorCanvas.style.position = 'relative';
+	this.cursorCanvas.style.top = '-2px';
+	this.cursorCanvas.style.left = '-16px';
+	this.cursorCanvas.width = 16;
+	this.cursorCanvas.height = 16;
+	this.ctx = this.cursorCanvas.getContext('2d');
 	this.delay = delay;
   }
 
@@ -61,8 +61,8 @@ class Commodore64 {
   }
   
   initBlinker(){
-	this.canvasContainer = document.getElementById('row6');
-	this.canvasContainer.appendChild(this.canvas);
+	this.cursorContainer = document.getElementById('row6');
+	this.cursorContainer.appendChild(this.cursorCanvas);
   }
   
   blinker() {
@@ -70,14 +70,14 @@ class Commodore64 {
 	const timeSinceLastRender = currentTime - this.lastRenderTime;
 	
 	if (timeSinceLastRender >= 1000 / Commodore64.FPS) {
-	    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+	    this.ctx.clearRect(0, 0, this.cursorCanvas.width, this.cursorCanvas.height);
         if (this.blink) {
           this.ctx.fillStyle = Commodore64.LIGHTBLUE;
         } else {
           this.ctx.fillStyle = Commodore64.BLUE;
         }
 		
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.fillRect(0, 0, this.cursorCanvas.width, this.cursorCanvas.height);
 		this.blink = !this.blink;
 		this.lastRenderTime = currentTime;
 	}
@@ -88,6 +88,9 @@ class Commodore64 {
 
   animate(){
 	console.log("Delay = ", this.delay);
+	let hotAirBaloonCell = document.getElementById('row7');
+	hotAirBaloonCell.innerHTML = "<img src = \"resources/uua.png\"/>";
+	hotAirBaloonCell.setAttribute("rowspan", "15");
   }
 }
 

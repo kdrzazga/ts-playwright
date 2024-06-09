@@ -9,17 +9,17 @@ var Commodore64 = /** @class */ (function () {
             "&nbsp",
             "READY."
         ];
-        for (var i = 5; i < 21; i++) {
+        for (var i = 5; i < 22; i++) {
             this.tableContent.push("&nbsp");
         }
         this.lastRenderTime = 0;
-        this.canvas = document.createElement('canvas');
-        this.canvas.style.position = 'relative';
-        this.canvas.style.top = '-2px';
-        this.canvas.style.left = '-16px';
-        this.canvas.width = 16;
-        this.canvas.height = 16;
-        this.ctx = this.canvas.getContext('2d');
+        this.cursorCanvas = document.createElement('canvas');
+        this.cursorCanvas.style.position = 'relative';
+        this.cursorCanvas.style.top = '-2px';
+        this.cursorCanvas.style.left = '-16px';
+        this.cursorCanvas.width = 16;
+        this.cursorCanvas.height = 16;
+        this.ctx = this.cursorCanvas.getContext('2d');
         this.delay = delay;
     }
     Commodore64.prototype.generateHtml = function () {
@@ -45,22 +45,22 @@ var Commodore64 = /** @class */ (function () {
         return html.join("");
     };
     Commodore64.prototype.initBlinker = function () {
-        this.canvasContainer = document.getElementById('row6');
-        this.canvasContainer.appendChild(this.canvas);
+        this.cursorContainer = document.getElementById('row6');
+        this.cursorContainer.appendChild(this.cursorCanvas);
     };
     Commodore64.prototype.blinker = function () {
         var _this = this;
         var currentTime = performance.now();
         var timeSinceLastRender = currentTime - this.lastRenderTime;
         if (timeSinceLastRender >= 1000 / Commodore64.FPS) {
-            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            this.ctx.clearRect(0, 0, this.cursorCanvas.width, this.cursorCanvas.height);
             if (this.blink) {
                 this.ctx.fillStyle = Commodore64.LIGHTBLUE;
             }
             else {
                 this.ctx.fillStyle = Commodore64.BLUE;
             }
-            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+            this.ctx.fillRect(0, 0, this.cursorCanvas.width, this.cursorCanvas.height);
             this.blink = !this.blink;
             this.lastRenderTime = currentTime;
         }
@@ -69,6 +69,9 @@ var Commodore64 = /** @class */ (function () {
     };
     Commodore64.prototype.animate = function () {
         console.log("Delay = ", this.delay);
+        var hotAirBaloonCell = document.getElementById('row7');
+        hotAirBaloonCell.innerHTML = "<img src = \"resources/uua.png\"/>";
+        hotAirBaloonCell.setAttribute("rowspan", "15");
     };
     Commodore64.FPS = 2;
     Commodore64.BLUE = "#352879";
