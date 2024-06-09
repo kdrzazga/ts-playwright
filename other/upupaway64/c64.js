@@ -1,6 +1,7 @@
 var Commodore64 = /** @class */ (function () {
     function Commodore64(delay) {
         this.blink = true;
+        this.ballonDirection = 1;
         this.tableContent = [
             "&nbsp",
             "<center>    &nbsp**** COMMODORE 64 BASIC V2 ****&nbsp    </center>",
@@ -44,11 +45,11 @@ var Commodore64 = /** @class */ (function () {
         html.push("</table>");
         return html.join("");
     };
-    Commodore64.prototype.initBlinker = function () {
+    Commodore64.prototype.initTimeLoop = function () {
         this.cursorContainer = document.getElementById('row6');
         this.cursorContainer.appendChild(this.cursorCanvas);
     };
-    Commodore64.prototype.blinker = function () {
+    Commodore64.prototype.timeLoop = function () {
         var _this = this;
         var currentTime = performance.now();
         var timeSinceLastRender = currentTime - this.lastRenderTime;
@@ -63,14 +64,16 @@ var Commodore64 = /** @class */ (function () {
             this.ctx.fillRect(0, 0, this.cursorCanvas.width, this.cursorCanvas.height);
             this.blink = !this.blink;
             this.lastRenderTime = currentTime;
+            console.log("new DELAY = ", this.delay);
         }
         console.log("blink = " + this.blink);
-        requestAnimationFrame(function () { return _this.blinker(); });
+        this.animate(this.delay);
+        requestAnimationFrame(function () { return _this.timeLoop(); });
     };
-    Commodore64.prototype.animate = function () {
-        console.log("Delay = ", this.delay);
+    Commodore64.prototype.animate = function (delay) {
+        console.log("Delay = ", delay);
         var hotAirBaloonCell = document.getElementById('row7');
-        var style = "style=\"margin-left: " + 10 * this.delay + "px;\"/>";
+        var style = "style=\"margin-left: " + delay + "px;\"/>";
         hotAirBaloonCell.innerHTML = "<img src = \"resources/uua.png\"" + style;
         hotAirBaloonCell.setAttribute("rowspan", "15");
     };
@@ -93,6 +96,5 @@ var bottomBorderDiv = document.getElementById('bottom-border');
 div.innerHTML = html;
 topBorderDiv.innerHTML = commodore64.generateBorder();
 bottomBorderDiv.innerHTML = commodore64.generateBorder();
-commodore64.initBlinker();
-commodore64.blinker();
-commodore64.animate();
+commodore64.initTimeLoop();
+commodore64.timeLoop();

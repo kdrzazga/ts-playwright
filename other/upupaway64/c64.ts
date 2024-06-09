@@ -10,6 +10,7 @@ class Commodore64 {
   private cursorContainer;
   private ctx;
   private delay;
+  private ballonDirection = 1;
 
   constructor(delay) {
     this.tableContent = [
@@ -60,12 +61,12 @@ class Commodore64 {
     return html.join("");
   }
   
-  initBlinker(){
+  initTimeLoop(){
 	this.cursorContainer = document.getElementById('row6');
 	this.cursorContainer.appendChild(this.cursorCanvas);
   }
   
-  blinker() {
+  timeLoop() {
 	const currentTime = performance.now();
 	const timeSinceLastRender = currentTime - this.lastRenderTime;
 	
@@ -80,16 +81,18 @@ class Commodore64 {
         this.ctx.fillRect(0, 0, this.cursorCanvas.width, this.cursorCanvas.height);
 		this.blink = !this.blink;
 		this.lastRenderTime = currentTime;
+		console.log("new DELAY = ", this.delay);
 	}
 	
 	console.log("blink = " + this.blink);
-    requestAnimationFrame(() => this.blinker());
+	this.animate(this.delay);
+    requestAnimationFrame(() => this.timeLoop());	
   }
 
-  animate(){
-	console.log("Delay = ", this.delay);
+  animate(delay){
+	console.log("Delay = ", delay);
 	let hotAirBaloonCell = document.getElementById('row7');
-	const style = "style=\"margin-left: " + 10*this.delay + "px;\"/>"
+	const style = "style=\"margin-left: " + delay + "px;\"/>"
 	hotAirBaloonCell.innerHTML = "<img src = \"resources/uua.png\"" + style;
 	hotAirBaloonCell.setAttribute("rowspan", "15");
  }
@@ -112,6 +115,5 @@ const bottomBorderDiv = document.getElementById('bottom-border');
 div.innerHTML = html;
 topBorderDiv.innerHTML = commodore64.generateBorder();
 bottomBorderDiv.innerHTML = commodore64.generateBorder();
-commodore64.initBlinker();
-commodore64.blinker();
-commodore64.animate();
+commodore64.initTimeLoop();
+commodore64.timeLoop();
