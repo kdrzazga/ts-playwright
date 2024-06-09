@@ -57,7 +57,7 @@ class Commodore64 {
 		html.push("<tr><td width=\"10%\">&nbsp</td><td width=\"80%\">&nbsp</td><td width=\"10%\">&nbsp</td></tr>");
 	}
 	html.push("</table>");
-    return html.join("");  
+    return html.join("");
   }
   
   initBlinker(){
@@ -89,9 +89,10 @@ class Commodore64 {
   animate(){
 	console.log("Delay = ", this.delay);
 	let hotAirBaloonCell = document.getElementById('row7');
-	hotAirBaloonCell.innerHTML = "<img src = \"resources/uua.png\"/>";
+	const style = "style=\"margin-left: " + 10*this.delay + "px;\"/>"
+	hotAirBaloonCell.innerHTML = "<img src = \"resources/uua.png\"" + style;
 	hotAirBaloonCell.setAttribute("rowspan", "15");
-  }
+ }
 }
 
 let width = 800;

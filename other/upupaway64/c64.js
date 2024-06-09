@@ -70,7 +70,8 @@ var Commodore64 = /** @class */ (function () {
     Commodore64.prototype.animate = function () {
         console.log("Delay = ", this.delay);
         var hotAirBaloonCell = document.getElementById('row7');
-        hotAirBaloonCell.innerHTML = "<img src = \"resources/uua.png\"/>";
+        var style = "style=\"margin-left: " + 10 * this.delay + "px;\"/>";
+        hotAirBaloonCell.innerHTML = "<img src = \"resources/uua.png\"" + style;
         hotAirBaloonCell.setAttribute("rowspan", "15");
     };
     Commodore64.FPS = 2;
