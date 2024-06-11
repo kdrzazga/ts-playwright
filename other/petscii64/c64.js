@@ -1,3 +1,12 @@
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
 var Commodore64 = /** @class */ (function () {
     function Commodore64(delay) {
         this.blink = true;
@@ -70,15 +79,26 @@ var Commodore64 = /** @class */ (function () {
         requestAnimationFrame(function () { return _this.timeLoop(); });
     };
     Commodore64.prototype.frame = function () {
-        var cell = document.getElementById('row7');
-        var chars = [Commodore64.TOP_LEFT_S];
-        for (var i = 1; i < 39; i++) {
-            chars.push(Commodore64.HORIZ_S);
-        }
-        chars.push(Commodore64.TOP_RIGHT_S);
+        var topRow = document.getElementById('row7');
+        topRow.textContent = this.createLongFrame(Commodore64.TOP_LEFT_S, Commodore64.TOP_RIGHT_S);
+        var bottomRow = document.getElementById('row21');
+        bottomRow.textContent = this.createLongFrame(Commodore64.BOTTOM_LEFT_S, Commodore64.BOTTOM_RIGHT_S);
+    };
+    Commodore64.prototype.createLongFrame = function (endSign1, endSign2) {
+        var topLeft = [endSign1];
+        var longHorizLine = this.createLongHorizLine();
+        var chars = __spreadArray(__spreadArray([], topLeft, true), longHorizLine, true);
+        chars.push(endSign2);
         var text = "";
         chars.forEach(function (c) { return text += String.fromCharCode(c); });
-        cell.textContent = text;
+        return text;
+    };
+    Commodore64.prototype.createLongHorizLine = function () {
+        var longHorizLine = [];
+        for (var i = 1; i < 39; i++) {
+            longHorizLine.push(Commodore64.HORIZ_S);
+        }
+        return longHorizLine;
     };
     Commodore64.FPS = 2;
     Commodore64.BLUE = "#352879";

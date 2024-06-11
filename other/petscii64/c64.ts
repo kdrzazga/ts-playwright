@@ -100,16 +100,32 @@ class Commodore64 {
   }
  
   frame(){
-	let cell = document.getElementById('row7');
-	let chars = [Commodore64.TOP_LEFT_S]
-	for (let i = 1; i < 39; i++){
-		chars.push(Commodore64.HORIZ_S);
-	}
-	chars.push(Commodore64.TOP_RIGHT_S);
+	let topRow = document.getElementById('row7');	
+	topRow.textContent = this.createLongFrame(Commodore64.TOP_LEFT_S, Commodore64.TOP_RIGHT_S);
+	
+	let bottomRow = document.getElementById('row21');	
+	bottomRow.textContent = this.createLongFrame(Commodore64.BOTTOM_LEFT_S, Commodore64.BOTTOM_RIGHT_S);
+  }
+  
+  private createLongFrame(endSign1, endSign2){
+	let topLeft = [endSign1]
+	let longHorizLine = this.createLongHorizLine();
+	let chars = [...topLeft, ...longHorizLine];
+	chars.push(endSign2);
 	let text = "";
 	
 	chars.forEach((c) => text += String.fromCharCode(c));
-	cell.textContent = text;
+	return text;
+  }
+  
+  private createLongHorizLine() {
+	let longHorizLine = [];
+
+	for (let i = 1; i < 39; i++){
+		longHorizLine.push(Commodore64.HORIZ_S);
+	}
+
+	return longHorizLine;
   }
 
 }
