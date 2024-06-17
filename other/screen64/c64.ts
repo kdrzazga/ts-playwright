@@ -1,3 +1,5 @@
+import * as fs from 'fs';
+
 class Commodore64 {
   static FPS = 2;
   static BLUE = "#352879";
@@ -83,25 +85,34 @@ class Commodore64 {
 	console.log("blink = " + this.blink);
     requestAnimationFrame(() => this.blinker());
   }
+  
+  readFile(filename: string){
+
+  try {
+    const data = fs.readFileSync('resources/data', 'utf8');
+    return data;
+  } catch (err) {
+    console.error('Error reading file:', err);
+    return '';
+  }
+  }
 
   readScreen(filename: string): string[] {
   
-  var fileContent = "";
-  
-  fetch("resources/data.dat")
-  .then((res) => res.text())
-  .then((text) => {
-	console.log("File reading successful");
-	fileContent = text;
-   })
-  .catch((e) => console.error(e));
+    let fileContent = this.readFile(filename);
 
 	const lines = fileContent.split('\n');
 	let data = [];
 	
+	console.log("Reading " + lines.length + " lines from the file.");
+	
 	lines.forEach(line => {
 		let t = line.replace(/^DATA\s+/g, '');
-		data.push( t.split(', ').map(x => parseInt(x.trim())).join(','));
+		let data_item =  t.split(', ');
+		console.log(data_item);
+		
+		data.push( t.split(', '));//.map(x => parseInt(x.trim())).join(','));
+	
 		});	
 	
 	return data;
@@ -122,7 +133,7 @@ const bottomBorderDiv = document.getElementById('bottom-border');
 div.innerHTML = html;
 topBorderDiv.innerHTML = commodore64.generateBorder();
 bottomBorderDiv.innerHTML = commodore64.generateBorder();
-const screen2 = commodore64.readScreen("resources/data.dat");
+let screen2 = commodore64.readScreen("resources/data.dat");
 
 let row = document.getElementById('row7');
 screen2.forEach( (line) => row.innerHTML = line);

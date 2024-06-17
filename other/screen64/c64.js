@@ -1,3 +1,6 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var fs = require("fs");
 var Commodore64 = /** @class */ (function () {
     function Commodore64() {
         this.blink = true;
@@ -66,20 +69,26 @@ var Commodore64 = /** @class */ (function () {
         console.log("blink = " + this.blink);
         requestAnimationFrame(function () { return _this.blinker(); });
     };
+    Commodore64.prototype.readFile = function (filename) {
+        try {
+            var data = fs.readFileSync('resources/data', 'utf8');
+            return data;
+        }
+        catch (err) {
+            console.error('Error reading file:', err);
+            return '';
+        }
+    };
     Commodore64.prototype.readScreen = function (filename) {
-        var fileContent = "";
-        fetch("resources/data.dat")
-            .then(function (res) { return res.text(); })
-            .then(function (text) {
-            console.log("File reading successful");
-            fileContent = text;
-        })
-            .catch(function (e) { return console.error(e); });
+        var fileContent = this.readFile(filename);
         var lines = fileContent.split('\n');
         var data = [];
+        console.log("Reading " + lines.length + " lines from the file.");
         lines.forEach(function (line) {
             var t = line.replace(/^DATA\s+/g, '');
-            data.push(t.split(', ').map(function (x) { return parseInt(x.trim()); }).join(','));
+            var data_item = t.split(', ');
+            console.log(data_item);
+            data.push(t.split(', ')); //.map(x => parseInt(x.trim())).join(','));
         });
         return data;
     };
