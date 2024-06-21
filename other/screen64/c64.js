@@ -1,6 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var fs = require("fs");
 var Commodore64 = /** @class */ (function () {
     function Commodore64() {
         this.blink = true;
@@ -69,27 +66,17 @@ var Commodore64 = /** @class */ (function () {
         console.log("blink = " + this.blink);
         requestAnimationFrame(function () { return _this.blinker(); });
     };
-    Commodore64.prototype.readFile = function (filename) {
-        try {
-            var data = fs.readFileSync('resources/data', 'utf8');
-            return data;
-        }
-        catch (err) {
-            console.error('Error reading file:', err);
-            return '';
-        }
-    };
     Commodore64.prototype.readScreen = function (filename) {
-        var fileContent = this.readFile(filename);
-        var lines = fileContent.split('\n');
-        var data = [];
-        console.log("Reading " + lines.length + " lines from the file.");
-        lines.forEach(function (line) {
-            var t = line.replace(/^DATA\s+/g, '');
-            var data_item = t.split(', ');
-            console.log(data_item);
-            data.push(t.split(', ')); //.map(x => parseInt(x.trim())).join(','));
-        });
+        var data = '';
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'http://localhost:3000/data', true);
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                data = JSON.parse(xhr.responseText);
+                console.log(data);
+            }
+        };
+        xhr.send();
         return data;
     };
     Commodore64.FPS = 2;
@@ -111,6 +98,6 @@ topBorderDiv.innerHTML = commodore64.generateBorder();
 bottomBorderDiv.innerHTML = commodore64.generateBorder();
 var screen2 = commodore64.readScreen("resources/data.dat");
 var row = document.getElementById('row7');
-screen2.forEach(function (line) { return row.innerHTML = line; });
+row.innerHTML = screen2;
 commodore64.initBlinker();
 commodore64.blinker();

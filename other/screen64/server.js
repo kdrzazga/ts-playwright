@@ -3,7 +3,7 @@ var http = require('http');
 var server = http.createServer(function (req, res) {
     if (req.method === 'GET' && req.url.startsWith('/data')) {
         console.log('Reading data..');
-        var asciiContent = readAscii('data.dat');
+        var asciiContent = readData('data.dat');
         res.statusCode = 200;
         res.setHeader('Content-Type', 'text/plain');
         res.end(asciiContent);
@@ -13,14 +13,15 @@ var server = http.createServer(function (req, res) {
         res.setHeader('Content-Type', 'text/plain');
         res.end('Server is up.');
     }
-    function readAscii(name) {
+    function readData(name) {
         try {
             var data = fs.readFileSync('resources/' + name, 'utf8');
-            return data;
+            var data2 = data.replace(/[A-Z ]+/g, '');
+            return data2;
         }
         catch (err) {
             console.error('Error reading file:', err);
-            return '';
+            return [];
         }
     }
 });

@@ -5,7 +5,7 @@ const server = http.createServer((req, res) => {
 
   if (req.method === 'GET' && req.url.startsWith('/data')) {
 	console.log('Reading data..');
-    const asciiContent = readAscii('data.dat');
+    const asciiContent = readData('data.dat');
 
     res.statusCode = 200;
     res.setHeader('Content-Type', 'text/plain');
@@ -17,14 +17,15 @@ const server = http.createServer((req, res) => {
    res.end('Server is up.');
   }
 
-  function readAscii(name) {
-    try {
-      const data = fs.readFileSync('resources/' + name, 'utf8');
-      return data;
-    } catch (err) {
-      console.error('Error reading file:', err);
-      return '';
-    }
+  function readData(name) {
+try {
+  const data = fs.readFileSync('resources/' + name, 'utf8');
+  const data2 = data.replace(/[A-Z ]+/g, '');
+  return data2;
+} catch (err) {
+  console.error('Error reading file:', err);
+  return [];
+}
   }
 });
 

@@ -1,5 +1,3 @@
-import * as fs from 'fs';
-
 class Commodore64 {
   static FPS = 2;
   static BLUE = "#352879";
@@ -85,35 +83,20 @@ class Commodore64 {
 	console.log("blink = " + this.blink);
     requestAnimationFrame(() => this.blinker());
   }
+
+
+  readScreen(filename: string): string {
   
-  readFile(filename: string){
-
-  try {
-    const data = fs.readFileSync('resources/data', 'utf8');
-    return data;
-  } catch (err) {
-    console.error('Error reading file:', err);
-    return '';
+	let data = '';
+	const xhr = new XMLHttpRequest();
+xhr.open('GET', 'http://localhost:3000/data', true);
+xhr.onload = function() {
+  if (xhr.status === 200) {
+	data = JSON.parse(xhr.responseText);
+    console.log(data);
   }
-  }
-
-  readScreen(filename: string): string[] {
-  
-    let fileContent = this.readFile(filename);
-
-	const lines = fileContent.split('\n');
-	let data = [];
-	
-	console.log("Reading " + lines.length + " lines from the file.");
-	
-	lines.forEach(line => {
-		let t = line.replace(/^DATA\s+/g, '');
-		let data_item =  t.split(', ');
-		console.log(data_item);
-		
-		data.push( t.split(', '));//.map(x => parseInt(x.trim())).join(','));
-	
-		});	
+};
+xhr.send();
 	
 	return data;
   }
@@ -136,8 +119,7 @@ bottomBorderDiv.innerHTML = commodore64.generateBorder();
 let screen2 = commodore64.readScreen("resources/data.dat");
 
 let row = document.getElementById('row7');
-screen2.forEach( (line) => row.innerHTML = line);
-
+row.innerHTML = screen2;
 
 commodore64.initBlinker();
 commodore64.blinker();
