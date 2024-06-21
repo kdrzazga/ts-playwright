@@ -66,14 +66,13 @@ var Commodore64 = /** @class */ (function () {
         console.log("blink = " + this.blink);
         requestAnimationFrame(function () { return _this.blinker(); });
     };
-    Commodore64.prototype.readScreen = function (filename) {
+    Commodore64.prototype.readScreen = function () {
         var data = '';
         var xhr = new XMLHttpRequest();
         xhr.open('GET', 'http://localhost:3000/data', true);
         xhr.onload = function () {
-            if (xhr.status === 200) {
+            if (xhr.status === 200 && xhr.readyState === 4) {
                 data = JSON.parse(xhr.responseText);
-                console.log(data);
             }
         };
         xhr.send();
@@ -96,7 +95,8 @@ var bottomBorderDiv = document.getElementById('bottom-border');
 div.innerHTML = html;
 topBorderDiv.innerHTML = commodore64.generateBorder();
 bottomBorderDiv.innerHTML = commodore64.generateBorder();
-var screen2 = commodore64.readScreen("resources/data.dat");
+var screen2 = commodore64.readScreen();
+console.log(screen2);
 var row = document.getElementById('row7');
 row.innerHTML = screen2;
 commodore64.initBlinker();
