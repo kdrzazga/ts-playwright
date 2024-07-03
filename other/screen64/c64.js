@@ -66,18 +66,6 @@ var Commodore64 = /** @class */ (function () {
         console.log("blink = " + this.blink);
         requestAnimationFrame(function () { return _this.blinker(); });
     };
-    Commodore64.prototype.readScreen = function () {
-        var data = '';
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'http://localhost:3000/data', true);
-        xhr.onload = function () {
-            if (xhr.status === 200 && xhr.readyState === 4) {
-                data = JSON.parse(xhr.responseText);
-            }
-        };
-        xhr.send();
-        return data;
-    };
     Commodore64.FPS = 2;
     Commodore64.BLUE = "#352879";
     Commodore64.LIGHTBLUE = "#6c5eb5";
@@ -95,9 +83,5 @@ var bottomBorderDiv = document.getElementById('bottom-border');
 div.innerHTML = html;
 topBorderDiv.innerHTML = commodore64.generateBorder();
 bottomBorderDiv.innerHTML = commodore64.generateBorder();
-var screen2 = commodore64.readScreen();
-console.log(screen2);
-var row = document.getElementById('row7');
-row.innerHTML = screen2;
 commodore64.initBlinker();
 commodore64.blinker();

@@ -83,20 +83,6 @@ class Commodore64 {
 	console.log("blink = " + this.blink);
     requestAnimationFrame(() => this.blinker());
   }
-
-
-	readScreen(): string {
-		let data = '';
-		const xhr = new XMLHttpRequest();
-		xhr.open('GET', 'http://localhost:3000/data', true);
-		xhr.onload = function() {
-			if (xhr.status === 200 && xhr.readyState === 4) {
-			data = JSON.parse(xhr.responseText);
-			}
-		};
-		xhr.send();
-		return data;
-	}
 }	
 
 let width = 800;
@@ -113,11 +99,6 @@ const bottomBorderDiv = document.getElementById('bottom-border');
 div.innerHTML = html;
 topBorderDiv.innerHTML = commodore64.generateBorder();
 bottomBorderDiv.innerHTML = commodore64.generateBorder();
-let screen2 = commodore64.readScreen();
-console.log(screen2);
-
-let row = document.getElementById('row7');
-row.innerHTML = screen2;
 
 commodore64.initBlinker();
 commodore64.blinker();
