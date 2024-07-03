@@ -46,12 +46,13 @@ function generateBoard(boardString: string): Tile[][] {
 function drawBoard(board){
 	 let html = '<table>';
 	 for (let i = 0; i < BOARD_HEIGHT; i++) {
-		html += '<tr>'
+		html += '<tr>';
 		for (let j = 0; j < BOARD_WIDTH; j++) {
-			html += '<td>'
-			html += '</td>'
+			html += '<td>';
+			html += '<img src=\'' + board[i][j].filePath + '\'></img>';
+			html += '</td>';
 		}
-		html += '</tr>'
+		html += '</tr>';
 	 }
 	 html += '</table>';
 	 let boardDiv = document.getElementById('board');

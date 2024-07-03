@@ -42,6 +42,7 @@ function drawBoard(board) {
         html += '<tr>';
         for (var j = 0; j < BOARD_WIDTH; j++) {
             html += '<td>';
+            html += '<img src=\'' + board[i][j].filePath + '\'></img>';
             html += '</td>';
         }
         html += '</tr>';
