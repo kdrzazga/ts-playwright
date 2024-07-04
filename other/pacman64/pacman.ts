@@ -1,8 +1,10 @@
 const BOARD_WIDTH = 16;
-const BOARD_HEIGHT = 4;
+const BOARD_HEIGHT = 12;
 
 enum TileType {
   WALL,
+  WALL2,
+  WALL3,
   PATH
 }
 
@@ -19,7 +21,10 @@ class Tile {
 	else if (type == TileType.PATH){
 		this.filePath = 'resources/path.png';
 	}
-	else this.filePath = '';
+	else if (type == TileType.WALL2){
+		this.filePath = 'resources/wall2.png';
+	}
+	else this.filePath = 'resources/wall3.png';
 	
     this.hasPill = hasPill;
   }
@@ -28,14 +33,18 @@ class Tile {
 function generateBoard(boardString: string): Tile[][] {
   const board: Tile[][] = [];
 
-  for (let i = 0; i < BOARD_HEIGHT; i++) {
-    board[i] = [];
-    for (let j = 0; j < BOARD_WIDTH; j++) {
-      const char = boardString[i * 2 + j];
+  for (let y = 0; y < BOARD_HEIGHT; y++) {
+    board[y] = [];
+    for (let x = 0; x < BOARD_WIDTH; x++) {
+      const char = boardString[y * BOARD_WIDTH + x];
       if (char == 'w') {
-        board[i].push(new Tile(TileType.WALL, false));
+        board[y].push(new Tile(TileType.WALL, false));
+      } else if (char == 'v') {
+        board[y].push(new Tile(TileType.WALL2, false));
+	  } else if (char == 'u') {
+        board[y].push(new Tile(TileType.WALL3, false));
       } else if (char == 'p') {
-        board[i].push(new Tile(TileType.PATH, true));
+        board[y].push(new Tile(TileType.PATH, true));
       }
     }
   }
@@ -45,11 +54,11 @@ function generateBoard(boardString: string): Tile[][] {
 
 function drawBoard(board){
 	 let html = '<table>';
-	 for (let i = 0; i < BOARD_HEIGHT; i++) {
+	 for (let y = 0; y < BOARD_HEIGHT; y++) {
 		html += '<tr>';
-		for (let j = 0; j < BOARD_WIDTH; j++) {
+		for (let x = 0; x < BOARD_WIDTH; x++) {
 			html += '<td>';
-			html += '<img src=\'' + board[i][j].filePath + '\'></img>';
+			html += '<img src=\'' + board[y][x].filePath + '\'></img>';
 			html += '</td>';
 		}
 		html += '</tr>';
@@ -62,9 +71,17 @@ function drawBoard(board){
 const boardString = 
 "wwwwwwwwwwwwwwww" +
 "wpppwpppppwpppww" +
-"wpwpwpwpwpwpwpww" +
-"wpppwpppppwpppww" +
-"";
+"wpvpwpupvpwpvpww" +
+"wpppppppvpppvppw" +
+"wwpvpupvvvpvvvpw" +
+"wppppuppvppppppw" +
+"wpupuuupvpvvvpww" +
+"wppppupppppppppw" +
+"wpuupppvpwpuuupw" +
+"wppupwpvpwppuppw" +
+"wwpppwpppwwpppww" +
+"wwwwwwwwwwwwwwww";
+
 const board = generateBoard(boardString);
 drawBoard(board);
 
