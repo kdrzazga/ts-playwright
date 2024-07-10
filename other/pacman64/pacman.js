@@ -1,24 +1,5 @@
 var BOARD_WIDTH = 16;
 var BOARD_HEIGHT = 12;
-var Pacman = /** @class */ (function () {
-    function Pacman(x, y) {
-        this.x = x;
-        this.y = y;
-        this.direction = 'L';
-    }
-    return Pacman;
-}());
-var Game = /** @class */ (function () {
-    function Game() {
-        this.pacman = new Pacman(8, 7);
-        this.board = new Board();
-    }
-    Game.prototype.start = function () {
-        this.board.generate();
-        this.board.draw();
-    };
-    return Game;
-}());
 var TileType;
 (function (TileType) {
     TileType[TileType["WALL"] = 0] = "WALL";
@@ -47,6 +28,29 @@ var Tile = /** @class */ (function () {
         this.hasPill = hasPill;
     }
     return Tile;
+}());
+var Pacman = /** @class */ (function () {
+    function Pacman(x, y) {
+        this.x = x;
+        this.y = y;
+        this.direction = 'L';
+    }
+    Pacman.prototype.draw = function () {
+        //TODO
+    };
+    return Pacman;
+}());
+var Game = /** @class */ (function () {
+    function Game() {
+        this.pacman = new Pacman(8, 7);
+        this.board = new Board();
+    }
+    Game.prototype.start = function () {
+        this.board.generate();
+        this.board.draw();
+        this.pacman.draw();
+    };
+    return Game;
 }());
 var Board = /** @class */ (function () {
     function Board() {
@@ -96,7 +100,7 @@ var Board = /** @class */ (function () {
         for (var i = 0; i < BOARD_HEIGHT; i++) {
             html += '<tr>';
             for (var j = 0; j < BOARD_WIDTH; j++) {
-                html += '<td>';
+                html += '<td x="' + String(j) + '" y = "' + String(i) + '">';
                 html += '<img src=\'' + this.fields[i][j].filePath + '\'></img>';
                 html += '</td>';
             }

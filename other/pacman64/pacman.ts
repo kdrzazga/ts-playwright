@@ -1,33 +1,6 @@
 const BOARD_WIDTH = 16;
 const BOARD_HEIGHT = 12;
 
-class Pacman{
-	x: number;
-	y: number;
-	direction: string;
-	
-	constructor(x: number, y: number){
-		this.x = x;
-		this.y = y;
-		this.direction = 'L';
-	}
-}
-
-class Game {
-	pacman: Pacman;
-	board: Board;
-	
-	constructor(){
-		this.pacman = new Pacman(8, 7);
-		this.board = new Board();
-	}
-	
-	start(){
-		this.board.generate();
-		this.board.draw();
-	}
-}
-
 enum TileType {
   WALL,
   WALL2,
@@ -42,7 +15,7 @@ class Tile {
   hasPill: boolean;
 
   constructor(type: TileType, hasPill: boolean) {
-    this.type = type;
+	this.type = type;
 	if (type == TileType.WALL){
 		this.filePath = 'resources/wall.png';
 	}
@@ -59,6 +32,38 @@ class Tile {
 
     this.hasPill = hasPill;
   }
+}
+
+class Pacman{
+	x: number;
+	y: number;
+	direction: string;
+	
+	constructor(x: number, y: number){
+		this.x = x;
+		this.y = y;
+		this.direction = 'L';
+	}
+	
+	draw(){
+		//TODO
+	}
+}
+
+class Game {
+	pacman: Pacman;
+	board: Board;
+	
+	constructor(){
+		this.pacman = new Pacman(8, 7);
+		this.board = new Board();
+	}
+
+	start(){
+		this.board.generate();
+		this.board.draw();
+		this.pacman.draw();
+	}
 }
 
 class Board{
@@ -112,7 +117,7 @@ class Board{
 		for (let i = 0; i < BOARD_HEIGHT; i++) {
 			html += '<tr>';
 			for (let j = 0; j < BOARD_WIDTH; j++) {
-				html += '<td>';
+				html += '<td x="' + String(j) + '" y = "' + String(i) + '">';
 				html += '<img src=\'' + this.fields[i][j].filePath + '\'></img>';
 				html += '</td>';
 			}
@@ -122,7 +127,6 @@ class Board{
 		let boardDiv = document.getElementById('board');
 		boardDiv.innerHTML = html;
 	}
-	
 }
 
 let game = new Game();
