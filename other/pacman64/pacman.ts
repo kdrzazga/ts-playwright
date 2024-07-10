@@ -3,6 +3,9 @@ const BOARD_HEIGHT = 12;
 
 enum TileType {
   WALL,
+  WALL2,
+  WALL3,
+  WALL4,
   PATH
 }
 
@@ -19,8 +22,14 @@ class Tile {
 	else if (type == TileType.PATH){
 		this.filePath = 'resources/path.png';
 	}
-	else this.filePath = '';
-	
+	else if (type == TileType.WALL2){
+		this.filePath = 'resources/wall2.png';
+	}
+	else if (type == TileType.WALL3){
+		this.filePath = 'resources/wall3.png';
+	}
+	else this.filePath = 'resources/wall4.png';
+
     this.hasPill = hasPill;
   }
 }
@@ -34,6 +43,12 @@ function generateBoard(boardString: string): Tile[][] {
       const char = boardString[index];
       if (char == 'w') {
         board[i].push(new Tile(TileType.WALL, false));
+      } else if (char == 'v') {
+        board[i].push(new Tile(TileType.WALL2, false));
+	  } else if (char == 'u') {
+        board[i].push(new Tile(TileType.WALL3, false));
+	  } else if (char == 'x') {
+        board[i].push(new Tile(TileType.WALL4, false));
       } else if (char == 'p') {
         board[i].push(new Tile(TileType.PATH, true));
       }
@@ -64,14 +79,14 @@ function drawBoard(board){
 const boardString = 
 "wwwwwwwwwwwwwwww" + //1
 "wpppwpppppwpppww" + //2
-"wpwpwpwpwpwpwpww" + //3
-"wpppppppwpppwppw" + //4
-"wwpwpwpwwwpwwwpw" + //5
-"wppppwppwppppppw" + //6
-"wpwpwwwpwpwwwpww" + //7
-"wppppwpppppppppw" + //8
-"wpwwpppwpwpwwwpw" + //9
-"wppwpwpwpwppwppw" + //10
+"wpxpwpupvpwpvpww" + //3
+"wpppppppvpppvppw" + //4
+"wwpvpxpvvvpvvvpw" + //5
+"wppppxppvppppppw" + //6
+"wpupxxxpvpxxxpww" + //7
+"wppppxpppppppppw" + //8
+"wpvvpppxpwpuuupw" + //9
+"wppvpwpxpwppuppw" + //10
 "wwpppwpppwwpppww" + //11
 "wwwwwwwwwwwwwwww" + //12
 "";
