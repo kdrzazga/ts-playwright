@@ -1,5 +1,24 @@
 var BOARD_WIDTH = 16;
 var BOARD_HEIGHT = 12;
+var Pacman = /** @class */ (function () {
+    function Pacman(x, y) {
+        this.x = x;
+        this.y = y;
+        this.direction = 'L';
+    }
+    return Pacman;
+}());
+var Game = /** @class */ (function () {
+    function Game() {
+        this.pacman = new Pacman(8, 7);
+        this.board = new Board();
+    }
+    Game.prototype.start = function () {
+        this.board.generate();
+        this.board.draw();
+    };
+    return Game;
+}());
 var TileType;
 (function (TileType) {
     TileType[TileType["WALL"] = 0] = "WALL";
@@ -29,61 +48,65 @@ var Tile = /** @class */ (function () {
     }
     return Tile;
 }());
-function generateBoard(boardString) {
-    var board = [];
-    var index = 0;
-    for (var i = 0; i < BOARD_HEIGHT; i++) {
-        board[i] = [];
-        for (var j = 0; j < BOARD_WIDTH; j++) {
-            var char = boardString[index];
-            if (char == 'w') {
-                board[i].push(new Tile(TileType.WALL, false));
-            }
-            else if (char == 'v') {
-                board[i].push(new Tile(TileType.WALL2, false));
-            }
-            else if (char == 'u') {
-                board[i].push(new Tile(TileType.WALL3, false));
-            }
-            else if (char == 'x') {
-                board[i].push(new Tile(TileType.WALL4, false));
-            }
-            else if (char == 'p') {
-                board[i].push(new Tile(TileType.PATH, true));
-            }
-            index++;
-        }
+var Board = /** @class */ (function () {
+    function Board() {
+        this.boardString =
+            "wwwwwwwwwwwwwwww" + //1
+                "wpppwpppppwpppww" + //2
+                "wpxpwpupvpwpvpww" + //3
+                "wpppppppvpppvppw" + //4
+                "wwpvpxpvvvpvvvpw" + //5
+                "wppppxppvppppppw" + //6
+                "wpupxxxpvpxxxpww" + //7
+                "wppppxpppppppppw" + //8
+                "wpvvpppxpwpuuupw" + //9
+                "wppvpwpxpwppuppw" + //10
+                "wwpppwpppwwpppww" + //11
+                "wwwwwwwwwwwwwwww" + //12
+                "";
     }
-    return board;
-}
-function drawBoard(board) {
-    var html = '<table>';
-    for (var i = 0; i < BOARD_HEIGHT; i++) {
-        html += '<tr>';
-        for (var j = 0; j < BOARD_WIDTH; j++) {
-            html += '<td>';
-            html += '<img src=\'' + board[i][j].filePath + '\'></img>';
-            html += '</td>';
+    Board.prototype.generate = function () {
+        this.fields = [];
+        var index = 0;
+        for (var i = 0; i < BOARD_HEIGHT; i++) {
+            this.fields[i] = [];
+            for (var j = 0; j < BOARD_WIDTH; j++) {
+                var char = this.boardString[index];
+                if (char == 'w') {
+                    this.fields[i].push(new Tile(TileType.WALL, false));
+                }
+                else if (char == 'v') {
+                    this.fields[i].push(new Tile(TileType.WALL2, false));
+                }
+                else if (char == 'u') {
+                    this.fields[i].push(new Tile(TileType.WALL3, false));
+                }
+                else if (char == 'x') {
+                    this.fields[i].push(new Tile(TileType.WALL4, false));
+                }
+                else if (char == 'p') {
+                    this.fields[i].push(new Tile(TileType.PATH, true));
+                }
+                index++;
+            }
         }
-        html += '</tr>';
-    }
-    html += '</table>';
-    var boardDiv = document.getElementById('board');
-    boardDiv.innerHTML = html;
-}
-var boardString = "wwwwwwwwwwwwwwww" + //1
-    "wpppwpppppwpppww" + //2
-    "wpxpwpupvpwpvpww" + //3
-    "wpppppppvpppvppw" + //4
-    "wwpvpxpvvvpvvvpw" + //5
-    "wppppxppvppppppw" + //6
-    "wpupxxxpvpxxxpww" + //7
-    "wppppxpppppppppw" + //8
-    "wpvvpppxpwpuuupw" + //9
-    "wppvpwpxpwppuppw" + //10
-    "wwpppwpppwwpppww" + //11
-    "wwwwwwwwwwwwwwww" + //12
-    "";
-var board = generateBoard(boardString);
-drawBoard(board);
-console.log(board);
+    };
+    Board.prototype.draw = function () {
+        var html = '<table style="border-spacing: 0px;">';
+        for (var i = 0; i < BOARD_HEIGHT; i++) {
+            html += '<tr>';
+            for (var j = 0; j < BOARD_WIDTH; j++) {
+                html += '<td>';
+                html += '<img src=\'' + this.fields[i][j].filePath + '\'></img>';
+                html += '</td>';
+            }
+            html += '</tr>';
+        }
+        html += '</table>';
+        var boardDiv = document.getElementById('board');
+        boardDiv.innerHTML = html;
+    };
+    return Board;
+}());
+var game = new Game();
+game.start();
