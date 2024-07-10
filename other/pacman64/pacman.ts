@@ -1,5 +1,5 @@
 const BOARD_WIDTH = 16;
-const BOARD_HEIGHT = 4;
+const BOARD_HEIGHT = 12;
 
 enum TileType {
   WALL,
@@ -27,16 +27,18 @@ class Tile {
 
 function generateBoard(boardString: string): Tile[][] {
   const board: Tile[][] = [];
-
+  var index = 0;
   for (let i = 0; i < BOARD_HEIGHT; i++) {
     board[i] = [];
     for (let j = 0; j < BOARD_WIDTH; j++) {
-      const char = boardString[i * 2 + j];
+      const char = boardString[index];
       if (char == 'w') {
         board[i].push(new Tile(TileType.WALL, false));
       } else if (char == 'p') {
         board[i].push(new Tile(TileType.PATH, true));
       }
+	  
+	  index++;
     }
   }
 
@@ -60,10 +62,18 @@ function drawBoard(board){
 }
 
 const boardString = 
-"wwwwwwwwwwwwwwww" +
-"wpppwpppppwpppww" +
-"wpwpwpwpwpwpwpww" +
-"wpppwpppppwpppww" +
+"wwwwwwwwwwwwwwww" + //1
+"wpppwpppppwpppww" + //2
+"wpwpwpwpwpwpwpww" + //3
+"wpppppppwpppwppw" + //4
+"wwpwpwpwwwpwwwpw" + //5
+"wppppwppwppppppw" + //6
+"wpwpwwwpwpwwwpww" + //7
+"wppppwpppppppppw" + //8
+"wpwwpppwpwpwwwpw" + //9
+"wppwpwpwpwppwppw" + //10
+"wwpppwpppwwpppww" + //11
+"wwwwwwwwwwwwwwww" + //12
 "";
 const board = generateBoard(boardString);
 drawBoard(board);
