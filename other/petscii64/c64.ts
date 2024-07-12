@@ -84,7 +84,13 @@ class Commodore64 {
 	const currentTime = performance.now();
 	const timeSinceLastRender = currentTime - this.lastRenderTime;
 	
-	if (timeSinceLastRender >= 1000 / Commodore64.FPS) {
+	this.blinkCursor(currentTime, timeSinceLastRender)
+
+    requestAnimationFrame(() => this.timeLoop());	
+  }
+  
+  blinkCursor(currentTime, timeSinceLastRender){
+ 	if (timeSinceLastRender >= 1000 / Commodore64.FPS) {
 	    this.ctx.clearRect(0, 0, this.cursorCanvas.width, this.cursorCanvas.height);
         if (this.blink) {
           this.ctx.fillStyle = Commodore64.LIGHTBLUE;
@@ -98,11 +104,13 @@ class Commodore64 {
 		console.log("new DELAY = ", this.delay);
 	}
 	
-	console.log("blink = " + this.blink);
-    requestAnimationFrame(() => this.timeLoop());	
+	console.log("blink = " + this.blink); 
   }
  
   frame(){
+	let row = [];
+	let elements = [];
+	
 	let topRow = document.getElementById('row7');	
 	topRow.textContent = this.createLongFrame(Commodore64.TOP_LEFT_S, Commodore64.TOP_RIGHT_S);
 	
@@ -110,46 +118,59 @@ class Commodore64 {
 	frameRow.textContent = String.fromCharCode(Commodore64.VERT_S) + String.fromCharCode(Commodore64.SPACE).repeat(16) + "PACMAN" + String.fromCharCode(Commodore64.SPACE).repeat(16) + String.fromCharCode(Commodore64.VERT_S);
 	
 	//Board starts here
-	frameRow = document.getElementById('row9');
-	frameRow.textContent = String.fromCharCode(Commodore64.VERT_RIGHT_S) + String.fromCharCode(Commodore64.HORIZ_S).repeat(8) + String.fromCharCode(Commodore64.HORIZ_DOWN_S) + String.fromCharCode(Commodore64.HORIZ_S).repeat(4) +  String.fromCharCode(Commodore64.HORIZ_DOWN_S) + String.fromCharCode(Commodore64.HORIZ_S).repeat(8) +String.fromCharCode(Commodore64.VERT_LEFT_S);
+	elements = [  [1, Commodore64.VERT_RIGHT_S],  [8, Commodore64.HORIZ_S],  [1, Commodore64.HORIZ_DOWN_S],  [4, Commodore64.HORIZ_S],
+		[1, Commodore64.HORIZ_DOWN_S],  [12, Commodore64.HORIZ_S],  [1, Commodore64.HORIZ_DOWN_S],  [4, Commodore64.HORIZ_S], [1, Commodore64.HORIZ_DOWN_S], [6, Commodore64.HORIZ_S], [1, Commodore64.VERT_LEFT_S]];
+	this.generateRow('row9', elements);
+		
+	elements = [  [1, Commodore64.VERT_S],  [8, Commodore64.SPACE],  [1, Commodore64.VERT_S],  [4, Commodore64.SPACE],
+		[1, Commodore64.VERT_S],  [2, Commodore64.SPACE],  [10, Commodore64.SPACE],  [1, Commodore64.VERT_S], [4, Commodore64.SPACE], [1, Commodore64.VERT_S], [6, Commodore64.SPACE], [1, Commodore64.VERT_S] ];
+	this.generateRow('row10', elements);
 	
-	frameRow = document.getElementById('row10');
-	frameRow.textContent = String.fromCharCode(Commodore64.VERT_S) + String.fromCharCode(Commodore64.SPACE).repeat(8) + String.fromCharCode(Commodore64.VERT_S) + String.fromCharCode(Commodore64.SPACE).repeat(4) + String.fromCharCode(Commodore64.VERT_S) + String.fromCharCode(Commodore64.SPACE).repeat(2) + String.fromCharCode(Commodore64.SPACE).repeat(8) + String.fromCharCode(Commodore64.VERT_S) + String.fromCharCode(Commodore64.VERT_LEFT_S);
+	elements = [ [1, Commodore64.VERT_S], [2, Commodore64.SPACE], [1, Commodore64.TOP_LEFT_S], [2, Commodore64.HORIZ_S], [1, Commodore64.TOP_RIGHT_S], [2, Commodore64.SPACE], [1, Commodore64.VERT_S], [4, Commodore64.SPACE], [1, Commodore64.VERT_S], [2, Commodore64.SPACE], [1, Commodore64.TOP_LEFT_S], [6, Commodore64.HORIZ_S], [1, Commodore64.TOP_RIGHT_S], [2, Commodore64.SPACE], [1, Commodore64.VERT_S],[4, Commodore64.SPACE], [1, Commodore64.VERT_S], [2, Commodore64.SPACE], [1, Commodore64.TOP_LEFT_S], [1, Commodore64.TOP_RIGHT_S],  [2, Commodore64.SPACE], [1, Commodore64.VERT_S]];
+	this.generateRow('row11', elements);
 	
-	frameRow = document.getElementById('row11');
-	frameRow.textContent = String.fromCharCode(Commodore64.VERT_S) + String.fromCharCode(Commodore64.SPACE).repeat(2) + String.fromCharCode(Commodore64.TOP_LEFT_S) + String.fromCharCode(Commodore64.HORIZ_S).repeat(2) + String.fromCharCode(Commodore64.TOP_RIGHT_S) + String.fromCharCode(Commodore64.SPACE).repeat(2) + String.fromCharCode(Commodore64.VERT_S) + String.fromCharCode(Commodore64.SPACE).repeat(4) + String.fromCharCode(Commodore64.VERT_S) + String.fromCharCode(Commodore64.SPACE).repeat(2) + String.fromCharCode(Commodore64.SPACE).repeat(8) + String.fromCharCode(Commodore64.VERT_S) + String.fromCharCode(Commodore64.VERT_LEFT_S);
+	elements = [ [1, Commodore64.VERT_S], [2, Commodore64.SPACE], [1, Commodore64.VERT_S], [2, Commodore64.SPACE], [1, Commodore64.VERT_S], [2, Commodore64.SPACE], [1, Commodore64.VERT_S], [4, Commodore64.SPACE], [1, Commodore64.VERT_S], [2, Commodore64.SPACE], [1, Commodore64.VERT_S],[6, Commodore64.SPACE], [1, Commodore64.VERT_S], [2, Commodore64.SPACE], [1, Commodore64.VERT_S], [4, Commodore64.SPACE],[1, Commodore64.VERT_S], [2, Commodore64.SPACE], [2, Commodore64.VERT_S], [2, Commodore64.SPACE], [1, Commodore64.VERT_S]];
+	this.generateRow('row12', elements);
 	
-	frameRow = document.getElementById('row12');
-	frameRow.textContent = String.fromCharCode(Commodore64.VERT_S) + String.fromCharCode(Commodore64.SPACE).repeat(2) + String.fromCharCode(Commodore64.VERT_S) + String.fromCharCode(Commodore64.SPACE).repeat(2) + String.fromCharCode(Commodore64.VERT_S) + String.fromCharCode(Commodore64.SPACE).repeat(2) + String.fromCharCode(Commodore64.VERT_S) + String.fromCharCode(Commodore64.SPACE).repeat(4) + String.fromCharCode(Commodore64.VERT_S)+ String.fromCharCode(Commodore64.SPACE).repeat(2) + String.fromCharCode(Commodore64.SPACE).repeat(8) + String.fromCharCode(Commodore64.VERT_S) + String.fromCharCode(Commodore64.VERT_LEFT_S);
-	
-	frameRow = document.getElementById('row13');
-	frameRow.textContent = String.fromCharCode(Commodore64.VERT_S) + String.fromCharCode(Commodore64.SPACE).repeat(2) + String.fromCharCode(Commodore64.BOTTOM_LEFT_S) + String.fromCharCode(Commodore64.HORIZ_S).repeat(2) + String.fromCharCode(Commodore64.BOTTOM_RIGHT_S) + String.fromCharCode(Commodore64.SPACE).repeat(2) + String.fromCharCode(Commodore64.BOTTOM_LEFT_S) + String.fromCharCode(Commodore64.HORIZ_S).repeat(4) + String.fromCharCode(Commodore64.BOTTOM_RIGHT_S) + String.fromCharCode(Commodore64.SPACE).repeat(2) + String.fromCharCode(Commodore64.VERT_LEFT_S);
+	elements = [ [1, Commodore64.VERT_S], [2, Commodore64.SPACE], [1, Commodore64.BOTTOM_LEFT_S], [2, Commodore64.HORIZ_S], [1, Commodore64.BOTTOM_RIGHT_S], [2, Commodore64.SPACE], [1, Commodore64.BOTTOM_LEFT_S], [4, Commodore64.HORIZ_S], [1, Commodore64.BOTTOM_RIGHT_S], [2, Commodore64.SPACE], [1, Commodore64.BOTTOM_LEFT_S], [6, Commodore64.HORIZ_S], [1, Commodore64.BOTTOM_RIGHT_S], [2, Commodore64.SPACE], [1, Commodore64.BOTTOM_LEFT_S], [4, Commodore64.HORIZ_S], [1, Commodore64.BOTTOM_RIGHT_S], [2, Commodore64.SPACE], [1, Commodore64.BOTTOM_LEFT_S], [1, Commodore64.BOTTOM_RIGHT_S], [2, Commodore64.SPACE], [1, Commodore64.VERT_S]];
+	this.generateRow('row13', elements);
 	
 	frameRow = document.getElementById('row14');
-	frameRow.textContent = String.fromCharCode(Commodore64.VERT_S)
+	frameRow.innerHTML = String.fromCharCode(Commodore64.VERT_S) 
+		+ '&nbsp</td>'
+		+ '<td width = "10%"></td>'	
+		+ '<td width = "80%"><img src = "resources/pm.png"></img></td>'
+		+ '<td>&nbsp</td>'	
+		+ String.fromCharCode(Commodore64.VERT_S);
 	
-	frameRow = document.getElementById('row15');
-	frameRow.textContent = String.fromCharCode(Commodore64.VERT_S)
+	elements = [ [1, Commodore64.VERT_S]];
+	this.generateRow('row15', elements);
 	
-	frameRow = document.getElementById('row16');
-	frameRow.textContent = String.fromCharCode(Commodore64.VERT_S)
+	elements = [ [1, Commodore64.VERT_S]];
+	this.generateRow('row16', elements);
 	
-	frameRow = document.getElementById('row17');
-	frameRow.textContent = String.fromCharCode(Commodore64.VERT_S)
+	elements = [ [1, Commodore64.VERT_S]];
+	this.generateRow('row17', elements);
 	
-	frameRow = document.getElementById('row18');
-	frameRow.textContent = String.fromCharCode(Commodore64.VERT_S)
+	elements = [ [1, Commodore64.VERT_S]];
+	this.generateRow('row18', elements);
 	
-	frameRow = document.getElementById('row19');
-	frameRow.textContent = String.fromCharCode(Commodore64.VERT_S)
+	elements = [ [1, Commodore64.VERT_S]];
+	this.generateRow('row19', elements);
 	
-	frameRow = document.getElementById('row20');
-	frameRow.textContent = String.fromCharCode(Commodore64.VERT_S)
-	
+	elements = [ [1, Commodore64.VERT_S]];
+	this.generateRow('row20', elements);
 	
 	let bottomRow = document.getElementById('row21');	
 	bottomRow.textContent = this.createLongFrame(Commodore64.BOTTOM_LEFT_S, Commodore64.BOTTOM_RIGHT_S);
   }
+  
+  private  generateRow(id, elements) {
+    let frameRow = document.getElementById(id);
+    let row = [];
+    elements.forEach(([count, charCode]) => row.push(String.fromCharCode(charCode).repeat(count)));
+    frameRow.textContent = row.join('');
+}
   
   private createLongFrame(endSign1, endSign2){
 	let topLeft = [endSign1]
