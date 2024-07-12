@@ -10,7 +10,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
 var Commodore64 = /** @class */ (function () {
     function Commodore64(delay) {
         this.blink = true;
-        this.ballonDirection = 1;
+        this.pacmanPos = 30;
         this.tableContent = [
             "&nbsp",
             "<center>    &nbsp**** COMMODORE 64 BASIC V2 ****&nbsp    </center>",
@@ -63,6 +63,7 @@ var Commodore64 = /** @class */ (function () {
         var currentTime = performance.now();
         var timeSinceLastRender = currentTime - this.lastRenderTime;
         this.blinkCursor(currentTime, timeSinceLastRender);
+        this.movePacman();
         requestAnimationFrame(function () { return _this.timeLoop(); });
     };
     Commodore64.prototype.blinkCursor = function (currentTime, timeSinceLastRender) {
@@ -77,9 +78,19 @@ var Commodore64 = /** @class */ (function () {
             this.ctx.fillRect(0, 0, this.cursorCanvas.width, this.cursorCanvas.height);
             this.blink = !this.blink;
             this.lastRenderTime = currentTime;
-            console.log("new DELAY = ", this.delay);
         }
         console.log("blink = " + this.blink);
+    };
+    Commodore64.prototype.movePacman = function () {
+        var pacmanCell = document.getElementById('pacman');
+        var pacman = document.getElementById('pacman');
+        pacman.style.marginLeft = new String(this.pacmanPos) + 'px';
+        this.pacmanPos += 2;
+        if (this.pacmanPos > 500) {
+            this.pacmanPos = 30;
+        }
+        console.log("pacman pos = ", this.pacmanPos);
+        //pacmanCell.innerHTML = '';
     };
     Commodore64.prototype.frame = function () {
         var row = [];
@@ -105,7 +116,7 @@ var Commodore64 = /** @class */ (function () {
         frameRow.innerHTML = String.fromCharCode(Commodore64.VERT_S)
             + '&nbsp</td>'
             + '<td width = "10%"></td>'
-            + '<td width = "80%"><img src = "resources/pm.png"></img></td>'
+            + '<td width = "80%"><img id = "pacman" src = "resources/pm.png" style = "margin-left : 50px"></img></td>'
             + '<td>&nbsp</td>'
             + String.fromCharCode(Commodore64.VERT_S);
         elements = [[1, Commodore64.VERT_S]];

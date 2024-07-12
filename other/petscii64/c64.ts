@@ -24,7 +24,7 @@ class Commodore64 {
   private cursorContainer;
   private ctx;
   private delay;
-  private ballonDirection = 1;
+  private pacmanPos = 30;
 
   constructor(delay) {
     this.tableContent = [
@@ -85,11 +85,12 @@ class Commodore64 {
 	const timeSinceLastRender = currentTime - this.lastRenderTime;
 	
 	this.blinkCursor(currentTime, timeSinceLastRender)
+	this.movePacman();
 
     requestAnimationFrame(() => this.timeLoop());	
   }
   
-  blinkCursor(currentTime, timeSinceLastRender){
+  private blinkCursor(currentTime, timeSinceLastRender){
  	if (timeSinceLastRender >= 1000 / Commodore64.FPS) {
 	    this.ctx.clearRect(0, 0, this.cursorCanvas.width, this.cursorCanvas.height);
         if (this.blink) {
@@ -101,10 +102,23 @@ class Commodore64 {
         this.ctx.fillRect(0, 0, this.cursorCanvas.width, this.cursorCanvas.height);
 		this.blink = !this.blink;
 		this.lastRenderTime = currentTime;
-		console.log("new DELAY = ", this.delay);
 	}
 	
 	console.log("blink = " + this.blink); 
+  }
+ 
+  private movePacman(){
+	let pacmanCell = document.getElementById('pacman');
+	
+	const pacman = document.getElementById('pacman');
+	pacman.style.marginLeft = new String(this.pacmanPos) + 'px';
+	this.pacmanPos += 2;
+	
+	if (this.pacmanPos > 500){
+			this.pacmanPos = 30;
+	}
+	console.log("pacman pos = ", this.pacmanPos);
+	//pacmanCell.innerHTML = '';
   }
  
   frame(){
@@ -139,7 +153,7 @@ class Commodore64 {
 	frameRow.innerHTML = String.fromCharCode(Commodore64.VERT_S) 
 		+ '&nbsp</td>'
 		+ '<td width = "10%"></td>'	
-		+ '<td width = "80%"><img src = "resources/pm.png"></img></td>'
+		+ '<td width = "80%"><img id = "pacman" src = "resources/pm.png" style = "margin-left : 50px"></img></td>'
 		+ '<td>&nbsp</td>'	
 		+ String.fromCharCode(Commodore64.VERT_S);
 	
