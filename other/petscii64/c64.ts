@@ -13,6 +13,9 @@ class Commodore64 {
   static CROSS_S = 197;
   static BOTTOM_RIGHT_S = 217;
   static TOP_LEFT_S = 218;
+  static SPACE = 160;
+  static LOWER_HALF_BLOCK = 0x2585;
+  static BLOCK = 0xdb;
 
   private tableContent: string[];
   private blink = true;
@@ -103,6 +106,47 @@ class Commodore64 {
 	let topRow = document.getElementById('row7');	
 	topRow.textContent = this.createLongFrame(Commodore64.TOP_LEFT_S, Commodore64.TOP_RIGHT_S);
 	
+	let frameRow = document.getElementById('row8');
+	frameRow.textContent = String.fromCharCode(Commodore64.VERT_S) + String.fromCharCode(Commodore64.SPACE).repeat(16) + "PACMAN" + String.fromCharCode(Commodore64.SPACE).repeat(16) + String.fromCharCode(Commodore64.VERT_S);
+	
+	//Board starts here
+	frameRow = document.getElementById('row9');
+	frameRow.textContent = String.fromCharCode(Commodore64.VERT_RIGHT_S) + String.fromCharCode(Commodore64.HORIZ_S).repeat(13)  + String.fromCharCode(Commodore64.LOWER_HALF_BLOCK).repeat(3) + String.fromCharCode(Commodore64.VERT_LEFT_S);
+	
+	frameRow = document.getElementById('row10');
+	frameRow.textContent = String.fromCharCode(Commodore64.VERT_S) + String.fromCharCode(Commodore64.SPACE).repeat(13) + String.fromCharCode(Commodore64.BLOCK).repeat(3) + String.fromCharCode(Commodore64.VERT_LEFT_S);
+	
+	frameRow = document.getElementById('row11');
+	frameRow.textContent = String.fromCharCode(Commodore64.VERT_S) + String.fromCharCode(Commodore64.SPACE).repeat(2) + String.fromCharCode(Commodore64.TOP_LEFT_S) + String.fromCharCode(Commodore64.HORIZ_S).repeat(2) + String.fromCharCode(Commodore64.TOP_RIGHT_S) + String.fromCharCode(Commodore64.SPACE).repeat(2) + String.fromCharCode(Commodore64.VERT_S) + String.fromCharCode(Commodore64.VERT_LEFT_S);
+	
+	frameRow = document.getElementById('row12');
+	frameRow.textContent = String.fromCharCode(Commodore64.VERT_S) + String.fromCharCode(Commodore64.SPACE).repeat(2) + String.fromCharCode(Commodore64.VERT_S) + String.fromCharCode(Commodore64.SPACE).repeat(2) + String.fromCharCode(Commodore64.VERT_S) + String.fromCharCode(Commodore64.SPACE).repeat(2) + String.fromCharCode(Commodore64.VERT_S) + String.fromCharCode(Commodore64.VERT_LEFT_S);
+	
+	frameRow = document.getElementById('row13');
+	frameRow.textContent = String.fromCharCode(Commodore64.VERT_S) + String.fromCharCode(Commodore64.SPACE).repeat(2) + String.fromCharCode(Commodore64.BOTTOM_LEFT_S) + String.fromCharCode(Commodore64.HORIZ_S).repeat(2) + String.fromCharCode(Commodore64.BOTTOM_RIGHT_S) + String.fromCharCode(Commodore64.SPACE).repeat(2) + String.fromCharCode(Commodore64.VERT_S) + String.fromCharCode(Commodore64.VERT_LEFT_S);
+	
+	frameRow = document.getElementById('row14');
+	frameRow.textContent = String.fromCharCode(Commodore64.VERT_S)
+	
+	frameRow = document.getElementById('row15');
+	frameRow.textContent = String.fromCharCode(Commodore64.VERT_S)
+	
+	frameRow = document.getElementById('row16');
+	frameRow.textContent = String.fromCharCode(Commodore64.VERT_S)
+	
+	frameRow = document.getElementById('row17');
+	frameRow.textContent = String.fromCharCode(Commodore64.VERT_S)
+	
+	frameRow = document.getElementById('row18');
+	frameRow.textContent = String.fromCharCode(Commodore64.VERT_S)
+	
+	frameRow = document.getElementById('row19');
+	frameRow.textContent = String.fromCharCode(Commodore64.VERT_S)
+	
+	frameRow = document.getElementById('row20');
+	frameRow.textContent = String.fromCharCode(Commodore64.VERT_S)
+	
+	
 	let bottomRow = document.getElementById('row21');	
 	bottomRow.textContent = this.createLongFrame(Commodore64.BOTTOM_LEFT_S, Commodore64.BOTTOM_RIGHT_S);
   }
@@ -127,7 +171,7 @@ class Commodore64 {
 
 	return longHorizLine;
   }
-
+	
 }
 
 let width = 800;

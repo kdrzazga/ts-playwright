@@ -81,6 +81,33 @@ var Commodore64 = /** @class */ (function () {
     Commodore64.prototype.frame = function () {
         var topRow = document.getElementById('row7');
         topRow.textContent = this.createLongFrame(Commodore64.TOP_LEFT_S, Commodore64.TOP_RIGHT_S);
+        var frameRow = document.getElementById('row8');
+        frameRow.textContent = String.fromCharCode(Commodore64.VERT_S) + String.fromCharCode(Commodore64.SPACE).repeat(16) + "PACMAN" + String.fromCharCode(Commodore64.SPACE).repeat(16) + String.fromCharCode(Commodore64.VERT_S);
+        //Board starts here
+        frameRow = document.getElementById('row9');
+        frameRow.textContent = String.fromCharCode(Commodore64.VERT_RIGHT_S) + String.fromCharCode(Commodore64.HORIZ_S).repeat(13) + String.fromCharCode(Commodore64.LOWER_HALF_BLOCK).repeat(3) + String.fromCharCode(Commodore64.VERT_LEFT_S);
+        frameRow = document.getElementById('row10');
+        frameRow.textContent = String.fromCharCode(Commodore64.VERT_S) + String.fromCharCode(Commodore64.SPACE).repeat(13) + String.fromCharCode(Commodore64.BLOCK).repeat(3) + String.fromCharCode(Commodore64.VERT_LEFT_S);
+        frameRow = document.getElementById('row11');
+        frameRow.textContent = String.fromCharCode(Commodore64.VERT_S) + String.fromCharCode(Commodore64.SPACE).repeat(2) + String.fromCharCode(Commodore64.TOP_LEFT_S) + String.fromCharCode(Commodore64.HORIZ_S).repeat(2) + String.fromCharCode(Commodore64.TOP_RIGHT_S) + String.fromCharCode(Commodore64.SPACE).repeat(2) + String.fromCharCode(Commodore64.VERT_S) + String.fromCharCode(Commodore64.VERT_LEFT_S);
+        frameRow = document.getElementById('row12');
+        frameRow.textContent = String.fromCharCode(Commodore64.VERT_S) + String.fromCharCode(Commodore64.SPACE).repeat(2) + String.fromCharCode(Commodore64.VERT_S) + String.fromCharCode(Commodore64.SPACE).repeat(2) + String.fromCharCode(Commodore64.VERT_S) + String.fromCharCode(Commodore64.SPACE).repeat(2) + String.fromCharCode(Commodore64.VERT_S) + String.fromCharCode(Commodore64.VERT_LEFT_S);
+        frameRow = document.getElementById('row13');
+        frameRow.textContent = String.fromCharCode(Commodore64.VERT_S) + String.fromCharCode(Commodore64.SPACE).repeat(2) + String.fromCharCode(Commodore64.BOTTOM_LEFT_S) + String.fromCharCode(Commodore64.HORIZ_S).repeat(2) + String.fromCharCode(Commodore64.BOTTOM_RIGHT_S) + String.fromCharCode(Commodore64.SPACE).repeat(2) + String.fromCharCode(Commodore64.VERT_S) + String.fromCharCode(Commodore64.VERT_LEFT_S);
+        frameRow = document.getElementById('row14');
+        frameRow.textContent = String.fromCharCode(Commodore64.VERT_S);
+        frameRow = document.getElementById('row15');
+        frameRow.textContent = String.fromCharCode(Commodore64.VERT_S);
+        frameRow = document.getElementById('row16');
+        frameRow.textContent = String.fromCharCode(Commodore64.VERT_S);
+        frameRow = document.getElementById('row17');
+        frameRow.textContent = String.fromCharCode(Commodore64.VERT_S);
+        frameRow = document.getElementById('row18');
+        frameRow.textContent = String.fromCharCode(Commodore64.VERT_S);
+        frameRow = document.getElementById('row19');
+        frameRow.textContent = String.fromCharCode(Commodore64.VERT_S);
+        frameRow = document.getElementById('row20');
+        frameRow.textContent = String.fromCharCode(Commodore64.VERT_S);
         var bottomRow = document.getElementById('row21');
         bottomRow.textContent = this.createLongFrame(Commodore64.BOTTOM_LEFT_S, Commodore64.BOTTOM_RIGHT_S);
     };
@@ -114,6 +141,9 @@ var Commodore64 = /** @class */ (function () {
     Commodore64.CROSS_S = 197;
     Commodore64.BOTTOM_RIGHT_S = 217;
     Commodore64.TOP_LEFT_S = 218;
+    Commodore64.SPACE = 160;
+    Commodore64.LOWER_HALF_BLOCK = 0x2585;
+    Commodore64.BLOCK = 0xdb;
     return Commodore64;
 }());
 var width = 800;
