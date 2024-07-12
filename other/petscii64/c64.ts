@@ -25,6 +25,11 @@ class Commodore64 {
   private ctx;
   private delay;
   private pacmanPos = 30;
+  private pacmanSpeed = 3;
+  private pacmanPic = 'pm.png';
+  private ghostPos = 30;
+  private ghostSpeed = 2;
+  private ghostPic = 'ghost.png';
 
   constructor(delay) {
     this.tableContent = [
@@ -86,6 +91,7 @@ class Commodore64 {
 	
 	this.blinkCursor(currentTime, timeSinceLastRender)
 	this.movePacman();
+	this.moveGhost();
 
     requestAnimationFrame(() => this.timeLoop());	
   }
@@ -108,17 +114,33 @@ class Commodore64 {
   }
  
   private movePacman(){
-	let pacmanCell = document.getElementById('pacman');
-	
 	const pacman = document.getElementById('pacman');
 	pacman.style.marginLeft = new String(this.pacmanPos) + 'px';
-	this.pacmanPos += 2;
+	pacman.style.marginRight = new String(561 - this.pacmanPos) + 'px';
 	
-	if (this.pacmanPos > 500){
-			this.pacmanPos = 30;
+	this.pacmanPos += this.pacmanSpeed;
+	
+	if (this.pacmanPos > 530 || this.pacmanPos < 30){
+			this.pacmanSpeed = -this.pacmanSpeed;
+			this.pacmanPic = this.pacmanPic === 'pm.png' ? 'pminv.png' : 'pm.png';	
+			const url = "resources/" + this.pacmanPic;
+			pacman.setAttribute("src", url);
 	}
 	console.log("pacman pos = ", this.pacmanPos);
-	//pacmanCell.innerHTML = '';
+  }
+  
+  private moveGhost(){
+	const ghost = document.getElementById('ghost');
+	ghost.style.marginLeft = new String(this.ghostPos) + 'px';
+	ghost.style.marginRight = new String(361 - this.ghostPos) + 'px';
+	
+	this.ghostPos += this.ghostSpeed;
+	
+	if (this.ghostPos > 222 || this.ghostPos < 30){
+			this.ghostSpeed = -this.ghostSpeed;
+	}
+	console.log("ghost pos = ", this.ghostPos);
+	
   }
  
   frame(){
@@ -153,27 +175,36 @@ class Commodore64 {
 	frameRow.innerHTML = String.fromCharCode(Commodore64.VERT_S) 
 		+ '&nbsp</td>'
 		+ '<td width = "10%"></td>'	
-		+ '<td width = "80%"><img id = "pacman" src = "resources/pm.png" style = "margin-left : 50px"></img></td>'
-		+ '<td>&nbsp</td>'	
+		+ '<td width = "95%"><img id = "pacman" src = "resources/pm.png" style = "margin-left : 50px"></img></td>'
+		+ '<td width = "5%"></td>'	
+		+ String.fromCharCode(Commodore64.SPACE)
 		+ String.fromCharCode(Commodore64.VERT_S);
 	
-	elements = [ [1, Commodore64.VERT_S]];
+	elements = [ [1, Commodore64.VERT_S] , [2, Commodore64.SPACE], [1, Commodore64.TOP_LEFT_S], [10, Commodore64.HORIZ_S], [1, Commodore64.TOP_RIGHT_S], [2, Commodore64.SPACE], [1, Commodore64.TOP_LEFT_S], [6, Commodore64.HORIZ_S], [1, Commodore64.TOP_RIGHT_S], [2, Commodore64.SPACE], [1, Commodore64.TOP_LEFT_S], [8, Commodore64.HORIZ_S], [1, Commodore64.TOP_RIGHT_S], [2, Commodore64.SPACE], [1, Commodore64.VERT_S]];
 	this.generateRow('row15', elements);
 	
-	elements = [ [1, Commodore64.VERT_S]];
+	elements = [ [1, Commodore64.VERT_S] , [2, Commodore64.SPACE], [1, Commodore64.VERT_S], [10, Commodore64.SPACE], [1, Commodore64.VERT_S]
+	,[2, Commodore64.SPACE], [1, Commodore64.VERT_S], [6, Commodore64.SPACE], [1, Commodore64.VERT_S], [2, Commodore64.SPACE]
+	, [1, Commodore64.VERT_S], [8, Commodore64.SPACE], [1, Commodore64.VERT_S], [2, Commodore64.SPACE], [1, Commodore64.VERT_S]];
 	this.generateRow('row16', elements);
 	
-	elements = [ [1, Commodore64.VERT_S]];
+	elements = [ [1, Commodore64.VERT_S], [2, Commodore64.SPACE], [1, Commodore64.BOTTOM_LEFT_S], [5, Commodore64.HORIZ_S], [1, Commodore64.TOP_RIGHT_S],[4, Commodore64.SPACE], [1, Commodore64.VERT_S], [2, Commodore64.SPACE], [1, Commodore64.VERT_S], [6, Commodore64.HORIZ_S], [1, Commodore64.TOP_RIGHT_S], [2, Commodore64.SPACE], [1, Commodore64.TOP_LEFT_S], [8, Commodore64.HORIZ_S], [1, Commodore64.TOP_RIGHT_S], [2, Commodore64.SPACE], [1, Commodore64.VERT_S]];
 	this.generateRow('row17', elements);
 	
-	elements = [ [1, Commodore64.VERT_S]];
+	elements = [ [1, Commodore64.VERT_S], [8, Commodore64.SPACE], [1, Commodore64.VERT_S], [4, Commodore64.SPACE], [1, Commodore64.VERT_S]];
 	this.generateRow('row18', elements);
 	
-	elements = [ [1, Commodore64.VERT_S]];
+	elements = [ [1, Commodore64.VERT_RIGHT_S], [5, Commodore64.HORIZ_S], [1, Commodore64.TOP_RIGHT_S], [2, Commodore64.SPACE], [1, Commodore64.BOTTOM_LEFT_S]];
 	this.generateRow('row19', elements);
-	
-	elements = [ [1, Commodore64.VERT_S]];
-	this.generateRow('row20', elements);
+		
+	frameRow = document.getElementById('row20');
+		frameRow.innerHTML = String.fromCharCode(Commodore64.VERT_S) + String.fromCharCode(Commodore64.SPACE).repeat(5) + String.fromCharCode(Commodore64.VERT_S)
+		+ '&nbsp</td>'
+		+ '<td width = "10%"></td>'	
+		+ '<td width = "95%"><img id = "ghost" src = "resources/ghost.png" style = "margin-left : 50px"></img></td>'
+		+ '<td width = "5%"></td>'	
+		+ String.fromCharCode(Commodore64.SPACE).repeat(7)
+		+ String.fromCharCode(Commodore64.VERT_S);
 	
 	let bottomRow = document.getElementById('row21');	
 	bottomRow.textContent = this.createLongFrame(Commodore64.BOTTOM_LEFT_S, Commodore64.BOTTOM_RIGHT_S);
