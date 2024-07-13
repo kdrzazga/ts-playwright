@@ -13,6 +13,9 @@ class Commodore64 {
   static CROSS_S = 197;
   static BOTTOM_RIGHT_S = 217;
   static TOP_LEFT_S = 218;
+  static SPACE = 160;
+  static LOWER_HALF_BLOCK = 0x2585;
+  static BLOCK = 0xdb;
 
   private tableContent: string[];
   private blink = true;
@@ -21,7 +24,12 @@ class Commodore64 {
   private cursorContainer;
   private ctx;
   private delay;
-  private ballonDirection = 1;
+  private pacmanPos = 30;
+  private pacmanSpeed = 3;
+  private pacmanPic = 'pm.png';
+  private ghostPos = 30;
+  private ghostSpeed = 2;
+  private ghostPic = 'ghost.png';
 
   constructor(delay) {
     this.tableContent = [
@@ -81,7 +89,15 @@ class Commodore64 {
 	const currentTime = performance.now();
 	const timeSinceLastRender = currentTime - this.lastRenderTime;
 	
-	if (timeSinceLastRender >= 1000 / Commodore64.FPS) {
+	this.blinkCursor(currentTime, timeSinceLastRender)
+	this.movePacman();
+	this.moveGhost();
+
+    requestAnimationFrame(() => this.timeLoop());	
+  }
+  
+  private blinkCursor(currentTime, timeSinceLastRender){
+ 	if (timeSinceLastRender >= 1000 / Commodore64.FPS) {
 	    this.ctx.clearRect(0, 0, this.cursorCanvas.width, this.cursorCanvas.height);
         if (this.blink) {
           this.ctx.fillStyle = Commodore64.LIGHTBLUE;
@@ -92,20 +108,118 @@ class Commodore64 {
         this.ctx.fillRect(0, 0, this.cursorCanvas.width, this.cursorCanvas.height);
 		this.blink = !this.blink;
 		this.lastRenderTime = currentTime;
-		console.log("new DELAY = ", this.delay);
 	}
 	
-	console.log("blink = " + this.blink);
-    requestAnimationFrame(() => this.timeLoop());	
+	console.log("blink = " + this.blink); 
+  }
+ 
+  private movePacman(){
+	const pacman = document.getElementById('pacman');
+	pacman.style.marginLeft = new String(this.pacmanPos) + 'px';
+	pacman.style.marginRight = new String(561 - this.pacmanPos) + 'px';
+	
+	this.pacmanPos += this.pacmanSpeed;
+	
+	if (this.pacmanPos > 530 || this.pacmanPos < 30){
+			this.pacmanSpeed = -this.pacmanSpeed;
+			this.pacmanPic = this.pacmanPic === 'pm.png' ? 'pminv.png' : 'pm.png';	
+			const url = "resources/" + this.pacmanPic;
+			pacman.setAttribute("src", url);
+	}
+	console.log("pacman pos = ", this.pacmanPos);
+  }
+  
+  private moveGhost(){
+	const ghost = document.getElementById('ghost');
+	ghost.style.marginLeft = new String(this.ghostPos) + 'px';
+	ghost.style.marginRight = new String(361 - this.ghostPos) + 'px';
+	
+	this.ghostPos += this.ghostSpeed;
+	
+	if (this.ghostPos > 222 || this.ghostPos < 30){
+			this.ghostSpeed = -this.ghostSpeed;
+	}
+	console.log("ghost pos = ", this.ghostPos);
+	
   }
  
   frame(){
+	let row = [];
+	let elements = [];
+	
 	let topRow = document.getElementById('row7');	
 	topRow.textContent = this.createLongFrame(Commodore64.TOP_LEFT_S, Commodore64.TOP_RIGHT_S);
 	
+	let frameRow = document.getElementById('row8');
+	frameRow.textContent = String.fromCharCode(Commodore64.VERT_S) + String.fromCharCode(Commodore64.SPACE).repeat(16) + "PACMAN" + String.fromCharCode(Commodore64.SPACE).repeat(16) + String.fromCharCode(Commodore64.VERT_S);
+	
+	//Board starts here
+	elements = [  [1, Commodore64.VERT_RIGHT_S],  [8, Commodore64.HORIZ_S],  [1, Commodore64.HORIZ_DOWN_S],  [4, Commodore64.HORIZ_S],
+		[1, Commodore64.HORIZ_DOWN_S],  [12, Commodore64.HORIZ_S],  [1, Commodore64.HORIZ_DOWN_S],  [4, Commodore64.HORIZ_S], [1, Commodore64.HORIZ_DOWN_S], [6, Commodore64.HORIZ_S], [1, Commodore64.VERT_LEFT_S]];
+	this.generateRow('row9', elements);
+		
+	elements = [  [1, Commodore64.VERT_S],  [8, Commodore64.SPACE],  [1, Commodore64.VERT_S],  [4, Commodore64.SPACE],
+		[1, Commodore64.VERT_S],  [2, Commodore64.SPACE],  [10, Commodore64.SPACE],  [1, Commodore64.VERT_S], [4, Commodore64.SPACE], [1, Commodore64.VERT_S], [6, Commodore64.SPACE], [1, Commodore64.VERT_S] ];
+	this.generateRow('row10', elements);
+	
+	elements = [ [1, Commodore64.VERT_S], [2, Commodore64.SPACE], [1, Commodore64.TOP_LEFT_S], [2, Commodore64.HORIZ_S], [1, Commodore64.TOP_RIGHT_S], [2, Commodore64.SPACE], [1, Commodore64.VERT_S], [4, Commodore64.SPACE], [1, Commodore64.VERT_S], [2, Commodore64.SPACE], [1, Commodore64.TOP_LEFT_S], [6, Commodore64.HORIZ_S], [1, Commodore64.TOP_RIGHT_S], [2, Commodore64.SPACE], [1, Commodore64.VERT_S],[4, Commodore64.SPACE], [1, Commodore64.VERT_S], [2, Commodore64.SPACE], [1, Commodore64.TOP_LEFT_S], [1, Commodore64.TOP_RIGHT_S],  [2, Commodore64.SPACE], [1, Commodore64.VERT_S]];
+	this.generateRow('row11', elements);
+	
+	elements = [ [1, Commodore64.VERT_S], [2, Commodore64.SPACE], [1, Commodore64.VERT_S], [2, Commodore64.SPACE], [1, Commodore64.VERT_S], [2, Commodore64.SPACE], [1, Commodore64.VERT_S], [4, Commodore64.SPACE], [1, Commodore64.VERT_S], [2, Commodore64.SPACE], [1, Commodore64.VERT_S],[6, Commodore64.SPACE], [1, Commodore64.VERT_S], [2, Commodore64.SPACE], [1, Commodore64.VERT_S], [4, Commodore64.SPACE],[1, Commodore64.VERT_S], [2, Commodore64.SPACE], [2, Commodore64.VERT_S], [2, Commodore64.SPACE], [1, Commodore64.VERT_S]];
+	this.generateRow('row12', elements);
+	
+	elements = [ [1, Commodore64.VERT_S], [2, Commodore64.SPACE], [1, Commodore64.BOTTOM_LEFT_S], [2, Commodore64.HORIZ_S], [1, Commodore64.BOTTOM_RIGHT_S], [2, Commodore64.SPACE], [1, Commodore64.BOTTOM_LEFT_S], [4, Commodore64.HORIZ_S], [1, Commodore64.BOTTOM_RIGHT_S], [2, Commodore64.SPACE], [1, Commodore64.BOTTOM_LEFT_S], [6, Commodore64.HORIZ_S], [1, Commodore64.BOTTOM_RIGHT_S], [2, Commodore64.SPACE], [1, Commodore64.BOTTOM_LEFT_S], [4, Commodore64.HORIZ_S], [1, Commodore64.BOTTOM_RIGHT_S], [2, Commodore64.SPACE], [1, Commodore64.BOTTOM_LEFT_S], [1, Commodore64.BOTTOM_RIGHT_S], [2, Commodore64.SPACE], [1, Commodore64.VERT_S]];
+	this.generateRow('row13', elements);
+	
+	frameRow = document.getElementById('row14');
+	frameRow.innerHTML = String.fromCharCode(Commodore64.VERT_S) 
+		+ '&nbsp</td>'
+		+ '<td width = "10%"></td>'	
+		+ '<td width = "95%"><img id = "pacman" src = "resources/pm.png" style = "margin-left : 50px"></img></td>'
+		+ '<td width = "5%"></td>'	
+		+ String.fromCharCode(Commodore64.SPACE)
+		+ String.fromCharCode(Commodore64.VERT_S);
+	
+	elements = [ [1, Commodore64.VERT_S] , [2, Commodore64.SPACE], [1, Commodore64.TOP_LEFT_S], [10, Commodore64.HORIZ_S], [1, Commodore64.TOP_RIGHT_S], [2, Commodore64.SPACE], [1, Commodore64.TOP_LEFT_S], [6, Commodore64.HORIZ_S], [1, Commodore64.TOP_RIGHT_S], [2, Commodore64.SPACE], [1, Commodore64.TOP_LEFT_S], [8, Commodore64.HORIZ_S], [1, Commodore64.TOP_RIGHT_S], [2, Commodore64.SPACE], [1, Commodore64.VERT_S]];
+	this.generateRow('row15', elements);
+	
+	elements = [ [1, Commodore64.VERT_S] , [2, Commodore64.SPACE], [1, Commodore64.VERT_S], [10, Commodore64.SPACE], [1, Commodore64.VERT_S]
+	,[2, Commodore64.SPACE], [1, Commodore64.VERT_S], [6, Commodore64.SPACE], [1, Commodore64.VERT_S], [2, Commodore64.SPACE]
+	, [1, Commodore64.VERT_S], [8, Commodore64.SPACE], [1, Commodore64.VERT_S], [2, Commodore64.SPACE], [1, Commodore64.VERT_S]];
+	this.generateRow('row16', elements);
+	
+	elements = [ [1, Commodore64.VERT_S], [2, Commodore64.SPACE], [1, Commodore64.BOTTOM_LEFT_S], [5, Commodore64.HORIZ_S], [1, Commodore64.TOP_RIGHT_S],[4, Commodore64.SPACE], [1, Commodore64.VERT_S], [2, Commodore64.SPACE], [1, Commodore64.VERT_S], [6, Commodore64.SPACE], [1, Commodore64.VERT_S], [2, Commodore64.SPACE], [1, Commodore64.VERT_S], [8, Commodore64.SPACE], [1, Commodore64.VERT_S], [2, Commodore64.SPACE], [1, Commodore64.VERT_S]];
+	this.generateRow('row17', elements);
+	
+	elements = [ [1, Commodore64.VERT_S], [8, Commodore64.SPACE], [1, Commodore64.VERT_S], [4, Commodore64.SPACE], [1, Commodore64.VERT_S]
+	, [2, Commodore64.SPACE], [1, Commodore64.VERT_S], [6, Commodore64.SPACE], [1, Commodore64.VERT_S], [2, Commodore64.SPACE], [1, Commodore64.VERT_S], [8, Commodore64.SPACE], [1, Commodore64.VERT_S], [2, Commodore64.SPACE], [1, Commodore64.VERT_S]];
+	this.generateRow('row18', elements);
+	
+	elements = [ [1, Commodore64.VERT_RIGHT_S], [5, Commodore64.HORIZ_S], [1, Commodore64.TOP_RIGHT_S], [2, Commodore64.SPACE], [1, Commodore64.BOTTOM_LEFT_S], [4, Commodore64.HORIZ_S], [1, Commodore64.BOTTOM_RIGHT_S], [2, Commodore64.SPACE], [1, Commodore64.BOTTOM_LEFT_S]
+	, [6, Commodore64.HORIZ_S], [1, Commodore64.BOTTOM_RIGHT_S], [2, Commodore64.SPACE], [1, Commodore64.BOTTOM_LEFT_S]
+	, [8, Commodore64.HORIZ_S], [1, Commodore64.BOTTOM_RIGHT_S], [2, Commodore64.SPACE], [1, Commodore64.VERT_S]];
+	this.generateRow('row19', elements);
+		
+	frameRow = document.getElementById('row20');
+		frameRow.innerHTML = String.fromCharCode(Commodore64.VERT_S) + String.fromCharCode(Commodore64.SPACE).repeat(5) + String.fromCharCode(Commodore64.VERT_S)
+		+ '&nbsp</td>'
+		+ '<td width = "10%"></td>'	
+		+ '<td width = "95%"><img id = "ghost" src = "resources/ghost.png" style = "margin-left : 50px"></img></td>'
+		+ '<td width = "5%"></td>'	
+		+ String.fromCharCode(Commodore64.SPACE).repeat(7)
+		+ String.fromCharCode(0xe1a7);
+	
+	let bottom = this.createLongFrame(Commodore64.BOTTOM_LEFT_S, Commodore64.BOTTOM_RIGHT_S);
 	let bottomRow = document.getElementById('row21');	
-	bottomRow.textContent = this.createLongFrame(Commodore64.BOTTOM_LEFT_S, Commodore64.BOTTOM_RIGHT_S);
+	bottomRow.textContent = bottom.substring(0, 6) + String.fromCharCode(Commodore64.HORIZ_UP_S) + bottom.substring(7);
   }
+  
+  private  generateRow(id, elements) {
+    let frameRow = document.getElementById(id);
+    let row = [];
+    elements.forEach(([count, charCode]) => row.push(String.fromCharCode(charCode).repeat(count)));
+    frameRow.textContent = row.join('');
+}
   
   private createLongFrame(endSign1, endSign2){
 	let topLeft = [endSign1]
@@ -127,7 +241,7 @@ class Commodore64 {
 
 	return longHorizLine;
   }
-
+	
 }
 
 let width = 800;
