@@ -1,7 +1,22 @@
+var CircularList = /** @class */ (function () {
+    function CircularList(list) {
+        this.list = list;
+        this.index = 0;
+    }
+    CircularList.prototype.next = function () {
+        var result = this.list[this.index];
+        this.index = (this.index + 1) % this.list.length;
+        return result;
+    };
+    return CircularList;
+}());
 var Commodore64 = /** @class */ (function () {
     function Commodore64(delay) {
         this.blink = true;
-        this.ballonDirection = 1;
+        this.ballonCounterMax = 40;
+        this.ballonCounter = this.ballonCounterMax;
+        this.baloonImages = new CircularList(['uua.png', 'uuaW.png', 'uuaP.png', 'uuaWR.png']);
+        this.currentImage = this.baloonImages.next();
         this.tableContent = [
             "&nbsp",
             "<center>    &nbsp**** COMMODORE 64 BASIC V2 ****&nbsp    </center>",
@@ -54,27 +69,45 @@ var Commodore64 = /** @class */ (function () {
         var currentTime = performance.now();
         var timeSinceLastRender = currentTime - this.lastRenderTime;
         if (timeSinceLastRender >= 1000 / Commodore64.FPS) {
-            this.ctx.clearRect(0, 0, this.cursorCanvas.width, this.cursorCanvas.height);
-            if (this.blink) {
-                this.ctx.fillStyle = Commodore64.LIGHTBLUE;
+            this.blinkCursor(currentTime, timeSinceLastRender);
+            if (this.ballonCounter < 0) {
+                this.moveBaloon();
+                this.changeColor();
+                this.ballonCounter = this.ballonCounterMax;
             }
             else {
-                this.ctx.fillStyle = Commodore64.BLUE;
+                this.ballonCounter--;
             }
-            this.ctx.fillRect(0, 0, this.cursorCanvas.width, this.cursorCanvas.height);
-            this.blink = !this.blink;
-            this.lastRenderTime = currentTime;
-            console.log("new DELAY = ", this.delay);
         }
         console.log("blink = " + this.blink);
         this.animate(this.delay);
         requestAnimationFrame(function () { return _this.timeLoop(); });
     };
+    Commodore64.prototype.changeColor = function () {
+        this.currentImage = this.baloonImages.next();
+    };
+    Commodore64.prototype.moveBaloon = function () {
+        var randomNum = Math.random() * (300 - 50) + 50;
+        this.delay = randomNum;
+    };
+    Commodore64.prototype.blinkCursor = function (currentTime, timeSinceLastRender) {
+        this.ctx.clearRect(0, 0, this.cursorCanvas.width, this.cursorCanvas.height);
+        if (this.blink) {
+            this.ctx.fillStyle = Commodore64.LIGHTBLUE;
+        }
+        else {
+            this.ctx.fillStyle = Commodore64.BLUE;
+        }
+        this.ctx.fillRect(0, 0, this.cursorCanvas.width, this.cursorCanvas.height);
+        this.blink = !this.blink;
+        this.lastRenderTime = currentTime;
+        console.log("new DELAY = ", this.delay);
+    };
     Commodore64.prototype.animate = function (delay) {
         console.log("Delay = ", delay);
         var hotAirBaloonCell = document.getElementById('row7');
         var style = "style=\"margin-left: " + delay + "px;\"/>";
-        hotAirBaloonCell.innerHTML = "<img src = \"resources/uua.png\"" + style;
+        hotAirBaloonCell.innerHTML = '<img src = "resources/' + this.currentImage + '" ' + style;
         hotAirBaloonCell.setAttribute("rowspan", "15");
     };
     Commodore64.FPS = 2;
