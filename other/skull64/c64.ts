@@ -9,8 +9,13 @@ class Commodore64 {
   private canvas;
   private canvasContainer;
   private ctx;
+  private eyePic = 'czachaC.png';
+  private blinkEyeCounterMax = 120;
+  private blinkEyeCounter;
 
   constructor() {
+	this.blinkEyeCounter = this.blinkEyeCounterMax;
+
     this.tableContent = [
       "&nbsp",		
       "<center>    &nbsp**** COMMODORE 64 BASIC V2 ****&nbsp    </center>",
@@ -71,7 +76,14 @@ class Commodore64 {
 	const currentTime = performance.now();
 	const timeSinceLastRender = currentTime - this.lastRenderTime;
 	
-	if (timeSinceLastRender >= 1000 / Commodore64.FPS) {
+	this.blinkCursor(currentTime, timeSinceLastRender);
+	this.blinkEye();
+
+    requestAnimationFrame(() => this.blinker());	
+  }
+  
+   private blinkCursor(currentTime, timeSinceLastRender){
+ 	if (timeSinceLastRender >= 1000 / Commodore64.FPS) {
 	    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         if (this.blink) {
           this.ctx.fillStyle = Commodore64.LIGHTBLUE;
@@ -84,14 +96,28 @@ class Commodore64 {
 		this.lastRenderTime = currentTime;
 	}
 	
-	console.log("blink = " + this.blink);
-    requestAnimationFrame(() => this.blinker());
+	console.log("blink = " + this.blink); 
+  }
+  
+  private blinkEye(){
+  
+	if (this.blinkEyeCounter > 0){
+		this.blinkEyeCounter--;
+		return;
+	}
+	
+	this.blinkEyeCounter = this.blinkEyeCounterMax;	
+	
+	let middlePicture = document.getElementById('middle-pic');
+	this.eyePic = this.eyePic === 'czachaC.png' ? 'closedeye.png' : 'czachaC.png';	
+	const url = "resources/" + this.eyePic;
+	middlePicture.setAttribute("src", url);	
   }
   
   drawCzacha(){
-	let komandosCell = document.getElementById('row7');
-	komandosCell.innerHTML = "<img src = \"resources/czacha3.jpg\"/>";
-	komandosCell.setAttribute("rowspan", "15");
+	let pictureCell = document.getElementById('row7');
+	pictureCell.innerHTML = "<img src = \"resources/czachaL.png\"/><img id = 'middle-pic' src = \"resources/czachaC.png\"/><img src = \"resources/czachaR.png\"/>";
+	pictureCell.setAttribute("rowspan", "15");
   }
 }
 
