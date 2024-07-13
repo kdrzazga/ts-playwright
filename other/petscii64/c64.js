@@ -144,11 +144,14 @@ var Commodore64 = /** @class */ (function () {
             [2, Commodore64.SPACE], [1, Commodore64.VERT_S], [6, Commodore64.SPACE], [1, Commodore64.VERT_S], [2, Commodore64.SPACE],
             [1, Commodore64.VERT_S], [8, Commodore64.SPACE], [1, Commodore64.VERT_S], [2, Commodore64.SPACE], [1, Commodore64.VERT_S]];
         this.generateRow('row16', elements);
-        elements = [[1, Commodore64.VERT_S], [2, Commodore64.SPACE], [1, Commodore64.BOTTOM_LEFT_S], [5, Commodore64.HORIZ_S], [1, Commodore64.TOP_RIGHT_S], [4, Commodore64.SPACE], [1, Commodore64.VERT_S], [2, Commodore64.SPACE], [1, Commodore64.VERT_S], [6, Commodore64.HORIZ_S], [1, Commodore64.TOP_RIGHT_S], [2, Commodore64.SPACE], [1, Commodore64.TOP_LEFT_S], [8, Commodore64.HORIZ_S], [1, Commodore64.TOP_RIGHT_S], [2, Commodore64.SPACE], [1, Commodore64.VERT_S]];
+        elements = [[1, Commodore64.VERT_S], [2, Commodore64.SPACE], [1, Commodore64.BOTTOM_LEFT_S], [5, Commodore64.HORIZ_S], [1, Commodore64.TOP_RIGHT_S], [4, Commodore64.SPACE], [1, Commodore64.VERT_S], [2, Commodore64.SPACE], [1, Commodore64.VERT_S], [6, Commodore64.SPACE], [1, Commodore64.VERT_S], [2, Commodore64.SPACE], [1, Commodore64.VERT_S], [8, Commodore64.SPACE], [1, Commodore64.VERT_S], [2, Commodore64.SPACE], [1, Commodore64.VERT_S]];
         this.generateRow('row17', elements);
-        elements = [[1, Commodore64.VERT_S], [8, Commodore64.SPACE], [1, Commodore64.VERT_S], [4, Commodore64.SPACE], [1, Commodore64.VERT_S]];
+        elements = [[1, Commodore64.VERT_S], [8, Commodore64.SPACE], [1, Commodore64.VERT_S], [4, Commodore64.SPACE], [1, Commodore64.VERT_S],
+            [2, Commodore64.SPACE], [1, Commodore64.VERT_S], [6, Commodore64.SPACE], [1, Commodore64.VERT_S], [2, Commodore64.SPACE], [1, Commodore64.VERT_S], [8, Commodore64.SPACE], [1, Commodore64.VERT_S], [2, Commodore64.SPACE], [1, Commodore64.VERT_S]];
         this.generateRow('row18', elements);
-        elements = [[1, Commodore64.VERT_RIGHT_S], [5, Commodore64.HORIZ_S], [1, Commodore64.TOP_RIGHT_S], [2, Commodore64.SPACE], [1, Commodore64.BOTTOM_LEFT_S]];
+        elements = [[1, Commodore64.VERT_RIGHT_S], [5, Commodore64.HORIZ_S], [1, Commodore64.TOP_RIGHT_S], [2, Commodore64.SPACE], [1, Commodore64.BOTTOM_LEFT_S], [4, Commodore64.HORIZ_S], [1, Commodore64.BOTTOM_RIGHT_S], [2, Commodore64.SPACE], [1, Commodore64.BOTTOM_LEFT_S],
+            [6, Commodore64.HORIZ_S], [1, Commodore64.BOTTOM_RIGHT_S], [2, Commodore64.SPACE], [1, Commodore64.BOTTOM_LEFT_S],
+            [8, Commodore64.HORIZ_S], [1, Commodore64.BOTTOM_RIGHT_S], [2, Commodore64.SPACE], [1, Commodore64.VERT_S]];
         this.generateRow('row19', elements);
         frameRow = document.getElementById('row20');
         frameRow.innerHTML = String.fromCharCode(Commodore64.VERT_S) + String.fromCharCode(Commodore64.SPACE).repeat(5) + String.fromCharCode(Commodore64.VERT_S)
@@ -157,9 +160,10 @@ var Commodore64 = /** @class */ (function () {
             + '<td width = "95%"><img id = "ghost" src = "resources/ghost.png" style = "margin-left : 50px"></img></td>'
             + '<td width = "5%"></td>'
             + String.fromCharCode(Commodore64.SPACE).repeat(7)
-            + String.fromCharCode(Commodore64.VERT_S);
+            + String.fromCharCode(0xe1a7);
+        var bottom = this.createLongFrame(Commodore64.BOTTOM_LEFT_S, Commodore64.BOTTOM_RIGHT_S);
         var bottomRow = document.getElementById('row21');
-        bottomRow.textContent = this.createLongFrame(Commodore64.BOTTOM_LEFT_S, Commodore64.BOTTOM_RIGHT_S);
+        bottomRow.textContent = bottom.substring(0, 6) + String.fromCharCode(Commodore64.HORIZ_UP_S) + bottom.substring(7);
     };
     Commodore64.prototype.generateRow = function (id, elements) {
         var frameRow = document.getElementById(id);
