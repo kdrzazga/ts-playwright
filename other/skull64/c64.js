@@ -1,6 +1,9 @@
 var Commodore64 = /** @class */ (function () {
     function Commodore64() {
         this.blink = true;
+        this.eyePic = 'czachaC.png';
+        this.blinkEyeCounterMax = 120;
+        this.blinkEyeCounter = this.blinkEyeCounterMax;
         this.tableContent = [
             "&nbsp",
             "<center>    &nbsp**** COMMODORE 64 BASIC V2 ****&nbsp    </center>",
@@ -55,6 +58,11 @@ var Commodore64 = /** @class */ (function () {
         var _this = this;
         var currentTime = performance.now();
         var timeSinceLastRender = currentTime - this.lastRenderTime;
+        this.blinkCursor(currentTime, timeSinceLastRender);
+        this.blinkEye();
+        requestAnimationFrame(function () { return _this.blinker(); });
+    };
+    Commodore64.prototype.blinkCursor = function (currentTime, timeSinceLastRender) {
         if (timeSinceLastRender >= 1000 / Commodore64.FPS) {
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             if (this.blink) {
@@ -68,12 +76,22 @@ var Commodore64 = /** @class */ (function () {
             this.lastRenderTime = currentTime;
         }
         console.log("blink = " + this.blink);
-        requestAnimationFrame(function () { return _this.blinker(); });
+    };
+    Commodore64.prototype.blinkEye = function () {
+        if (this.blinkEyeCounter > 0) {
+            this.blinkEyeCounter--;
+            return;
+        }
+        this.blinkEyeCounter = this.blinkEyeCounterMax;
+        var middlePicture = document.getElementById('middle-pic');
+        this.eyePic = this.eyePic === 'czachaC.png' ? 'closedeye.png' : 'czachaC.png';
+        var url = "resources/" + this.eyePic;
+        middlePicture.setAttribute("src", url);
     };
     Commodore64.prototype.drawCzacha = function () {
-        var komandosCell = document.getElementById('row7');
-        komandosCell.innerHTML = "<img src = \"resources/czacha3.jpg\"/>";
-        komandosCell.setAttribute("rowspan", "15");
+        var pictureCell = document.getElementById('row7');
+        pictureCell.innerHTML = "<img src = \"resources/czachaL.png\"/><img id = 'middle-pic' src = \"resources/czachaC.png\"/><img src = \"resources/czachaR.png\"/>";
+        pictureCell.setAttribute("rowspan", "15");
     };
     Commodore64.FPS = 2;
     Commodore64.BLUE = "#352879";
