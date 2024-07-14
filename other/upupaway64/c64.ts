@@ -1,3 +1,19 @@
+class CircularList<T> {
+    private list: T[];
+    private index: number;
+
+    constructor(list: T[]) {
+        this.list = list;
+        this.index = 0;
+    }
+
+    public next(): T {
+        let result = this.list[this.index];
+        this.index = (this.index + 1) % this.list.length;
+        return result;
+    }
+}
+
 class Commodore64 {
   static FPS = 2;
   static BLUE = "#352879";
@@ -10,9 +26,16 @@ class Commodore64 {
   private cursorContainer;
   private ctx;
   private delay;
-  private ballonDirection = 1;
+  private ballonCounterMax = 40;
+  private ballonCounter;
+  private baloonImages: CircularList<string>;
+  private currentImage: string;
 
   constructor(delay) {
+	this.ballonCounter = this.ballonCounterMax;
+	this.baloonImages = new CircularList(['uua.png', 'uuaW.png', 'uuaP.png', 'uuaWR.png']);
+	this.currentImage = this.baloonImages.next();
+  
     this.tableContent = [
       "&nbsp",		
       "<center>    &nbsp**** COMMODORE 64 BASIC V2 ****&nbsp    </center>",
@@ -71,6 +94,33 @@ class Commodore64 {
 	const timeSinceLastRender = currentTime - this.lastRenderTime;
 	
 	if (timeSinceLastRender >= 1000 / Commodore64.FPS) {
+		this.blinkCursor(currentTime, timeSinceLastRender);
+		
+		if (this.ballonCounter < 0){
+			this.moveBaloon();
+			this.changeColor();		
+			this.ballonCounter = this.ballonCounterMax;
+		}
+		else {
+			this.ballonCounter--;
+		}
+	}
+	
+	console.log("blink = " + this.blink);
+	this.animate(this.delay);
+    requestAnimationFrame(() => this.timeLoop());	
+  }
+  
+  private changeColor(){
+	this.currentImage = this.baloonImages.next();
+  }
+  
+  private moveBaloon(){
+		let randomNum = Math.random() * (300 - 50) + 50;
+		this.delay = randomNum;
+  }
+  
+  private blinkCursor(currentTime, timeSinceLastRender){
 	    this.ctx.clearRect(0, 0, this.cursorCanvas.width, this.cursorCanvas.height);
         if (this.blink) {
           this.ctx.fillStyle = Commodore64.LIGHTBLUE;
@@ -81,19 +131,14 @@ class Commodore64 {
         this.ctx.fillRect(0, 0, this.cursorCanvas.width, this.cursorCanvas.height);
 		this.blink = !this.blink;
 		this.lastRenderTime = currentTime;
-		console.log("new DELAY = ", this.delay);
-	}
-	
-	console.log("blink = " + this.blink);
-	this.animate(this.delay);
-    requestAnimationFrame(() => this.timeLoop());	
+		console.log("new DELAY = ", this.delay);  
   }
 
   animate(delay){
 	console.log("Delay = ", delay);
 	let hotAirBaloonCell = document.getElementById('row7');
 	const style = "style=\"margin-left: " + delay + "px;\"/>"
-	hotAirBaloonCell.innerHTML = "<img src = \"resources/uua.png\"" + style;
+	hotAirBaloonCell.innerHTML = '<img src = "resources/' + this.currentImage + '" ' + style;
 	hotAirBaloonCell.setAttribute("rowspan", "15");
  }
 }
