@@ -37,15 +37,29 @@ class Commodore64 {
 	this.currentImage = this.baloonImages.next();
   
     this.tableContent = [
-      "&nbsp",		
-      "<center>    &nbsp**** COMMODORE 64 BASIC V2 ****&nbsp    </center>",
-      "&nbsp",
-      "<center> &nbsp64K RAM SYSTEM  38911 BASIC BYTES FREE&nbsp </center>",
+      "LIST",
 	  "&nbsp",
+	  "1  REM UP,UP,AND AWAY", 
+	  "5  PRINT \"" + String.fromCharCode(0xe273) + "\"", 
+	  "10 V = 53248: REM START OF DISPLAY CHIP", 
+	  "11 POKE V+21,4: REM ENABLE SPRITE 2",
+	  "12 POKE 2042,13:REM SPRITE 2 DATA FROM",
+	  "BLOCK 13",
+	  "20 FOR N = 0 TO 62: READ Q: POKE 832+N",
+	  ",Q: NEXT",
+	  "30 FOR X = 0 TO 200",
+	  "40 POKE V + 4,X: REM UPDATE X COORDINAT",
+	  "ES",
+	  "50 POKE V + 5,X: REM UPDATE Y COORDINAT",
+	  "ES",
+	  "60 NEXT X",
+	  "70 GOTO 30",
+	  "200 DATA 0,127,0,1,255,192,3,255,224,3",
+	  "BREAK",
 	  "READY."
     ];
 	
-	for (let i = 5; i < 22; i++) {
+	for (let i = 20; i < 22; i++) {
       this.tableContent.push("&nbsp");
     }
 	this.lastRenderTime = 0;
@@ -85,7 +99,7 @@ class Commodore64 {
   }
   
   initTimeLoop(){
-	this.cursorContainer = document.getElementById('row6');
+	this.cursorContainer = document.getElementById('row20');
 	this.cursorContainer.appendChild(this.cursorCanvas);
   }
   
@@ -116,7 +130,7 @@ class Commodore64 {
   }
   
   private moveBaloon(){
-		let randomNum = Math.random() * (300 - 50) + 50;
+		let randomNum = Math.random() * (300 - 50) + 90;
 		this.delay = randomNum;
   }
   
@@ -136,10 +150,11 @@ class Commodore64 {
 
   animate(delay){
 	console.log("Delay = ", delay);
-	let hotAirBaloonCell = document.getElementById('row7');
-	const style = "style=\"margin-left: " + delay + "px;\"/>"
-	hotAirBaloonCell.innerHTML = '<img src = "resources/' + this.currentImage + '" ' + style;
-	hotAirBaloonCell.setAttribute("rowspan", "15");
+	let baloon = document.getElementById('baloon');
+	const delayStr: string = new String(delay).toUpperCase();
+	baloon.style.left = delayStr + 'px';
+	const url = "resources/" + this.currentImage;
+	baloon.setAttribute("src", url);
  }
 }
 
