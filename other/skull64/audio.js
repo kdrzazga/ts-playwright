@@ -1,9 +1,9 @@
-var audio = new Audio('../commando64/resources/commando.mp3');
-
 function play() {
   var audioArray = [
+	'resources/supremacy.mp3',
+	'resources/wilderness.mp3',
     '../commando64/resources/commando.mp3',
-    '../ik64/resources/ik.mp3',
+    '../ik64/resources/ik.mp3'
   ];
 
   var currentAudio = 0;
