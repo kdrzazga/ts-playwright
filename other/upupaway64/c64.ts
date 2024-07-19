@@ -130,7 +130,7 @@ class Commodore64 {
   }
   
   private moveBaloon(){
-		let randomNum = Math.random() * (300 - 50) + 90;
+		let randomNum = Math.random() * (300 - 50) + 110;
 		this.delay = randomNum;
   }
   
