@@ -1,6 +1,6 @@
 function play() {
   var audioArray = [
-	['resources/supremacy.mp3', (4*60+10)*1000],
+	['resources/supremacy.mp3', (4*60)*1000],
 	['resources/LN2.mp3', (4*60+40)*1000],
 	['resources/wilderness.mp3', (4*60+40)*1000],
     ['../commando64/resources/commando.mp3', (8*60+40)*1000],
