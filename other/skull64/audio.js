@@ -7,8 +7,8 @@ function play() {
     ['resources/natoAC.mp3', (3*60+15)*1000],
     ['resources/LN1wasteland.mp3', (4*60+0)*1000],
     ['../ik64/resources/ik.mp3', (10*60+50)*1000],
-    ['resources/BB.mp3', (1*60+20)*1000],
-    ['resources/mikie.mp3', (1*60+20)*1000]
+    ['resources/BB.mp3', (1*45)*1000],
+    ['resources/mikie.mp3', (1*45)*1000]
   ]; //over 40 min of music
 
   var currentAudio = 0;
