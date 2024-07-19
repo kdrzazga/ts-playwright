@@ -36,7 +36,7 @@ var Commodore64 = /** @class */ (function () {
             "60 NEXT X",
             "70 GOTO 30",
             "200 DATA 0,127,0,1,255,192,3,255,224,3",
-            "?BREAK ERROR IN 200",
+            "BREAK",
             "READY."
         ];
         for (var i = 20; i < 22; i++) {
@@ -101,7 +101,7 @@ var Commodore64 = /** @class */ (function () {
         this.currentImage = this.baloonImages.next();
     };
     Commodore64.prototype.moveBaloon = function () {
-        var randomNum = Math.random() * (300 - 50) + 90;
+        var randomNum = Math.random() * (300 - 50) + 110;
         this.delay = randomNum;
     };
     Commodore64.prototype.blinkCursor = function (currentTime, timeSinceLastRender) {
