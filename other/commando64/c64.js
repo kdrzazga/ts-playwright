@@ -74,20 +74,47 @@ var Commodore64 = /** @class */ (function () {
         var timeSinceLastRender = currentTime - this.lastRenderTime;
         if (timeSinceLastRender >= 1000 / Commodore64.FPS) {
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-            if (this.blink) {
-                this.ctx.fillStyle = Commodore64.LIGHTBLUE;
-            }
-            else {
-                this.ctx.fillStyle = Commodore64.BLUE;
-            }
+            this.ctx.fillStyle = this.blink ? Commodore64.LIGHTBLUE : Commodore64.BLUE;
             this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
             this.blink = !this.blink;
             this.lastRenderTime = currentTime;
         }
-        console.log("blink = " + this.blink);
+        //console.log("blink = " + this.blink);
         this.animationFrameID = requestAnimationFrame(function () { return _this.blinker(); });
         this.welcomeScreenTimeoutCounter--;
         if (this.welcomeScreenTimeoutCounter < 0) {
+            cancelAnimationFrame(this.animationFrameID);
+            this.initGame();
+        }
+    };
+    Commodore64.prototype.grenadeLaunch = function () {
+        var _this = this;
+        var currentTime = performance.now();
+        var timeSinceLastRender = currentTime - this.lastRenderTime;
+        var grenade = document.getElementById('grenade');
+        if (this.grenadeY > 320) {
+            grenade.style.display = 'block';
+            this.grenadeY -= 5;
+            var movementValues = {
+                'U.PNG': 0,
+                'LU.PNG': -5,
+                'RU.PNG': 5
+            };
+            var commandoImg = document.getElementById('commando');
+            var path = commandoImg.getAttribute("src");
+            var key = path.split('/').pop(); //split - returns array, pop - last element from array
+            var xchange = movementValues[key];
+            console.log(xchange);
+            this.grenadeX += xchange;
+            grenade.style.top = new String(this.grenadeY) + 'px';
+            grenade.style.left = new String(this.grenadeX) + 'px';
+        }
+        else {
+            grenade.style.display = 'none';
+        }
+        this.animationFrameID = requestAnimationFrame(function () { return _this.grenadeLaunch(); });
+        this.commandoTimeoutCounter--;
+        if (this.commandoTimeoutCounter < 0) {
             cancelAnimationFrame(this.animationFrameID);
             this.initGame();
         }
@@ -113,7 +140,11 @@ var Commodore64 = /** @class */ (function () {
         this.commandoTimeoutCounter = Commodore64.commandoTimeoutCounterMax;
         var board = document.getElementById('commodore64');
         board.innerHTML = "<img src = 'resources/board.png' style='width: 90%; height: 90%;'></img>";
-        board.innerHTML += "<img id='commando' src = 'resources/U.PNG'  style='position: absolute; top: 64%; left: 47%; z-index: 1;'></img>";
+        board.innerHTML += "<img id='commando' src = 'resources/U.PNG' style='position: absolute; top: 64%; left: 47%; z-index: 1;'></img>";
+        board.innerHTML += "<img id='grenade' src = 'resources/bottle.PNG' style='position: absolute; top: 64%; left: 50%; z-index: 1; width: calc(10% * 0.3); height: calc(30% * 0.3);'></img>";
+        var grenade = document.getElementById('grenade');
+        this.grenadeX = grenade.offsetTop; //offsetTop is read-only
+        this.grenadeY = grenade.offsetLeft;
         var commandoImg = document.getElementById('commando');
         board.addEventListener('mousemove', function (event) {
             var x = event.clientX;
@@ -123,19 +154,17 @@ var Commodore64 = /** @class */ (function () {
             if (x == commandoX)
                 x++;
             var angle = Math.atan((y - commandoY) / (x - commandoX));
-            var url = '';
+            var url = "resources/RU.PNG";
             if (Math.abs(angle) > 1) {
                 url = "resources/U.PNG";
             }
             else if (angle > 0) {
                 url = "resources/LU.PNG";
             }
-            else {
-                url = "resources/RU.PNG";
-            }
             commandoImg.setAttribute("src", url);
-            console.log("Mouse is hovering over the board at coordinates (".concat(x, ", ").concat(y, ") angle = ").concat(angle));
+            //console.log(`Mouse is hovering over the board at coordinates (${x}, ${y}) angle = ${angle}`);
         });
+        this.grenadeLaunch();
     };
     Commodore64.FPS = 2;
     Commodore64.BLUE = "#352879";
