@@ -2,6 +2,8 @@ class Commodore64 {
   static FPS = 2;
   static BLUE = "#352879";
   static LIGHTBLUE = "#6c5eb5";
+  static welcomeScreenTimeoutCounterMax = 120;
+  static commandoTimeoutCounterMax = 500;
 
   private tableContentHeader: string[];
   private tableContent: string[];
@@ -10,6 +12,9 @@ class Commodore64 {
   private canvas;
   private canvasContainer;
   private ctx;
+  private welcomeScreenTimeoutCounter = Commodore64.welcomeScreenTimeoutCounterMax;
+  private commandoTimeoutCounter = Commodore64.commandoTimeoutCounterMax;
+  private animationFrameID;
 
   constructor() {
     this.tableContentHeader = [
@@ -103,13 +108,64 @@ class Commodore64 {
 	}
 	
 	console.log("blink = " + this.blink);
-    requestAnimationFrame(() => this.blinker());
+    this.animationFrameID = requestAnimationFrame(() => this.blinker());
+	
+	this.welcomeScreenTimeoutCounter--;
+	
+	if (this.welcomeScreenTimeoutCounter < 0){
+		cancelAnimationFrame(this.animationFrameID);
+		this.initGame();
+	}
   }
   
   drawKomandos(){
 	let komandosCell = document.getElementById('row5col2');
 	komandosCell.innerHTML = "<img src = \"resources/komandos.png\"/>";
 	komandosCell.setAttribute("rowspan", "12");
+  }
+  
+  initLoader(){
+	const html = this.generateHtml();
+	const div = document.getElementById('commodore64');
+	const topBorderDiv = document.getElementById('top-border');
+	const bottomBorderDiv = document.getElementById('bottom-border');
+	div.innerHTML = html;
+	topBorderDiv.innerHTML = this.generateBorder();
+	bottomBorderDiv.innerHTML = this.generateBorder();
+	this.drawKomandos();
+	this.initBlinker();
+	this.blinker();
+  }
+  
+  initGame(){
+	this.commandoTimeoutCounter = Commodore64.commandoTimeoutCounterMax;
+	const board = document.getElementById('commodore64');
+	board.innerHTML = "<img src = 'resources/board.png' style='width: 90%; height: 90%;'></img>";
+	board.innerHTML += "<img id='commando' src = 'resources/U.PNG'  style='position: absolute; top: 64%; left: 47%; z-index: 1;'></img>";
+	
+	const commandoImg = document.getElementById('commando');
+	
+	board.addEventListener('mousemove', (event) => {
+		var x = event.clientX;
+		const y = event.clientY;
+		
+		const commandoX = 460;
+		const commandoY = 520;
+	
+		if (x == commandoX) x++;		
+		var angle = Math.atan((y - commandoY)/(x - commandoX));
+		
+		var url = "resources/RU.PNG";		
+		if (Math.abs(angle) > 1){
+			url = "resources/U.PNG";
+		}
+		else if (angle > 0){
+			url = "resources/LU.PNG";
+		}			
+		commandoImg.setAttribute("src", url);
+	
+		console.log(`Mouse is hovering over the board at coordinates (${x}, ${y}) angle = ${angle}`);
+	});
   }
 }
 
@@ -120,13 +176,4 @@ window.innerWidth = width;
 window.innerHeight = height;
 
 const commodore64 = new Commodore64();
-const html = commodore64.generateHtml();
-const div = document.getElementById('commodore64');
-const topBorderDiv = document.getElementById('top-border');
-const bottomBorderDiv = document.getElementById('bottom-border');
-div.innerHTML = html;
-topBorderDiv.innerHTML = commodore64.generateBorder();
-bottomBorderDiv.innerHTML = commodore64.generateBorder();
-commodore64.drawKomandos();
-commodore64.initBlinker();
-commodore64.blinker();
+commodore64.initLoader();

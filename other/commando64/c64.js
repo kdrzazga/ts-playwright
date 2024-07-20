@@ -1,6 +1,8 @@
 var Commodore64 = /** @class */ (function () {
     function Commodore64() {
         this.blink = true;
+        this.welcomeScreenTimeoutCounter = Commodore64.welcomeScreenTimeoutCounterMax;
+        this.commandoTimeoutCounter = Commodore64.commandoTimeoutCounterMax;
         this.tableContentHeader = [
             "&nbsp",
             "<center>    &nbsp**** COMMODORE 64 BASIC V2 ****&nbsp    </center>",
@@ -83,16 +85,63 @@ var Commodore64 = /** @class */ (function () {
             this.lastRenderTime = currentTime;
         }
         console.log("blink = " + this.blink);
-        requestAnimationFrame(function () { return _this.blinker(); });
+        this.animationFrameID = requestAnimationFrame(function () { return _this.blinker(); });
+        this.welcomeScreenTimeoutCounter--;
+        if (this.welcomeScreenTimeoutCounter < 0) {
+            cancelAnimationFrame(this.animationFrameID);
+            this.initGame();
+        }
     };
     Commodore64.prototype.drawKomandos = function () {
         var komandosCell = document.getElementById('row5col2');
         komandosCell.innerHTML = "<img src = \"resources/komandos.png\"/>";
         komandosCell.setAttribute("rowspan", "12");
     };
+    Commodore64.prototype.initLoader = function () {
+        var html = this.generateHtml();
+        var div = document.getElementById('commodore64');
+        var topBorderDiv = document.getElementById('top-border');
+        var bottomBorderDiv = document.getElementById('bottom-border');
+        div.innerHTML = html;
+        topBorderDiv.innerHTML = this.generateBorder();
+        bottomBorderDiv.innerHTML = this.generateBorder();
+        this.drawKomandos();
+        this.initBlinker();
+        this.blinker();
+    };
+    Commodore64.prototype.initGame = function () {
+        this.commandoTimeoutCounter = Commodore64.commandoTimeoutCounterMax;
+        var board = document.getElementById('commodore64');
+        board.innerHTML = "<img src = 'resources/board.png' style='width: 90%; height: 90%;'></img>";
+        board.innerHTML += "<img id='commando' src = 'resources/U.PNG'  style='position: absolute; top: 64%; left: 47%; z-index: 1;'></img>";
+        var commandoImg = document.getElementById('commando');
+        board.addEventListener('mousemove', function (event) {
+            var x = event.clientX;
+            var y = event.clientY;
+            var commandoX = 460;
+            var commandoY = 520;
+            if (x == commandoX)
+                x++;
+            var angle = Math.atan((y - commandoY) / (x - commandoX));
+            var url = '';
+            if (Math.abs(angle) > 1) {
+                url = "resources/U.PNG";
+            }
+            else if (angle > 0) {
+                url = "resources/LU.PNG";
+            }
+            else {
+                url = "resources/RU.PNG";
+            }
+            commandoImg.setAttribute("src", url);
+            console.log("Mouse is hovering over the board at coordinates (".concat(x, ", ").concat(y, ") angle = ").concat(angle));
+        });
+    };
     Commodore64.FPS = 2;
     Commodore64.BLUE = "#352879";
     Commodore64.LIGHTBLUE = "#6c5eb5";
+    Commodore64.welcomeScreenTimeoutCounterMax = 120;
+    Commodore64.commandoTimeoutCounterMax = 500;
     return Commodore64;
 }());
 var width = 800;
@@ -100,13 +149,4 @@ var height = 600;
 window.innerWidth = width;
 window.innerHeight = height;
 var commodore64 = new Commodore64();
-var html = commodore64.generateHtml();
-var div = document.getElementById('commodore64');
-var topBorderDiv = document.getElementById('top-border');
-var bottomBorderDiv = document.getElementById('bottom-border');
-div.innerHTML = html;
-topBorderDiv.innerHTML = commodore64.generateBorder();
-bottomBorderDiv.innerHTML = commodore64.generateBorder();
-commodore64.drawKomandos();
-commodore64.initBlinker();
-commodore64.blinker();
+commodore64.initLoader();
