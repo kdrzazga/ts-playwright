@@ -11,10 +11,12 @@ var internalFinished = false;
 function anim1(callback) {
     function step() {
         if (!finished) {
-            console.log("a1 execution " + anim1counter);
-            anim1counter--;
-            finished = anim1counter <= 0;
-            window.requestAnimationFrame(step);
+            setTimeout(function () {
+                console.log("a1 execution " + anim1counter);
+                anim1counter--;
+                finished = anim1counter <= 0;
+                window.requestAnimationFrame(step);
+            }, 1100);
         }
         else {
             if (callback)
@@ -26,15 +28,17 @@ function anim1(callback) {
 function anim2(callback) {
     function step() {
         if (!finished) {
-            console.log("a2 execution " + anim2counter);
-            anim2counter--;
-            finished = anim2counter <= 0;
-            internalAnim2counter = ia2Max;
-            internalAnim2(function () {
-                console.log("internalAnim2 done.");
-            });
-            internalFinished = false;
-            window.requestAnimationFrame(step);
+            setTimeout(function () {
+                console.log("a2 execution " + anim2counter);
+                anim2counter--;
+                finished = anim2counter <= 0;
+                internalAnim2counter = ia2Max;
+                internalAnim2(function () {
+                    console.log("internalAnim2 done.");
+                });
+                internalFinished = false;
+                window.requestAnimationFrame(step);
+            }, 2000); // add a delay of 2 seconds
         }
         else {
             if (callback)
@@ -46,10 +50,12 @@ function anim2(callback) {
 function internalAnim2(callback) {
     function step() {
         if (!internalFinished) {
-            console.log("ia2 execution " + internalAnim2counter);
-            internalAnim2counter--;
-            internalFinished = internalAnim2counter <= 0;
-            window.requestAnimationFrame(step);
+            setTimeout(function () {
+                console.log("ia2 execution " + internalAnim2counter);
+                internalAnim2counter--;
+                internalFinished = internalAnim2counter <= 0;
+                window.requestAnimationFrame(step);
+            }, 200); // add a delay of 0.5 seconds
         }
         else {
             if (callback)
