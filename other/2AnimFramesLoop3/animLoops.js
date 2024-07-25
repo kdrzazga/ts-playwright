@@ -12,7 +12,7 @@ function anim1(callback) {
     function step() {
         if (!finished) {
             setTimeout(function () {
-                console.log("a1 execution " + anim1counter);
+                console.log("a1 GAME " + anim1counter);
                 var div = document.getElementsByTagName('img')[0];
                 div.setAttribute("src", "resources/bgnd.png");
                 anim1counter--;
@@ -31,7 +31,7 @@ function anim2(callback) {
     function step() {
         if (!finished) {
             setTimeout(function () {
-                console.log("a2 execution " + anim2counter);
+                console.log("a2 WHITE PLANE" + anim2counter);
                 var div = document.getElementsByTagName('img')[0];
                 div.setAttribute("src", "resources/plane.png");
                 anim2counter--;
@@ -55,7 +55,7 @@ function internalAnim2(callback) {
     function step() {
         if (!internalFinished) {
             setTimeout(function () {
-                console.log("ia2 execution " + internalAnim2counter);
+                console.log("ia2 YELLOW PLANE " + internalAnim2counter);
                 var div = document.getElementsByTagName('img')[0];
                 div.setAttribute("src", "resources/plane2.png");
                 div.style.left = new String(5 * ia2Max - 5 * internalAnim2counter) + 'px';
