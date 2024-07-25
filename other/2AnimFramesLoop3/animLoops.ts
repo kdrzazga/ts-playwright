@@ -44,7 +44,7 @@ function anim2(callback) {
                 });
                 internalFinished = false;
                 window.requestAnimationFrame(step);
-            }, 2000); // add a delay of 2 seconds
+            }, 2000);
         }
         else {
             if (callback) callback();
@@ -66,7 +66,7 @@ function internalAnim2(callback) {
                 internalAnim2counter--;
                 internalFinished = internalAnim2counter <= 0;
                 window.requestAnimationFrame(step);
-            }, 200); // add a delay of 0.5 seconds
+            }, 200);
         }
         else {
             if (callback) callback();
