@@ -1,5 +1,7 @@
 function play() {
   var audioArray = [
+    ['resources/BB.mp3', (1*45)*1000],
+	['resources/fst.mp3', (1*42)*1000],	
 	['resources/supremacy.mp3', (4*60)*1000],
 	['resources/LN2.mp3', (4*60+40)*1000],
 	['resources/wilderness.mp3', (4*60+40)*1000],
@@ -7,7 +9,6 @@ function play() {
     ['resources/natoAC.mp3', (3*60+15)*1000],
     ['resources/LN1wasteland.mp3', (4*60+0)*1000],
     ['../ik64/resources/ik.mp3', (10*60+50)*1000],
-    ['resources/BB.mp3', (1*45)*1000],
     ['resources/mikie.mp3', (1*45)*1000]
   ]; //over 40 min of music
 
