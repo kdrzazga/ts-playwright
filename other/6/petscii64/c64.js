@@ -65,11 +65,13 @@ var Commodore64 = /** @class */ (function () {
     };
     Commodore64.prototype.timeLoop = function () {
         var _this = this;
+        console.group("PACMAN");
         var currentTime = performance.now();
         var timeSinceLastRender = currentTime - this.lastRenderTime;
         this.blinkCursor(currentTime, timeSinceLastRender);
         this.movePacman();
         this.moveGhost();
+        console.groupEnd();
         requestAnimationFrame(function () { return _this.timeLoop(); });
     };
     Commodore64.prototype.blinkCursor = function (currentTime, timeSinceLastRender) {
