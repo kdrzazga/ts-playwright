@@ -2,8 +2,9 @@ class Commodore64 {
   static FPS = 2;
   static BLUE = "#352879";
   static LIGHTBLUE = "#6c5eb5";
-  static welcomeScreenTimeoutCounterMax = 120;
-  static commandoTimeoutCounterMax = 500;
+  static welcomeScreenTimeoutCounterMax = 1220;
+  static commandoTimeoutCounterMax = 400;
+  static commandoReloadCounterMax = 4;
 
   private tableContentHeader: string[];
   private tableContent: string[];
@@ -14,6 +15,7 @@ class Commodore64 {
   private ctx;
   private welcomeScreenTimeoutCounter = Commodore64.welcomeScreenTimeoutCounterMax;
   private commandoTimeoutCounter = Commodore64.commandoTimeoutCounterMax;
+  private commandoReloadCounter = Commodore64.commandoReloadCounterMax;
   private animationFrameID;
   private grenadeX: number;
   private grenadeY: number;
@@ -209,6 +211,13 @@ class Commodore64 {
 	});
 	
 	this.grenadeLaunch();
+	this.commandoReloadCounter--;
+	console.log(this.commandoReloadCounter);
+	
+	if (this.commandoReloadCounter < 0){
+		console.log("----------------------------------RELOADING COMMANDO----------------------------------");
+		location.reload();
+	}
   }
 }
 

@@ -3,6 +3,7 @@ var Commodore64 = /** @class */ (function () {
         this.blink = true;
         this.welcomeScreenTimeoutCounter = Commodore64.welcomeScreenTimeoutCounterMax;
         this.commandoTimeoutCounter = Commodore64.commandoTimeoutCounterMax;
+        this.commandoReloadCounter = Commodore64.commandoReloadCounterMax;
         this.tableContentHeader = [
             "&nbsp",
             "<center>    &nbsp**** COMMODORE 64 BASIC V2 ****&nbsp    </center>",
@@ -165,12 +166,19 @@ var Commodore64 = /** @class */ (function () {
             //console.log(`Mouse is hovering over the board at coordinates (${x}, ${y}) angle = ${angle}`);
         });
         this.grenadeLaunch();
+        this.commandoReloadCounter--;
+        console.log(this.commandoReloadCounter);
+        if (this.commandoReloadCounter < 0) {
+            console.log("----------------------------------RELOADING COMMANDO----------------------------------");
+            location.reload();
+        }
     };
     Commodore64.FPS = 2;
     Commodore64.BLUE = "#352879";
     Commodore64.LIGHTBLUE = "#6c5eb5";
-    Commodore64.welcomeScreenTimeoutCounterMax = 120;
-    Commodore64.commandoTimeoutCounterMax = 500;
+    Commodore64.welcomeScreenTimeoutCounterMax = 1220;
+    Commodore64.commandoTimeoutCounterMax = 400;
+    Commodore64.commandoReloadCounterMax = 4;
     return Commodore64;
 }());
 var width = 800;
