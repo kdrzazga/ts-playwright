@@ -1,0 +1,2 @@
+fst.sequence can be imported into ONLINE-SEQUENCER software on site:
+https://onlinesequencer.net/#t32
