@@ -86,6 +86,7 @@ class Commodore64 {
   }
   
   timeLoop() {
+	console.group("PACMAN");
 	const currentTime = performance.now();
 	const timeSinceLastRender = currentTime - this.lastRenderTime;
 	
@@ -93,6 +94,7 @@ class Commodore64 {
 	this.movePacman();
 	this.moveGhost();
 
+	console.groupEnd();
     requestAnimationFrame(() => this.timeLoop());	
   }
   
