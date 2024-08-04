@@ -20,28 +20,23 @@ var Karateka = /** @class */ (function () {
         this.picture = Karateka.pictureRight;
         var pics = [Karateka.pictureRight, 'res/kw1.png', 'res/kw2.png', 'res/kw3.png'];
         this.steps = new CircularList(pics);
+        this.karatekaElement = this.getWebElement();
     }
     Karateka.prototype.flip = function () {
         this.speed = -this.speed;
-        if (this.picture == Karateka.pictureLeft)
-            this.picture = Karateka.pictureRight;
-        else
-            this.picture = Karateka.pictureLeft;
+        this.picture = (this.picture === Karateka.pictureLeft) ? Karateka.pictureRight : Karateka.pictureLeft;
         this.setPicture();
     };
     Karateka.prototype.move = function () {
         this.x += this.speed;
-        var karatekaElement = this.getWebElement();
-        karatekaElement.style.left = "".concat(this.x, "px");
+        this.karatekaElement.style.left = "".concat(this.x, "px");
         if (this.x % (4 * this.speed) > 3) {
             this.picture = this.steps.next();
         }
-        console.log(this.picture);
         this.setPicture();
     };
     Karateka.prototype.setPicture = function () {
-        var k = this.getWebElement();
-        k.setAttribute("src", this.picture);
+        this.karatekaElement.setAttribute("src", this.picture);
     };
     Karateka.prototype.getWebElement = function () {
         return document.getElementById('karateka');
@@ -50,23 +45,20 @@ var Karateka = /** @class */ (function () {
     Karateka.pictureRight = "res/k.png";
     return Karateka;
 }());
-function ikpostToFront() {
-    var ikpost = document.getElementById('ik-cover');
-    ikpost.style.zIndex = '3';
-}
-function moveKarateka(currentTime) {
+function moveKarateka(currentTime, karateka) {
     var timeSinceLastRender = currentTime - lastRenderTime;
     if (timeSinceLastRender > 100 / fps) {
         karateka.move();
-        if (karateka.x < 260 || karateka.x > 1920)
+        if (karateka.x < 260 || karateka.x > 1920) {
             karateka.flip();
+        }
         lastRenderTime = currentTime;
     }
 }
-console.log('hello');
 function animate(currentTime) {
-    moveKarateka(currentTime);
+    moveKarateka(currentTime, karateka);
     requestAnimationFrame(animate);
 }
+console.log('hello');
 var karateka = new Karateka();
 requestAnimationFrame(animate);

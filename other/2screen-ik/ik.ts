@@ -11,86 +11,74 @@ class CircularList<T> {
     }
 
     public next(): T {
-        let result = this.list[this.index];
+        const result = this.list[this.index];
         this.index = (this.index + 1) % this.list.length;
         return result;
     }
 }
 
-class Karateka{
+class Karateka {
+    static readonly pictureLeft = "res/kL.png";
+    static readonly pictureRight = "res/k.png";
 
-	static readonly pictureLeft = "res/kL.png";
-	static readonly pictureRight = "res/k.png";
-	
-	private speed = 15;
-	public x = 260;
-	public y = 260;
-	private steps: CircularList<string>;
-	private picture = Karateka.pictureRight;
-	
-	constructor(){
-		let pics = [Karateka.pictureRight, 'res/kw1.png', 'res/kw2.png', 'res/kw3.png'];
-		
-		this.steps = new CircularList(pics);
-	}
-	
-	flip(){
-		this.speed = -this.speed;
-		
-		if (this.picture == Karateka.pictureLeft) this.picture = Karateka.pictureRight
-			else this.picture = Karateka.pictureLeft;
-		
-		this.setPicture();
-	}
-	
-	move(){
-		this.x += this.speed;
-		var karatekaElement = this.getWebElement();
-		karatekaElement.style.left = `${this.x}px`;
-		if (this.x % (4* this.speed) > 3){
-			this.picture = this.steps.next();
-		}
-		
-		console.log(this.picture);
-		
-		this.setPicture();
-	}
-	
-	setPicture(){
-		var k = this.getWebElement();
-		k.setAttribute("src", this.picture);
-	}
-	
-	getWebElement(){
-		return document.getElementById('karateka');
-	}
-}
+    private speed = 15;
+    public x = 260;
+    public y = 260;
+    private steps: CircularList<string>;
+    private picture = Karateka.pictureRight;
+    private karatekaElement: HTMLImageElement;
 
-function ikpostToFront(){
-	var ikpost = document.getElementById('ik-cover');
-	ikpost.style.zIndex = '3';
-}
+    constructor() {
+        const pics = [Karateka.pictureRight, 'res/kw1.png', 'res/kw2.png', 'res/kw3.png'];
+        this.steps = new CircularList(pics);
+        this.karatekaElement = this.getWebElement();
+    }
 
-function moveKarateka(currentTime){
-    const timeSinceLastRender = currentTime - lastRenderTime;
+    flip() {
+        this.speed = -this.speed;
+        this.picture = (this.picture === Karateka.pictureLeft) ? Karateka.pictureRight : Karateka.pictureLeft;
+        this.setPicture();
+    }
 
-    if (timeSinceLastRender > 100 / fps) {
-		karateka.move();
-		
-		if (karateka.x < 260 || karateka.x > 1920)
-			karateka.flip();
-		
-		lastRenderTime = currentTime;
+    move() {
+        this.x += this.speed;
+        this.karatekaElement.style.left = `${this.x}px`;
+
+        if (this.x % (4 * this.speed) > 3) {
+            this.picture = this.steps.next();
+        }
+
+        this.setPicture();
+    }
+
+    setPicture() {
+        this.karatekaElement.setAttribute("src", this.picture);
+    }
+
+    getWebElement() {
+        return document.getElementById('karateka') as HTMLImageElement;
     }
 }
 
-console.log('hello');
+function moveKarateka(currentTime: number, karateka: Karateka) {
+    const timeSinceLastRender = currentTime - lastRenderTime;
 
+    if (timeSinceLastRender > 100 / fps) {
+        karateka.move();
 
-function animate(currentTime) {
-	moveKarateka(currentTime);
+        if (karateka.x < 260 || karateka.x > 1920) {
+            karateka.flip();
+        }
+
+        lastRenderTime = currentTime;
+    }
+}
+
+function animate(currentTime: number) {
+    moveKarateka(currentTime, karateka);
     requestAnimationFrame(animate);
 }
 
+console.log('hello');
 const karateka = new Karateka();
 requestAnimationFrame(animate);
