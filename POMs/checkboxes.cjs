@@ -15,6 +15,12 @@ class CheckboxesPage {
         const checkboxStatus = await checkbox.isChecked();
         return { checkboxText, checkboxStatus };
     }
+	
+	async clickCheckbox(checkboxIndex){
+		const checkboxSelector = `${this.checkboxLocator}:nth-of-type(${checkboxIndex})`;
+        const checkbox = await this.page.$(checkboxSelector);
+		await checkbox.click();
+	}
 
     async load() {
         await this.page.goto('https://the-internet.herokuapp.com/checkboxes');
