@@ -37,7 +37,12 @@ app.get('/example-com', async (req, res) => {
 	const link = await paragraph2.$('a');
 	const linkText = link ? await link.getAttribute('href') : 'No link';
     const paragraph2Text = paragraph2 ? await paragraph2.innerText() : 'No <h1> element found';
-
+	
+	await page.screenshot({
+        path: 'screenshots/example.com.png',
+        fullPage: true
+    });
+	
     await browser.close();
     res.send(`Title of the page is: ${title}<br>H1 Header is: ${h1Text}`
 	+ `<br/>First paragraph is:<br/>${paragraph1Text}`
@@ -53,11 +58,26 @@ app.get('/the-internet', async (req, res) => {
 	
     await page.goto('https://the-internet.herokuapp.com/');
     const title = await page.title();
-	//await page.waitForLoadState('DOMContentLoaded');
-	await page.waitForSelector('h1');
 	
-	const links = await page.$$('h1')
-    res.send(`Title of the page is: ${title}\n There are ${links.lenght} links on the page`);
+	const header = await page.$('h1')
+	const h1Text = header ? await header.innerText() : 'No <h1> element found';
+	
+	const links = await page.$$('ul > li');
+	const linksCount = links.length;
+	
+	await links[0].click();
+	
+	await page.screenshot({
+        path: 'screenshots/AB-fullpage-screenshot.png',
+        fullPage: true
+    });
+	const newPageTitle = await page.$('h3');
+	
+    res.send(`Title of the page is: ${title}<br/>`
+		+`Header is: ${h1Text}<br/>`
+		+`There are ${linksCount} links for available examples.<br/>`
+		+`Clicking the first link leads to ${newPageTitle}.<br/>`
+		);
 	
     await browser.close();
 });
