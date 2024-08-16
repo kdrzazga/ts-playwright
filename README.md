@@ -1,10 +1,5 @@
 # js-playwright
 
- npm init -y
+node server.js
 
- npx playwright install
- npm install @types/node
- npm install playwright@latest
- npm install typescript --save-dev
- npm test
- 
+Browse to http://localhost:3000
