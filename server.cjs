@@ -5,6 +5,7 @@ const { wait } = require('./lib.cjs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+let browser;
 
 app.get('/', (req, res) => {
     res.send(`
@@ -26,7 +27,7 @@ app.get('/', (req, res) => {
 
 
 app.get('/example-com', async (req, res) => {
-    const browser = await chromium.launch();
+    browser = await chromium.launch();
     const context = await browser.newContext();
     const page = await context.newPage();
 	
@@ -57,7 +58,7 @@ app.get('/example-com', async (req, res) => {
 });
 
 app.get('/the-internet', async (req, res) => {
-    const browser = await chromium.launch();
+    browser = await chromium.launch();
     const context = await browser.newContext();
     const page = await context.newPage();
 	
@@ -88,7 +89,7 @@ app.get('/the-internet', async (req, res) => {
 });
 
 app.get('/the-internet-add-remove', async (req, res) => {
-    const browser = await chromium.launch({ headless: false, slowMo: 100 });
+    browser = await chromium.launch({ headless: false, slowMo: 100 });
     const context = await browser.newContext();
     const page = await context.newPage();
 	
@@ -137,7 +138,7 @@ app.get('/the-internet-add-remove', async (req, res) => {
 });
 
 app.get('/the-internet-basic-auth', async (req, res) => {
-    const browser = await chromium.launch();
+    browser = await chromium.launch();
     var context = await browser.newContext();
     const page = await context.newPage();
 	
@@ -164,34 +165,43 @@ app.get('/the-internet-basic-auth', async (req, res) => {
     await browser.close();
 });
 
-app.get('/checkboxes', async (req, res) => {
-    const browser = await chromium.launch({ headless: false, slowMo: 100 });
-    const page = await browser.newPage();
-	
-    await page.goto('https://the-internet.herokuapp.com/checkboxes');
-    const title = await page.title();
-	let log = `Title of the page is: ${title}<br/>`;
-	console.log(title);
-	
-	const checkbox1Locator = '#checkboxes > input';
-	const checkbox1 = await page.$(checkbox1Locator);
-	const checkbox1Text = await checkbox1.innerText();
-	const checkbox1Status = await page.isChecked(checkbox1Locator);
-	
-	log += `${checkbox1Text} - check status is ${checkbox1Status}<br/>`;
-	await wait(2000);
-	
-	const checkbox2Locator = '#checkboxes > input';
-	const checkbox2 = await page.$$(checkbox2Locator)[1];
-	const checkbox2Text = await checkbox1.innerText();
-	const checkbox2Status = await page.isChecked(checkbox1Locator);
-	
-	log += `${checkbox2Text} - check status is ${checkbox2Status}<br/>`;
-	await wait(2000);
+async function getCheckboxDetails(page, checkboxIndex) {
+    const checkboxLocator = `#checkboxes > input:nth-of-type(${checkboxIndex + 1})`;
+    const checkbox = await page.$(checkboxLocator);
+    const checkboxText = await checkbox.evaluate(el => el.nextSibling.textContent.trim());
+    const checkboxStatus = await checkbox.isChecked();
+    
+    return { checkboxText, checkboxStatus };
+}
 
-	res.send(log);
-    await browser.close();
+app.get('/checkboxes', async (req, res) => {
+    if (!browser) {
+        browser = await chromium.launch({ headless: false, slowMo: 100 });
+    }
+    
+    const page = await browser.newPage();
+    await page.goto('https://the-internet.herokuapp.com/checkboxes');
+    
+    const title = await page.title();
+    let log = `Title of the page is: ${title}<br/>`;
+    console.log(title);
+    
+    const checkbox1Details = await getCheckboxDetails(page, 0);
+    log += `${checkbox1Details.checkboxText} - check status is ${checkbox1Details.checkboxStatus}<br/>`;
+    await page.waitForTimeout(2000);
+    
+    const checkbox2Details = await getCheckboxDetails(page, 1);
+    log += `${checkbox2Details.checkboxText} - check status is ${checkbox2Details.checkboxStatus}<br/>`;
+    await page.waitForTimeout(2000);
+    
+    res.send(log);
+	
+    if (browser) {
+        await browser.close();
+    }
 });
+
+
 
 
 app.listen(PORT, () => {
