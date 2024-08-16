@@ -12,8 +12,9 @@ app.get('/', (req, res) => {
             <title>Document Write Example</title>
         </head>
         <body>
-			<p><a href = 'http://localhost:3000/example-com'>Test 'example.com</a>https://example.com'</p>
-			<p><a href = 'http://localhost:3000/the-internet'>Test 'the-internet</a>https://the-internet.herokuapp.com/</p>
+			<p><a href = 'http://localhost:3000/example-com'>&nbspTest 'example.com</a>https://example.com'</p>
+			<p><a href = 'http://localhost:3000/the-internet'>&nbspTest 'the-internet</a>https://the-internet.herokuapp.com/</p>
+			<p><a href = 'http://localhost:3000/the-internet-add-remove'>&nbspTest 'the-internet Add/Remove Elements</a>https://the-internet.herokuapp.com/</p>
         </body>
         </html>
     `);
@@ -77,6 +78,50 @@ app.get('/the-internet', async (req, res) => {
 		+`Header is: ${h1Text}<br/>`
 		+`There are ${linksCount} links for available examples.<br/>`
 		+`Clicking the first link leads to ${newPageTitle}.<br/>`
+		);
+	
+    await browser.close();
+});
+
+app.get('/the-internet-add-remove', async (req, res) => {
+    const browser = await chromium.launch();
+    const context = await browser.newContext();
+    const page = await context.newPage();
+	
+    await page.goto('https://the-internet.herokuapp.com/add_remove_elements/');
+    const title = await page.title();
+	
+	const addButton = await page.$('.example > button');
+	const addButtonText = await addButton.innerText();
+	
+	for (var i = 0; i < 5; i++){
+		await addButton.click();
+	}
+	
+	await page.screenshot({
+        path: 'screenshots/Add-RemoveButton5.png',
+        fullPage: true
+    });
+	
+	var delButtons = await page.$$('#elements > .added-manually');
+	console.log (`There are ${delButtons.length} buttons`);
+	
+	for (var i =4 ; i > 2; i--){
+		const btn = await delButtons[i];
+		console.log(await btn.innerText());
+		await btn.click();
+	}
+	
+	await page.screenshot({
+        path: 'screenshots/Add-RemoveButton2.png',
+        fullPage: false
+    });
+	
+	var delButtons2 = await page.$$('#elements > .added-manually');
+	console.log (`After clicking 'Delete' there are ${delButtons2.length} buttons`);
+	
+    res.send(`Title of the page is: ${title}<br/>`
+		+`Add Button text is: ${addButtonText}<br/>`
 		);
 	
     await browser.close();
