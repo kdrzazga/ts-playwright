@@ -1,6 +1,8 @@
 const express = require('express');
 const { chromium } = require('playwright');
 
+const { wait } = require('./lib.cjs');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -15,6 +17,8 @@ app.get('/', (req, res) => {
 			<p><a href = 'http://localhost:3000/example-com'>&nbspTest 'example.com</a>https://example.com'</p>
 			<p><a href = 'http://localhost:3000/the-internet'>&nbspTest 'the-internet</a>https://the-internet.herokuapp.com/</p>
 			<p><a href = 'http://localhost:3000/the-internet-add-remove'>&nbspTest 'the-internet Add/Remove Elements</a>https://the-internet.herokuapp.com/</p>
+			<p><a href = 'http://localhost:3000/the-internet-basic-auth'>&nbspTest 'basic authentication'</a>https://the-internet.herokuapp.com/basic_auth</p>
+			<p><a href = 'http://localhost:3000/checkboxes'>&nbspTest 'checkboxes'</a>https://the-internet.herokuapp.com/checkboxes</p>
         </body>
         </html>
     `);
@@ -84,7 +88,7 @@ app.get('/the-internet', async (req, res) => {
 });
 
 app.get('/the-internet-add-remove', async (req, res) => {
-    const browser = await chromium.launch();
+    const browser = await chromium.launch({ headless: false, slowMo: 100 });
     const context = await browser.newContext();
     const page = await context.newPage();
 	
@@ -97,6 +101,8 @@ app.get('/the-internet-add-remove', async (req, res) => {
 	for (var i = 0; i < 5; i++){
 		await addButton.click();
 	}
+	
+	await wait(1500);
 	
 	await page.screenshot({
         path: 'screenshots/Add-RemoveButton5.png',
@@ -112,6 +118,8 @@ app.get('/the-internet-add-remove', async (req, res) => {
 		await btn.click();
 	}
 	
+	await wait(1500);
+	
 	await page.screenshot({
         path: 'screenshots/Add-RemoveButton2.png',
         fullPage: false
@@ -123,10 +131,67 @@ app.get('/the-internet-add-remove', async (req, res) => {
     res.send(`Title of the page is: ${title}<br/>`
 		+`Add Button text is: ${addButtonText}<br/>`
 		);
+
+	await wait(3500);	
+    await browser.close();
+});
+
+app.get('/the-internet-basic-auth', async (req, res) => {
+    const browser = await chromium.launch();
+    var context = await browser.newContext();
+    const page = await context.newPage();
+	
+    await page.goto('https://the-internet.herokuapp.com/basic_auth');
+    const title = await page.title();
+	console.log(`Navigated to ${title}.`);
+	
+	await page.screenshot({
+        path: 'screenshots/creds.png',
+        fullPage: true
+    });
+	context = await browser.newContext({
+        httpCredentials: {
+            username: 'admin',
+            password: 'admin'
+        }
+    });
+	
+	await page.screenshot({
+        path: 'screenshots/creds.png',
+        fullPage: true
+    });
 	
     await browser.close();
 });
 
+app.get('/checkboxes', async (req, res) => {
+    const browser = await chromium.launch({ headless: false, slowMo: 100 });
+    const page = await browser.newPage();
+	
+    await page.goto('https://the-internet.herokuapp.com/checkboxes');
+    const title = await page.title();
+	let log = `Title of the page is: ${title}<br/>`;
+	console.log(title);
+	
+	const checkbox1Locator = '#checkboxes > input';
+	const checkbox1 = await page.$(checkbox1Locator);
+	const checkbox1Text = await checkbox1.innerText();
+	const checkbox1Status = await page.isChecked(checkbox1Locator);
+	
+	log += `${checkbox1Text} - check status is ${checkbox1Status}<br/>`;
+	await wait(2000);
+	
+	const checkbox2Locator = '#checkboxes > input';
+	const checkbox2 = await page.$$(checkbox2Locator)[1];
+	const checkbox2Text = await checkbox1.innerText();
+	const checkbox2Status = await page.isChecked(checkbox1Locator);
+	
+	log += `${checkbox2Text} - check status is ${checkbox2Status}<br/>`;
+	await wait(2000);
+
+	res.send(log);
+    await browser.close();
+});
 
 
 app.listen(PORT, () => {
