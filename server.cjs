@@ -25,7 +25,6 @@ app.get('/', (req, res) => {
     `);
 });
 
-
 app.get('/example-com', async (req, res) => {
     browser = await chromium.launch();
     const context = await browser.newContext();
@@ -165,44 +164,55 @@ app.get('/the-internet-basic-auth', async (req, res) => {
     await browser.close();
 });
 
-async function getCheckboxDetails(page, checkboxIndex) {
-    const checkboxLocator = `#checkboxes > input:nth-of-type(${checkboxIndex + 1})`;
-    const checkbox = await page.$(checkboxLocator);
-    const checkboxText = await checkbox.evaluate(el => el.nextSibling.textContent.trim());
-    const checkboxStatus = await checkbox.isChecked();
-    
-    return { checkboxText, checkboxStatus };
+class CheckboxesPage {
+    constructor(page) {
+        this.page = page;
+        this.checkboxLocator = '#checkboxes > input';
+    }
+
+    async getTitle() {
+        return await this.page.title();
+    }
+
+    async getCheckboxDetails(checkboxIndex) {
+        const checkboxSelector = `${this.checkboxLocator}:nth-of-type(${checkboxIndex + 1})`;
+        const checkbox = await this.page.$(checkboxSelector);
+        const checkboxText = await checkbox.evaluate(el => el.nextSibling.textContent.trim());
+        const checkboxStatus = await checkbox.isChecked();
+        return { checkboxText, checkboxStatus };
+    }
+
+    async load() {
+        await this.page.goto('https://the-internet.herokuapp.com/checkboxes');
+    }
 }
 
 app.get('/checkboxes', async (req, res) => {
     if (!browser) {
         browser = await chromium.launch({ headless: false, slowMo: 100 });
     }
-    
+
     const page = await browser.newPage();
-    await page.goto('https://the-internet.herokuapp.com/checkboxes');
+    const checkboxesPage = new CheckboxesPage(page);
+
+    await checkboxesPage.load();
     
-    const title = await page.title();
+    const title = await checkboxesPage.getTitle();
     let log = `Title of the page is: ${title}<br/>`;
     console.log(title);
     
-    const checkbox1Details = await getCheckboxDetails(page, 0);
+    const checkbox1Details = await checkboxesPage.getCheckboxDetails(0);
     log += `${checkbox1Details.checkboxText} - check status is ${checkbox1Details.checkboxStatus}<br/>`;
     await page.waitForTimeout(2000);
     
-    const checkbox2Details = await getCheckboxDetails(page, 1);
+    const checkbox2Details = await checkboxesPage.getCheckboxDetails(1);
     log += `${checkbox2Details.checkboxText} - check status is ${checkbox2Details.checkboxStatus}<br/>`;
     await page.waitForTimeout(2000);
     
     res.send(log);
-	
-    if (browser) {
-        await browser.close();
-    }
+
+    await page.close(); 
 });
-
-
-
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
