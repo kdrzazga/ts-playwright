@@ -177,9 +177,9 @@ var Commodore64 = /** @class */ (function () {
     Commodore64.FPS = 2;
     Commodore64.BLUE = "#352879";
     Commodore64.LIGHTBLUE = "#6c5eb5";
-    Commodore64.welcomeScreenTimeoutCounterMax = 122;
-    Commodore64.commandoTimeoutCounterMax = 400;
-    Commodore64.commandoReloadCounterMax = 4;
+    Commodore64.welcomeScreenTimeoutCounterMax = 1520;
+    Commodore64.commandoTimeoutCounterMax = 300;
+    Commodore64.commandoReloadCounterMax = 2;
     return Commodore64;
 }());
 var width = 800;

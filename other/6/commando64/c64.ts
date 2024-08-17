@@ -2,9 +2,9 @@ class Commodore64 {
   static FPS = 2;
   static BLUE = "#352879";
   static LIGHTBLUE = "#6c5eb5";
-  static welcomeScreenTimeoutCounterMax = 122;
-  static commandoTimeoutCounterMax = 400;
-  static commandoReloadCounterMax = 4;
+  static welcomeScreenTimeoutCounterMax = 1520;
+  static commandoTimeoutCounterMax = 300;
+  static commandoReloadCounterMax = 2;
 
   private tableContentHeader: string[];
   private tableContent: string[];
