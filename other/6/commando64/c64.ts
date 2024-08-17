@@ -2,7 +2,7 @@ class Commodore64 {
   static FPS = 2;
   static BLUE = "#352879";
   static LIGHTBLUE = "#6c5eb5";
-  static welcomeScreenTimeoutCounterMax = 1220;
+  static welcomeScreenTimeoutCounterMax = 122;
   static commandoTimeoutCounterMax = 400;
   static commandoReloadCounterMax = 4;
 
@@ -123,7 +123,8 @@ class Commodore64 {
 	const timeSinceLastRender = currentTime - this.lastRenderTime;
 	
 	const grenade = document.getElementById('grenade');
-	if (this.grenadeY > 320) {
+	console.log('grenade' + this.grenadeY);
+	if (this.grenadeY > 120) {
 		grenade.style.display = 'block';
 		this.grenadeY -= 5;
 		
@@ -139,7 +140,7 @@ class Commodore64 {
 		const xchange = movementValues[key];
 		console.log(xchange);
 		
-		this.grenadeX += xchange;		
+		this.grenadeX += xchange;
 		grenade.style.top = new String(this.grenadeY) + 'px';
 		grenade.style.left = new String(this.grenadeX) + 'px';
 	}
@@ -179,9 +180,9 @@ class Commodore64 {
   initGame(){
 	this.commandoTimeoutCounter = Commodore64.commandoTimeoutCounterMax;
 	const board = document.getElementById('commodore64');
-	board.innerHTML = "<img src = 'resources/board.png' style='width: 90%; height: 90%;'></img>";
-	board.innerHTML += "<img id='commando' src = 'resources/U.PNG' style='position: absolute; top: 64%; left: 47%; z-index: 1;'></img>";
-	board.innerHTML += "<img id='grenade' src = 'resources/bottle.PNG' style='position: absolute; top: 64%; left: 50%; z-index: 1; width: calc(10% * 0.3); height: calc(30% * 0.3);'></img>";
+	board.innerHTML = "<img src = 'resources/board.png' style='width: 150%; height: 150%;'></img>";
+	board.innerHTML += "<img id='commando' src = 'resources/U.PNG' style='position: absolute; top: 54%; left: 47%; z-index: 1;'></img>";
+	board.innerHTML += "<img id='grenade' src = 'resources/bottle.PNG' style='position: absolute; top: 54%; left: 5%; z-index: 1; width: calc(10% * 0.3); height: calc(30% * 0.3);'></img>";
 	const grenade = document.getElementById('grenade');
 	this.grenadeX = grenade.offsetTop;//offsetTop is read-only
 	this.grenadeY = grenade.offsetLeft;
@@ -192,7 +193,7 @@ class Commodore64 {
 		var x = event.clientX;
 		const y = event.clientY;
 		
-		const commandoX = 460;
+		const commandoX = 260;
 		const commandoY = 520;
 	
 		if (x == commandoX) x++;		

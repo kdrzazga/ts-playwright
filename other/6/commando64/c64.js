@@ -93,7 +93,8 @@ var Commodore64 = /** @class */ (function () {
         var currentTime = performance.now();
         var timeSinceLastRender = currentTime - this.lastRenderTime;
         var grenade = document.getElementById('grenade');
-        if (this.grenadeY > 320) {
+        console.log('grenade' + this.grenadeY);
+        if (this.grenadeY > 120) {
             grenade.style.display = 'block';
             this.grenadeY -= 5;
             var movementValues = {
@@ -140,9 +141,9 @@ var Commodore64 = /** @class */ (function () {
     Commodore64.prototype.initGame = function () {
         this.commandoTimeoutCounter = Commodore64.commandoTimeoutCounterMax;
         var board = document.getElementById('commodore64');
-        board.innerHTML = "<img src = 'resources/board.png' style='width: 90%; height: 90%;'></img>";
-        board.innerHTML += "<img id='commando' src = 'resources/U.PNG' style='position: absolute; top: 64%; left: 47%; z-index: 1;'></img>";
-        board.innerHTML += "<img id='grenade' src = 'resources/bottle.PNG' style='position: absolute; top: 64%; left: 50%; z-index: 1; width: calc(10% * 0.3); height: calc(30% * 0.3);'></img>";
+        board.innerHTML = "<img src = 'resources/board.png' style='width: 150%; height: 150%;'></img>";
+        board.innerHTML += "<img id='commando' src = 'resources/U.PNG' style='position: absolute; top: 54%; left: 47%; z-index: 1;'></img>";
+        board.innerHTML += "<img id='grenade' src = 'resources/bottle.PNG' style='position: absolute; top: 54%; left: 5%; z-index: 1; width: calc(10% * 0.3); height: calc(30% * 0.3);'></img>";
         var grenade = document.getElementById('grenade');
         this.grenadeX = grenade.offsetTop; //offsetTop is read-only
         this.grenadeY = grenade.offsetLeft;
@@ -150,7 +151,7 @@ var Commodore64 = /** @class */ (function () {
         board.addEventListener('mousemove', function (event) {
             var x = event.clientX;
             var y = event.clientY;
-            var commandoX = 460;
+            var commandoX = 260;
             var commandoY = 520;
             if (x == commandoX)
                 x++;
@@ -176,7 +177,7 @@ var Commodore64 = /** @class */ (function () {
     Commodore64.FPS = 2;
     Commodore64.BLUE = "#352879";
     Commodore64.LIGHTBLUE = "#6c5eb5";
-    Commodore64.welcomeScreenTimeoutCounterMax = 1220;
+    Commodore64.welcomeScreenTimeoutCounterMax = 122;
     Commodore64.commandoTimeoutCounterMax = 400;
     Commodore64.commandoReloadCounterMax = 4;
     return Commodore64;
