@@ -179,14 +179,27 @@ app.get('/checkboxes', async (req, res) => {
     let log = `Title of the page is: ${title}<br/>`;
     console.log(title);
     
-    const checkbox1Details = await checkboxesPage.getCheckboxDetails(0);
+    let checkbox1Details = await checkboxesPage.getCheckboxDetails(0);
     log += `${checkbox1Details.checkboxText} - check status is ${checkbox1Details.checkboxStatus}<br/>`;
     await page.waitForTimeout(2000);
     
-    const checkbox2Details = await checkboxesPage.getCheckboxDetails(1);
+    let checkbox2Details = await checkboxesPage.getCheckboxDetails(1);
     log += `${checkbox2Details.checkboxText} - check status is ${checkbox2Details.checkboxStatus}<br/>`;
     await page.waitForTimeout(2000);
     
+	await checkboxesPage.clickCheckbox(1);
+	await checkboxesPage.clickCheckbox(2);
+	
+	log += 'After clicking:<br/>';
+	
+	checkbox1Details = await checkboxesPage.getCheckboxDetails(0);
+    log += `${checkbox1Details.checkboxText} - check status is ${checkbox1Details.checkboxStatus}<br/>`;
+    await page.waitForTimeout(2000);
+    
+    checkbox2Details = await checkboxesPage.getCheckboxDetails(1);
+    log += `${checkbox2Details.checkboxText} - check status is ${checkbox2Details.checkboxStatus}<br/>`;
+    await page.waitForTimeout(2000);
+	
     res.send(log);
 
     await page.close(); 
