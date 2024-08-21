@@ -1,3 +1,15 @@
+var CircularList = /** @class */ (function () {
+    function CircularList(list) {
+        this.list = list;
+        this.index = 0;
+    }
+    CircularList.prototype.next = function () {
+        var result = this.list[this.index];
+        this.index = (this.index + 1) % this.list.length;
+        return result;
+    };
+    return CircularList;
+}());
 var Commodore64 = /** @class */ (function () {
     function Commodore64() {
         this.blink = true;
@@ -37,6 +49,8 @@ var Commodore64 = /** @class */ (function () {
         this.canvas.width = 16;
         this.canvas.height = 16;
         this.ctx = this.canvas.getContext('2d');
+        this.commandoImages = new CircularList(['resources/LU.png', 'resources/U.png', 'resources/RU.png']);
+        this.currentCommandoImg = this.commandoImages.next();
     }
     Commodore64.prototype.generateHtml = function () {
         var html = [];
@@ -88,33 +102,18 @@ var Commodore64 = /** @class */ (function () {
             this.initGame();
         }
     };
-    Commodore64.prototype.grenadeLaunch = function () {
+    Commodore64.prototype.rotateCommando = function () {
         var _this = this;
         var currentTime = performance.now();
         var timeSinceLastRender = currentTime - this.lastRenderTime;
-        var grenade = document.getElementById('grenade');
-        console.log('grenade' + this.grenadeY);
-        if (this.grenadeY > 120) {
-            grenade.style.display = 'block';
-            this.grenadeY -= 5;
-            var movementValues = {
-                'U.PNG': 0,
-                'LU.PNG': -5,
-                'RU.PNG': 5
-            };
-            var commandoImg = document.getElementById('commando');
-            var path = commandoImg.getAttribute("src");
-            var key = path.split('/').pop(); //split - returns array, pop - last element from array
-            var xchange = movementValues[key];
-            console.log(xchange);
-            this.grenadeX += xchange;
-            grenade.style.top = new String(this.grenadeY) + 'px';
-            grenade.style.left = new String(this.grenadeX) + 'px';
+        var commandoWebElement = document.getElementById('commando');
+        commandoWebElement.setAttribute("src", this.currentCommandoImg);
+        this.commandoImgChangeCounter++;
+        if (this.commandoImgChangeCounter > 32) {
+            this.currentCommandoImg = this.commandoImages.next();
+            this.commandoImgChangeCounter = 0;
         }
-        else {
-            grenade.style.display = 'none';
-        }
-        this.animationFrameID = requestAnimationFrame(function () { return _this.grenadeLaunch(); });
+        this.animationFrameID = requestAnimationFrame(function () { return _this.rotateCommando(); });
         this.commandoTimeoutCounter--;
         if (this.commandoTimeoutCounter < 0) {
             cancelAnimationFrame(this.animationFrameID);
@@ -143,30 +142,12 @@ var Commodore64 = /** @class */ (function () {
         var board = document.getElementById('commodore64');
         board.innerHTML = "<img src = 'resources/board.png' style='width: 150%; height: 150%;'></img>";
         board.innerHTML += "<img id='commando' src = 'resources/U.PNG' style='position: absolute; top: 54%; left: 47%; z-index: 1;'></img>";
-        board.innerHTML += "<img id='grenade' src = 'resources/bottle.PNG' style='position: absolute; top: 54%; left: 5%; z-index: 1; width: calc(10% * 0.3); height: calc(30% * 0.3);'></img>";
+        board.innerHTML += "<img id='grenade' src = 'resources/bottle.PNG' style='position: absolute; top: 24%; left: 25%; z-index: 1; width: calc(10% * 0.3); height: calc(30% * 0.3);'></img>";
         var grenade = document.getElementById('grenade');
         this.grenadeX = grenade.offsetTop; //offsetTop is read-only
-        this.grenadeY = grenade.offsetLeft;
+        this.commandoImgChangeCounter = grenade.offsetLeft;
         var commandoImg = document.getElementById('commando');
-        board.addEventListener('mousemove', function (event) {
-            var x = event.clientX;
-            var y = event.clientY;
-            var commandoX = 260;
-            var commandoY = 520;
-            if (x == commandoX)
-                x++;
-            var angle = Math.atan((y - commandoY) / (x - commandoX));
-            var url = "resources/RU.PNG";
-            if (Math.abs(angle) > 1) {
-                url = "resources/U.PNG";
-            }
-            else if (angle > 0) {
-                url = "resources/LU.PNG";
-            }
-            commandoImg.setAttribute("src", url);
-            //console.log(`Mouse is hovering over the board at coordinates (${x}, ${y}) angle = ${angle}`);
-        });
-        this.grenadeLaunch();
+        this.rotateCommando();
         this.commandoReloadCounter--;
         console.log(this.commandoReloadCounter);
         if (this.commandoReloadCounter < 0) {

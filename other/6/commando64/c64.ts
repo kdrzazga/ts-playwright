@@ -1,3 +1,19 @@
+class CircularList<T> {
+    private list: T[];
+    private index: number;
+
+    constructor(list: T[]) {
+        this.list = list;
+        this.index = 0;
+    }
+
+    public next(): T {
+        let result = this.list[this.index];
+        this.index = (this.index + 1) % this.list.length;
+        return result;
+    }
+}
+
 class Commodore64 {
   static FPS = 2;
   static BLUE = "#352879";
@@ -19,6 +35,9 @@ class Commodore64 {
   private animationFrameID;
   private grenadeX: number;
   private grenadeY: number;
+  private currentCommandoImg: string;
+  private commandoImages;
+  private commandoImgChangeCounter;
 
   constructor() {
     this.tableContentHeader = [
@@ -58,6 +77,9 @@ class Commodore64 {
 	this.canvas.width = 16;
 	this.canvas.height = 16;
 	this.ctx = this.canvas.getContext('2d');
+	
+	this.commandoImages = new CircularList(['resources/LU.png', 'resources/U.png', 'resources/RU.png']);
+	this.currentCommandoImg = this.commandoImages.next();
   }
 
   generateHtml(): string {
@@ -118,37 +140,21 @@ class Commodore64 {
 	}
   }
   
-  grenadeLaunch() {
+  rotateCommando() {
 	const currentTime = performance.now();
 	const timeSinceLastRender = currentTime - this.lastRenderTime;
 	
-	const grenade = document.getElementById('grenade');
-	console.log('grenade' + this.grenadeY);
-	if (this.grenadeY > 120) {
-		grenade.style.display = 'block';
-		this.grenadeY -= 5;
-		
-		const movementValues = {
-			'U.PNG': 0,
-			'LU.PNG': -5,
-			'RU.PNG': 5
-		};
-		
-		const commandoImg = document.getElementById('commando');
-		const path = commandoImg.getAttribute("src");
-		const key = path.split('/').pop(); //split - returns array, pop - last element from array
-		const xchange = movementValues[key];
-		console.log(xchange);
-		
-		this.grenadeX += xchange;
-		grenade.style.top = new String(this.grenadeY) + 'px';
-		grenade.style.left = new String(this.grenadeX) + 'px';
-	}
-	else {
-		grenade.style.display = 'none';
+	const commandoWebElement = document.getElementById('commando');
+	commandoWebElement.setAttribute("src", this.currentCommandoImg);
+
+	this.commandoImgChangeCounter++;
+	
+	if (this.commandoImgChangeCounter > 32) {
+		this.currentCommandoImg = this.commandoImages.next();
+		this.commandoImgChangeCounter = 0;
 	}
 	
-    this.animationFrameID = requestAnimationFrame(() => this.grenadeLaunch());
+    this.animationFrameID = requestAnimationFrame(() => this.rotateCommando());
 	
 	this.commandoTimeoutCounter--;
 	
@@ -182,36 +188,14 @@ class Commodore64 {
 	const board = document.getElementById('commodore64');
 	board.innerHTML = "<img src = 'resources/board.png' style='width: 150%; height: 150%;'></img>";
 	board.innerHTML += "<img id='commando' src = 'resources/U.PNG' style='position: absolute; top: 54%; left: 47%; z-index: 1;'></img>";
-	board.innerHTML += "<img id='grenade' src = 'resources/bottle.PNG' style='position: absolute; top: 54%; left: 5%; z-index: 1; width: calc(10% * 0.3); height: calc(30% * 0.3);'></img>";
+	board.innerHTML += "<img id='grenade' src = 'resources/bottle.PNG' style='position: absolute; top: 24%; left: 25%; z-index: 1; width: calc(10% * 0.3); height: calc(30% * 0.3);'></img>";
 	const grenade = document.getElementById('grenade');
 	this.grenadeX = grenade.offsetTop;//offsetTop is read-only
-	this.grenadeY = grenade.offsetLeft;
+	this.commandoImgChangeCounter = grenade.offsetLeft;
 	
 	const commandoImg = document.getElementById('commando');
 	
-	board.addEventListener('mousemove', (event) => {
-		var x = event.clientX;
-		const y = event.clientY;
-		
-		const commandoX = 260;
-		const commandoY = 520;
-	
-		if (x == commandoX) x++;		
-		var angle = Math.atan((y - commandoY)/(x - commandoX));
-		
-		var url = "resources/RU.PNG";		
-		if (Math.abs(angle) > 1){
-			url = "resources/U.PNG";
-		}
-		else if (angle > 0){
-			url = "resources/LU.PNG";
-		}			
-		commandoImg.setAttribute("src", url);
-	
-		//console.log(`Mouse is hovering over the board at coordinates (${x}, ${y}) angle = ${angle}`);
-	});
-	
-	this.grenadeLaunch();
+	this.rotateCommando();
 	this.commandoReloadCounter--;
 	console.log(this.commandoReloadCounter);
 	
