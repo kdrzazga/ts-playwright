@@ -2,7 +2,7 @@ function play() {
   var audioArray = [
     ['resources/LN1wastelands.mp3', (2 * 60 + 0) * 1000, 'LAST NINJA 1 - WASTELANDS'],//2	
     ['resources/wilderness.mp3', (4 * 60 + 40) * 1000, 'WILDERNESS'],//4
-    ['resources/BB.mp3', (1 * 45) * 1000, 'BUBBLE BOBBLE'],
+    ['resources/BB.mp3', (1 * 60) * 1000, 'BUBBLE BOBBLE'],
     ['../commando64/resources/commando.mp3', (4 * 60 + 40) * 1000, 'COMMANDO (piano version)'],  //4
     ['resources/fst.mp3', (1 * 42) * 1000, 'FST'],
     ['resources/supremacy.mp3', (4 * 60) * 1000, 'SUPREMACY'],//4
