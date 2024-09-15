@@ -3,6 +3,7 @@ const { chromium } = require('playwright');
 
 const { wait } = require('./lib.cjs');
 const CheckboxesPage = require('./POMs/checkboxes.cjs');
+const InternetPage = require('./InternetPage');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -88,53 +89,39 @@ app.get('/the-internet', async (req, res) => {
     await browser.close();
 });
 
+
 app.get('/the-internet-add-remove', async (req, res) => {
-    browser = await chromium.launch({ headless: false, slowMo: 100 });
+    const browser = await chromium.launch({ headless: false, slowMo: 100 });
     const context = await browser.newContext();
     const page = await context.newPage();
-	
-    await page.goto('https://the-internet.herokuapp.com/add_remove_elements/');
-    const title = await page.title();
-	
-	const addButton = await page.$('.example > button');
-	const addButtonText = await addButton.innerText();
-	
-	for (var i = 0; i < 5; i++){
-		await addButton.click();
-	}
-	
-	await wait(1500);
-	
-	await page.screenshot({
-        path: 'screenshots/Add-RemoveButton5.png',
-        fullPage: true
-    });
-	
-	var delButtons = await page.$$('#elements > .added-manually');
-	console.log (`There are ${delButtons.length} buttons`);
-	
-	for (var i =4 ; i > 2; i--){
-		const btn = await delButtons[i];
-		console.log(await btn.innerText());
-		await btn.click();
-	}
-	
-	await wait(1500);
-	
-	await page.screenshot({
-        path: 'screenshots/Add-RemoveButton2.png',
-        fullPage: false
-    });
-	
-	var delButtons2 = await page.$$('#elements > .added-manually');
-	console.log (`After clicking 'Delete' there are ${delButtons2.length} buttons`);
-	
-    res.send(`Title of the page is: ${title}<br/>`
-		+`Add Button text is: ${addButtonText}<br/>`
-		);
+    
+    const internetPage = new InternetPage(page);
+    
+    await internetPage.navigate('http://localhost:8080');
+    const title = await internetPage.getTitle();
+    
+    const addButtonText = await internetPage.getAddButtonText();
+    console.log('Fetched inner text from the button: ' + addButtonText);
+    
+    // Add 7 buttons
+    await internetPage.addButtons(7);
 
-	await wait(3500);	
+    // Take a screenshot
+    await internetPage.takeScreenshot('screenshots/the-internet.AddButton.png');
+    
+    // Count and click "Remove Me" buttons
+    let removeMeButtonCount = await internetPage.getRemoveMeButtonCount();
+    console.log('"Remove Me" buttons that appeared: ' + removeMeButtonCount);
+    
+    await internetPage.clickRemoveMeButtons();
+    
+    removeMeButtonCount = await internetPage.getRemoveMeButtonCount();
+    console.log('Now the number of "Remove Me" buttons is: ' + removeMeButtonCount);
+    
+    await new Promise(resolve => setTimeout(resolve, 3500)); // Wait for 3.5 seconds
     await browser.close();
+    
+    res.send(`Title: ${title}, Add Button Text: ${addButtonText}, "Remove Me" buttons that appeared: ${removeMeButtonCount}`);
 });
 
 app.get('/the-internet-basic-auth', async (req, res) => {

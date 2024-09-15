@@ -9,8 +9,12 @@ class Commodore64 {
   private canvas;
   private canvasContainer;
   private ctx;
+  private blinkLogoCounterMax = 300;
+  private blinkLogoCounter;
 
   constructor() {
+	this.blinkLogoCounter = this.blinkLogoCounterMax;
+	
     this.tableContent = [
       "&nbsp",		
       "<center>    &nbsp**** COMMODORE 64 BASIC V2 ****&nbsp    </center>",
@@ -67,7 +71,17 @@ class Commodore64 {
 	const currentTime = performance.now();
 	const timeSinceLastRender = currentTime - this.lastRenderTime;
 	
-	if (timeSinceLastRender >= 1000 / Commodore64.FPS) {
+	this.blinkCursor(currentTime, timeSinceLastRender);
+	this.blinkLogo();
+    requestAnimationFrame(() => this.blinker());
+  }
+  
+  private blinkLogo(){
+  
+  }
+  
+  private blinkCursor(currentTime, timeSinceLastRender){
+ 	if (timeSinceLastRender >= 1000 / Commodore64.FPS) {
 	    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         if (this.blink) {
           this.ctx.fillStyle = Commodore64.LIGHTBLUE;
@@ -80,8 +94,7 @@ class Commodore64 {
 		this.lastRenderTime = currentTime;
 	}
 	
-	console.log("blink = " + this.blink);
-    requestAnimationFrame(() => this.blinker());
+	console.log("blink = " + this.blink); 
   }
 }
 
