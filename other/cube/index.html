@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Animation with Three.js</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+</head>
+<body style="bgcolor='#000000'">
+
+    <div id="slider-container">
+        <input type="range" id="speed-vertical" min="0" max="10" value="5" />
+        <label for="speed-vertical">Speed vertical</label>
+        &nbsp
+        <input type="range" id="speed-horizontal" min="0" max="10" value="5" />
+        <label for="speed-horizontal">Speed horizontal</label>
+		&nbsp
+		<button id="change-color">Change Color</button>
+		&nbsp
+		ZOOM
+		&nbsp
+		<button id="zoom-in">+</button>
+		&nbsp
+		<button id="zoom-out">&nbsp-</button>
+		&nbsp
+    </div>
+    <script src="three.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
