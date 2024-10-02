@@ -1,6 +1,8 @@
 const speedVerticalSlider = document.getElementById('speed-vertical');
 const speedHorizontalSlider = document.getElementById('speed-horizontal');
 const changeColorButton = document.getElementById('change-color');
+const zoomInButton = document.getElementById('zoom-in');
+const zoomOutButton = document.getElementById('zoom-out');
 
 const scene = new THREE.Scene();
 
@@ -52,6 +54,15 @@ changeColorButton.addEventListener('click', () => {
     const randomIndex = Math.floor(Math.random() * predefinedColors.length); 
     const randomColor = predefinedColors[randomIndex]; 
     cube.material.color.set(randomColor); 
+});
+
+
+zoomInButton.addEventListener('click', () => {
+    camera.position.z -= 0.5; // Zoom in
+});
+
+zoomOutButton.addEventListener('click', () => {
+    camera.position.z += 0.5; // Zoom out
 });
 
 window.addEventListener('resize', () => {
