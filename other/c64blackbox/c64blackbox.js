@@ -10,7 +10,7 @@ class C64Blackbox {
         this.delta = 0.006;
         this.runningTime = 0;
         this.blinkInterval = 100;
-        this.cursorSize = C64Blackbox.rowHeight - 4;
+        this.cursorSize = C64Blackbox.rowHeight - 7;
         this.cursorPosition = { x: Math.floor(this.cursorSize / 2) + 1, y: 6.5 * C64Blackbox.rowHeight };
         this.cursorVisible = true;
 
@@ -24,7 +24,7 @@ class C64Blackbox {
 
         const canvas = document.createElement('canvas');
         const context = canvas.getContext('2d');
-        canvas.width = 512;
+        canvas.width = 520;
         canvas.height = 512;
 
         context.fillStyle = '#494949';
@@ -32,9 +32,9 @@ class C64Blackbox {
         context.fillStyle = C64Blackbox.backgroundColor;
         context.fillRect(0, 90, canvas.width, canvas.height);
         context.fillStyle = '#979797';
-        context.font = '20px Arial';
+        context.font = '13px c64mono';
         context.fillText('* C-64 BASIC IMPROVED BY BLACK BOX V.3 *', 0, 2 * C64Blackbox.rowHeight);
-        context.fillText('64K RAM SYSTEM   38911   BASIC BYTES FREE', 0, 4 * C64Blackbox.rowHeight);
+        context.fillText('64K RAM SYSTEM   38911  BASIC BYTES FREE', 0, 4 * C64Blackbox.rowHeight);
         context.fillStyle = 'black';
         context.fillText('READY.', 0, 120);
 
