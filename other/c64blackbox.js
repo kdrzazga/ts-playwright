@@ -1,7 +1,7 @@
-class ThreeDScene {
-	static backgroundColor = '#979797';
-	static rowHeight = 20;
-	
+class C64Blackbox {
+    static backgroundColor = '#979797';
+    static rowHeight = 20;
+
     constructor() {
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -10,9 +10,9 @@ class ThreeDScene {
         this.delta = 0.006;
         this.runningTime = 0;
         this.blinkInterval = 100;
-        this.cursorSize = 10;
-        this.cursorPosition = { x: Math.floor(this.cursorSize / 2) + 1, y: 256 };
-		this.cursorVisible = true;
+        this.cursorSize = C64Blackbox.rowHeight - 4;
+        this.cursorPosition = { x: Math.floor(this.cursorSize / 2) + 1, y: 6.5 * C64Blackbox.rowHeight };
+        this.cursorVisible = true;
 
         this.init();
     }
@@ -29,12 +29,12 @@ class ThreeDScene {
 
         context.fillStyle = '#494949';
         context.fillRect(0, 0, canvas.width, canvas.height);
-        context.fillStyle = ThreeDScene.backgroundColor;
+        context.fillStyle = C64Blackbox.backgroundColor;
         context.fillRect(0, 90, canvas.width, canvas.height);
         context.fillStyle = '#979797';
         context.font = '20px Arial';
-        context.fillText('* C-64 BASIC IMPROVED BY BLACK BOX V.3 *', 0, 2 * ThreeDScene.rowHeight);
-        context.fillText('64K RAM SYSTEM   38911   BASIC BYTES FREE', 0, 4 * ThreeDScene.rowHeight);
+        context.fillText('* C-64 BASIC IMPROVED BY BLACK BOX V.3 *', 0, 2 * C64Blackbox.rowHeight);
+        context.fillText('64K RAM SYSTEM   38911   BASIC BYTES FREE', 0, 4 * C64Blackbox.rowHeight);
         context.fillStyle = 'black';
         context.fillText('READY.', 0, 120);
 
@@ -50,31 +50,27 @@ class ThreeDScene {
     }
 
     blinkCursor() {
-		if (this.runningTime % this.blinkInterval == Math.floor(this.blinkInterval / 2)){
-			this.cursorVisible = true;
-		}
-
-		else if (this.runningTime % this.blinkInterval == 0){
-			this.cursorVisible = false;
-		}
+        if (this.runningTime % this.blinkInterval == Math.floor(this.blinkInterval / 2)) {
+            this.cursorVisible = true;
+        } else if (this.runningTime % this.blinkInterval == 0) {
+            this.cursorVisible = false;
+        }
 
         const context = this.texture.image.getContext('2d');
-		
-		var x = this.cursorPosition.x - this.cursorSize / 2
-		var y = this.cursorPosition.y - this.cursorSize / 2
-		
+        
+        var x = this.cursorPosition.x - this.cursorSize / 2;
+        var y = this.cursorPosition.y - this.cursorSize / 2;
+        
         context.clearRect(x, y, this.cursorSize, this.cursorSize);
-		
-		
+        
         if (this.cursorVisible) {
-			console.log('curr visible')
             context.fillStyle = 'black';
             context.fillRect(x, y, this.cursorSize, this.cursorSize);
-        }
-		else {
-            context.fillStyle = ThreeDScene.backgroundColor;
+        } else {
+            context.fillStyle = C64Blackbox.backgroundColor;
             context.fillRect(x, y, this.cursorSize, this.cursorSize);			
-		}
+        }
+        
         this.texture.needsUpdate = true;
     }
 
@@ -96,4 +92,4 @@ class ThreeDScene {
     }
 }
 
-const myScene = new ThreeDScene();
+const c64 = new C64Blackbox();
