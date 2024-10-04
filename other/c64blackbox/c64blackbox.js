@@ -46,6 +46,7 @@ class C64Blackbox {
 
         this.camera.position.z = 5;
 
+		window.addEventListener('keydown', this.handleKeyDown.bind(this));
         this.animate();
     }
 
@@ -73,6 +74,21 @@ class C64Blackbox {
         
         this.texture.needsUpdate = true;
     }
+	
+	handleKeyDown(event) {
+		const keyMapping = {
+			'F1': ['F1', 112, '1', 'q', 'a'],
+			'F2': ['F2', 113, '2', 'w', 's'],
+			'F4': ['F4', 115, '3', '4', 'e', 'd']
+		};
+	
+		for (const [key, values] of Object.entries(keyMapping)) {
+			if (values.includes(event.key) || values.includes(event.keyCode)) {
+				console.log(`${key} or ${values.join(', ')} was pressed`);
+				break;
+			}
+		}
+	}
 
     conditionalReset() {
         if (this.plane.rotation.y < -0.80 * Math.PI / 2 || this.plane.rotation.y > 0.80 * Math.PI / 2) {
