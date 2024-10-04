@@ -13,9 +13,9 @@ class C64Blackbox {
         this.runningTime = 0;
         this.blinkInterval = 100;
         this.cursorSize = C64Blackbox.rowHeight - 7;
-        this.cursorPosition = { x: Math.floor(this.cursorSize / 2) + 1, y: 6.5 * C64Blackbox.rowHeight };
         this.cursorVisible = true;
         this.texture = null; // Initialize texture to null
+		this.context = null
 
         this.init();
     }
@@ -26,7 +26,7 @@ class C64Blackbox {
         document.body.appendChild(this.renderer.domElement);
 
         const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d');
+        this.context = canvas.getContext('2d');
         canvas.width = 520;
         canvas.height = 512;
 
@@ -34,7 +34,7 @@ class C64Blackbox {
         const planeMaterial = new THREE.MeshBasicMaterial({ map: this.texture });
         this.plane = new THREE.Mesh(this.planeGeometry, planeMaterial);
         this.plane.rotation.x = -Math.PI / 12;
-		this.drawInitialText(context); // Draw initial text on the canvas
+		this.drawInitialText(this.context); // Draw initial text on the canvas
         this.scene.add(this.plane);
 
         this.camera.position.z = 5;
@@ -44,6 +44,7 @@ class C64Blackbox {
     }
 
     drawInitialText(context) {
+        this.cursorPosition = { x: Math.floor(this.cursorSize / 2) + 1, y: 6.5 * C64Blackbox.rowHeight };
 		C64Blackbox.backgroundColor = C64Blackbox.lightgrayColor;
         context.fillStyle = '#494949';
         context.fillRect(0, 0, context.canvas.width, context.canvas.height);
@@ -54,7 +55,7 @@ class C64Blackbox {
         context.fillText('* C-64 BASIC IMPROVED BY BLACK BOX V.3 *', 0, 2 * C64Blackbox.rowHeight);
         context.fillText('64K RAM SYSTEM   38911  BASIC BYTES FREE', 0, 4 * C64Blackbox.rowHeight);
         context.fillStyle = 'black';
-        context.fillText('READY.', 0, 120);
+        context.fillText('READY.', 0, 6 * C64Blackbox.rowHeight);
 		context.fillStyle = '#494949';
         
         this.texture.needsUpdate = true; // Notify the texture that it should update
@@ -82,6 +83,13 @@ class C64Blackbox {
 
     handleF4() {
         console.log('3, 4 or F4 was pressed');
+		
+		this.clearCursor(this.context);
+		
+		this.context.fillStyle = 'black';
+        this.context.fillText(String.fromCharCode(0xe05f) + 'K&A', 0, 7 * C64Blackbox.rowHeight);
+        this.context.fillText('READY.', 0, 9 * C64Blackbox.rowHeight);
+		this.cursorPosition = { x: Math.floor(this.cursorSize / 2) + 1, y: 9.5 * C64Blackbox.rowHeight }
     }
 
     handleKeyDown(event) {
@@ -122,12 +130,19 @@ class C64Blackbox {
             context.fillStyle = 'black';
             context.fillRect(x, y, this.cursorSize, this.cursorSize);
         } else {
-            context.fillStyle = C64Blackbox.backgroundColor;
-            context.fillRect(x, y, this.cursorSize, this.cursorSize);			
+			this.clearCursor(context);
         }
         
         this.texture.needsUpdate = true;
     }
+	
+	clearCursor(context){
+        var x = this.cursorPosition.x - this.cursorSize / 2;
+        var y = this.cursorPosition.y - this.cursorSize / 2;
+		
+		context.fillStyle = C64Blackbox.backgroundColor;
+        context.fillRect(x, y, this.cursorSize, this.cursorSize);			
+	}
 	
     conditionalRotationReset() {
         if (this.plane.rotation.y < -0.80 * Math.PI / 2 || this.plane.rotation.y > 0.80 * Math.PI / 2) {
