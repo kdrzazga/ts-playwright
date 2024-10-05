@@ -3,6 +3,8 @@ class Globals{
 	
     static lightgrayColor = '#b3b3b3';
     static backgroundColor = Globals.lightgrayColor;
+	static screenWidth = 520;
+	static screenHeight = 512;
     static colors = ['black', 'white', 'red', 'cyan', 'magenta', 'green', 'blue', 'yellow', '#675200', '#c33d00', '#c18178', '#606060', '#8a8a8a', '#b3ec91', '#867ade', Globals.lightgrayColor];
 }
 
@@ -19,6 +21,7 @@ class C64Blackbox {
         this.texture = null;
 		this.context = null
 		this.cursor = null;
+		this.game = new Game();
 
         this.init();
     }
@@ -30,8 +33,8 @@ class C64Blackbox {
 
         const canvas = document.createElement('canvas');
         this.context = canvas.getContext('2d');
-        canvas.width = 520;
-        canvas.height = 512;
+        canvas.width = Globals.screenWidth;
+        canvas.height = Globals.screenHeight;
 
         this.texture = new THREE.CanvasTexture(canvas);
         const planeMaterial = new THREE.MeshBasicMaterial({ map: this.texture });
@@ -73,12 +76,14 @@ class C64Blackbox {
 
     handleF1() {
         console.log('1 or F1 was pressed');
+		this.game.reset();
 		Globals.backgroundColor = Globals.lightgrayColor;
         this.clearOutput();
     }
 
     handleF2() {
         console.log('2 or F2 was pressed');
+		this.game.reset();
 		this.cursor.clear();
 		const context = this.texture.image.getContext('2d');
 		context.fillStyle = 'black';
@@ -105,6 +110,7 @@ class C64Blackbox {
     handleF4() {
         console.log('3, 4 or F4 was pressed');
 		
+		this.game.reset();
 		this.cursor.clear();		
 		this.context.fillStyle = 'black';
         this.context.fillText(String.fromCharCode(0xe05f) + 'K&A+', 0, 7 * C64Blackbox.rowHeight);
@@ -113,6 +119,32 @@ class C64Blackbox {
 		
 		this.loadPicture('logo.png', 0, 8 * C64Blackbox.rowHeight);
     }
+	
+	handleF6(){
+		console.log('F4 was pressed. Simple game');
+		this.game.reset();
+		this.game.activate();
+	}
+	handleUp(){
+		if (this.game.active){
+			console.log('UP key was pressed.');
+		}
+	}
+	handleDown(){
+		if (this.game.active){
+			console.log('DOWN key was pressed.');
+		}
+	}
+	handleLeft(){
+		if (this.game.active){
+			console.log('LEFT key was pressed.');
+		}
+	}
+	handleRight(){
+		if (this.game.active){
+			console.log('RIGHT key was pressed.');
+		}
+	}
 	
 	loadPicture(fileName, x, y) {
 		let pictureLoader = new PictureLoader(this.context);
@@ -124,13 +156,23 @@ class C64Blackbox {
         const keyMapping = {
             'F1': this.handleF1.bind(this),
             'F2': this.handleF2.bind(this),
-            'F4': this.handleF4.bind(this)
+            'F4': this.handleF4.bind(this),
+            'F6': this.handleF6.bind(this),
+            'w': this.handleUp.bind(this),
+            's': this.handleDown.bind(this),
+            'a': this.handleLeft.bind(this),
+            'd': this.handleRight.bind(this)
         };
 
         const keyTriggers = {
-            'F1': ['F1', 112, '1', 'q', 'a', 'z'],
-            'F2': ['F2', 113, '2', 'w', 's', 'x'],
-            'F4': ['F4', 115, '3', '4', 'e', 'd', 'c']
+            'F1': ['F1', 112, '1', '7', 'u', 'j'],
+            'F2': ['F2', 113, '2', '8', 'i', 'k'],
+            'F4': ['F4', 115, '3', '4', '9', 'o', 'l'],
+            'F6': ['F6', 117, '5', '0', 'p', ';'],
+			'w': ['w'],
+			's': ['s'],
+			'a': ['a'],
+			'd': ['d']
         };
 
         for (const [key, values] of Object.entries(keyTriggers)) {
@@ -232,6 +274,30 @@ class PictureLoader{
 		});
 	}
 	
+}
+
+class Player{
+	constructor(){
+		this.x = Math.floor(Globals.screenWidth / 2);
+	}
+}
+
+class Game{
+	constructor(){
+		this.reset();
+	}
+	
+	activate(){
+		this.active = true;
+		console.log("Game started.");
+	}
+	
+	reset(){
+		this.active = false;
+		this.player = new Player();
+		
+		console.log("Game reset.");
+	}
 }
 
 const c64 = new C64Blackbox();
