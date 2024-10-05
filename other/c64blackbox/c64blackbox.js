@@ -90,33 +90,13 @@ class C64Blackbox {
         this.context.fillText('READY.', 0, 13 * C64Blackbox.rowHeight);
 		this.cursor.position = { x: Math.floor(this.cursor.size / 2) + 1, y: 13.5 * C64Blackbox.rowHeight }
 		
-		this.loadPicture(0, 8 * C64Blackbox.rowHeight);
+		this.loadPicture('logo.png', 0, 8 * C64Blackbox.rowHeight);
     }
 	
-	loadPicture(x, y) {
-		const textureLoader = new THREE.TextureLoader();
-	
-		textureLoader.load('logo.png', (texture) => {
-			
-			const tmpCanvas = document.createElement('canvas');
-			const tmpCtx = tmpCanvas.getContext('2d');
-			
-			tmpCanvas.width = this.context.canvas.width;
-			tmpCanvas.height = this.context.canvas.height;
-			
-			tmpCtx.drawImage(this.context.canvas, 0, 0);
-			
-			tmpCtx.drawImage(texture.image, x, y);
-			
-			this.context.clearRect(0, 0, this.context.canvas.width, this.context.canvas.height);
-			this.context.drawImage(tmpCanvas, 0, 0);
-			
-			this.texture.needsUpdate = true;
-			
-			console.log('Picture loaded and displayed at', x, y);
-		}, undefined, (error) => {
-			console.error('An error occurred while loading the texture:', error);
-		});
+	loadPicture(fileName, x, y) {
+		let pictureLoader = new PictureLoader(this.context);
+		pictureLoader.load(fileName, x, y);		
+		this.texture.needsUpdate = true;			
 	}
 
     handleKeyDown(event) {
@@ -198,6 +178,39 @@ class Cursor{
 			this.clear();
         }
 	}
+}
+
+class PictureLoader{
+	
+	constructor(context){
+		this.context = context;
+	}
+	
+	load(fileName, x, y) {
+		const textureLoader = new THREE.TextureLoader();
+	
+		textureLoader.load(fileName, (texture) => {
+			
+			const tmpCanvas = document.createElement('canvas');
+			const tmpCtx = tmpCanvas.getContext('2d');
+			
+			tmpCanvas.width = this.context.canvas.width;
+			tmpCanvas.height = this.context.canvas.height;
+			
+			tmpCtx.drawImage(this.context.canvas, 0, 0);
+			
+			tmpCtx.drawImage(texture.image, x, y);
+			
+			this.context.clearRect(0, 0, this.context.canvas.width, this.context.canvas.height);
+			this.context.drawImage(tmpCanvas, 0, 0);
+			
+			
+			console.log('Picture loaded and displayed at', x, y);
+		}, undefined, (error) => {
+			console.error('An error occurred while loading the texture:', error);
+		});
+	}
+	
 }
 
 const c64 = new C64Blackbox();
