@@ -85,7 +85,7 @@ class C64Blackbox {
     handleF4() {
         console.log('3, 4 or F4 was pressed');
 		
-		this.clearCursor(this.context);		
+		this.cursor.clear(this.context);		
 		this.context.fillStyle = 'black';
         this.context.fillText(String.fromCharCode(0xe05f) + 'K&A', 0, 7 * C64Blackbox.rowHeight);
         this.context.fillText('READY.', 0, 9 * C64Blackbox.rowHeight);
@@ -130,19 +130,11 @@ class C64Blackbox {
             context.fillStyle = 'black';
             context.fillRect(x, y, this.cursor.size, this.cursor.size);
         } else {
-			this.clearCursor(context);
+			this.cursor.clear(context);
         }
         
         this.texture.needsUpdate = true;
     }
-	
-	clearCursor(context){
-        var x = this.cursor.position.x - this.cursor.size / 2;
-        var y = this.cursor.position.y - this.cursor.size / 2;
-		
-		context.fillStyle = Globals.backgroundColor;
-        context.fillRect(x, y, this.cursor.size, this.cursor.size);			
-	}
 	
     conditionalRotationReset() {
         if (Math.abs(this.plane.rotation.y) > 0.80 * Math.PI / 2) {
@@ -166,6 +158,15 @@ class Cursor{
 		this.size = C64Blackbox.rowHeight - 7;
         this.position = { x: Math.floor(this.size / 2) + 1, y: 6.5 * C64Blackbox.rowHeight }
 		this.visible = true;
+	}
+	
+	clear(context){
+		
+        var x = this.position.x - this.size / 2;
+        var y = this.position.y - this.size / 2;
+		
+		context.fillStyle = Globals.backgroundColor;
+        context.fillRect(x, y, this.size, this.size);	
 	}
 	
 }
