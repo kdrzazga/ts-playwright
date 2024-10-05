@@ -11,17 +11,17 @@ class Globals{
 class C64Blackbox {
     static rowHeight = 20;
 	static currentColorIndex = 7;
+	static texture = null;
 
     constructor() {
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         this.planeGeometry = new THREE.PlaneGeometry(5, 5);
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
-        this.delta = 0.006;   
-        this.texture = null;
+        this.delta = 0.006;  
 		this.context = null
 		this.cursor = null;
-		this.game = new Game();
+		this.game = null;
 
         this.init();
     }
@@ -35,9 +35,10 @@ class C64Blackbox {
         this.context = canvas.getContext('2d');
         canvas.width = Globals.screenWidth;
         canvas.height = Globals.screenHeight;
+		this.game = new Game(canvas);
 
-        this.texture = new THREE.CanvasTexture(canvas);
-        const planeMaterial = new THREE.MeshBasicMaterial({ map: this.texture });
+        C64Blackbox.texture = new THREE.CanvasTexture(canvas);
+        const planeMaterial = new THREE.MeshBasicMaterial({ map: C64Blackbox.texture });
         this.plane = new THREE.Mesh(this.planeGeometry, planeMaterial);
         this.plane.rotation.x = -Math.PI / 12;
 		this.drawInitialText(this.context);
@@ -63,14 +64,14 @@ class C64Blackbox {
         context.fillStyle = 'black';
         context.fillText('READY.', 0, 6 * C64Blackbox.rowHeight);
         
-        this.texture.needsUpdate = true;
+        C64Blackbox.texture.needsUpdate = true;
     }
 
     clearOutput() {
-        const context = this.texture.image.getContext('2d');
-        context.clearRect(0, 0, this.texture.image.width, this.texture.image.height);
+        const context = C64Blackbox.texture.image.getContext('2d');
+        context.clearRect(0, 0, C64Blackbox.texture.image.width, C64Blackbox.texture.image.height);
         this.drawInitialText(context); 
-        this.texture.needsUpdate = true;		
+        C64Blackbox.texture.needsUpdate = true;		
 		console.log('Output resetted. C64 screen redrawn.');
     }
 
@@ -85,7 +86,7 @@ class C64Blackbox {
         console.log('2 or F2 was pressed');
 		this.game.reset();
 		this.cursor.clear();
-		const context = this.texture.image.getContext('2d');
+		const context = C64Blackbox.texture.image.getContext('2d');
 		context.fillStyle = 'black';
 
 		context.fillText('POKE 53281, ' + C64Blackbox.currentColorIndex, 0, this.cursor.position.y + Math.floor(this.cursor.size / 2));
@@ -93,7 +94,7 @@ class C64Blackbox {
 		if (C64Blackbox.currentColorIndex < 10){
 			this.cursor.position.x -= this.cursor.size;
 		}
-		this.texture.needsUpdate = true;
+		C64Blackbox.texture.needsUpdate = true;
 		
 		const promise = new Promise((resolve) => {
 			setTimeout(() => {
@@ -138,18 +139,20 @@ class C64Blackbox {
 	handleLeft(){
 		if (this.game.active){
 			console.log('LEFT key was pressed.');
+			this.game.player.moveLeft();
 		}
 	}
 	handleRight(){
 		if (this.game.active){
 			console.log('RIGHT key was pressed.');
+			this.game.player.moveRight();
 		}
 	}
 	
 	loadPicture(fileName, x, y) {
 		let pictureLoader = new PictureLoader(this.context);
 		pictureLoader.load(fileName, x, y);		
-		this.texture.needsUpdate = true;			
+		C64Blackbox.texture.needsUpdate = true;			
 	}
 
     handleKeyDown(event) {
@@ -185,7 +188,7 @@ class C64Blackbox {
 
     blinkCursor() {
 		this.cursor.blinkCursor();        
-        this.texture.needsUpdate = true;
+        C64Blackbox.texture.needsUpdate = true;
     }
 	
     conditionalRotationReset() {
@@ -277,24 +280,48 @@ class PictureLoader{
 }
 
 class Player{
-	constructor(){
+	constructor(canvas){
 		this.x = Math.floor(Globals.screenWidth / 2);
+		this.y = Globals.screenHeight - 75;
+		this.canvas = canvas;
+		this.picPath = "fatman.png";
+		this.speed = 3;
 	}
+	
+	moveRight(){
+		this.x += this.speed;
+		this.draw();
+	}
+	
+	moveLeft(){
+		this.x -= this.speed;
+		this.draw();
+	}
+	
+	draw(){
+		let context = this.canvas.getContext('2d');
+		let pictureLoader = new PictureLoader(context);
+		pictureLoader.load(this.picPath, this.x, this.y);        
+        C64Blackbox.texture.needsUpdate = true;
+	}
+	
 }
 
 class Game{
-	constructor(){
+	constructor(canvas){
+		this.canvas = canvas;
 		this.reset();
 	}
 	
 	activate(){
 		this.active = true;
 		console.log("Game started.");
+		this.player.draw();
 	}
 	
 	reset(){
 		this.active = false;
-		this.player = new Player();
+		this.player = new Player(this.canvas);
 		
 		console.log("Game reset.");
 	}
