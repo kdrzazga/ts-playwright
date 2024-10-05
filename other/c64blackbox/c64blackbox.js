@@ -1,8 +1,9 @@
 class Globals{
 	static runningTime = 0;	
-    static backgroundColor = '#979797';
-    static colors = ['black', 'white', 'red', 'cyan', 'magenta', 'green', 'blue', 'yellow'];
-    static lightgrayColor = '#979797';
+	
+    static lightgrayColor = '#b3b3b3';
+    static backgroundColor = Globals.lightgrayColor;
+    static colors = ['black', 'white', 'red', 'cyan', 'magenta', 'green', 'blue', 'yellow', '#675200', '#c33d00', '#c18178', '#606060', '#8a8a8a', '#b3ec91', '#867ade', Globals.lightgrayColor];
 }
 
 class C64Blackbox {
@@ -24,7 +25,7 @@ class C64Blackbox {
 
     init() {
         this.renderer.setSize(window.innerWidth, window.innerHeight);
-        this.renderer.setClearColor(0x494949, 1);
+        this.renderer.setClearColor(Globals.colors[11], 1);
         document.body.appendChild(this.renderer.domElement);
 
         const canvas = document.createElement('canvas');
@@ -48,11 +49,11 @@ class C64Blackbox {
     drawInitialText(context) {;
 		this.cursor = new Cursor(context);
 		
-        context.fillStyle = '#494949';
+        context.fillStyle = Globals.colors[11];
         context.fillRect(0, 0, context.canvas.width, context.canvas.height);
         context.fillStyle = Globals.backgroundColor;
         context.fillRect(0, 90, context.canvas.width, context.canvas.height);
-        context.fillStyle = '#979797';
+        context.fillStyle = Globals.colors[12];
         context.font = '13px c64mono';
         context.fillText('* C-64 BASIC IMPROVED BY BLACK BOX V.3 *', 0, 2 * C64Blackbox.rowHeight);
         context.fillText('64K RAM SYSTEM   38911  BASIC BYTES FREE', 0, 4 * C64Blackbox.rowHeight);
@@ -78,10 +79,27 @@ class C64Blackbox {
 
     handleF2() {
         console.log('2 or F2 was pressed');
+		this.cursor.clear();
+		const context = this.texture.image.getContext('2d');
+		context.fillStyle = 'black';
+
+		context.fillText('POKE 53281, ' + C64Blackbox.currentColorIndex, 0, this.cursor.position.y + Math.floor(this.cursor.size / 2));
+		this.cursor.position.x = 15 * this.cursor.size - 3;
+		if (C64Blackbox.currentColorIndex < 10){
+			this.cursor.position.x -= this.cursor.size;
+		}
+		this.texture.needsUpdate = true;
+		
+		const promise = new Promise((resolve) => {
+			setTimeout(() => {
+				
 		Globals.backgroundColor = Globals.colors[C64Blackbox.currentColorIndex];
 		C64Blackbox.currentColorIndex = (C64Blackbox.currentColorIndex + 1) % Globals.colors.length;
 		console.log(C64Blackbox.currentColorIndex);
 		this.clearOutput();
+			resolve();
+			}, 1000);
+		});
     }
 
     handleF4() {
@@ -89,7 +107,7 @@ class C64Blackbox {
 		
 		this.cursor.clear();		
 		this.context.fillStyle = 'black';
-        this.context.fillText(String.fromCharCode(0xe05f) + 'K&A', 0, 7 * C64Blackbox.rowHeight);
+        this.context.fillText(String.fromCharCode(0xe05f) + 'K&A+', 0, 7 * C64Blackbox.rowHeight);
         this.context.fillText('READY.', 0, 13 * C64Blackbox.rowHeight);
 		this.cursor.position = { x: Math.floor(this.cursor.size / 2) + 1, y: 13.5 * C64Blackbox.rowHeight }
 		
