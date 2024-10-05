@@ -8,13 +8,13 @@ class C64Blackbox {
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         this.planeGeometry = new THREE.PlaneGeometry(5, 5);
-        this.renderer = new THREE.WebGLRenderer();
+        this.renderer = new THREE.WebGLRenderer({ antialias: true });
         this.delta = 0.006;
         this.runningTime = 0;
         this.blinkInterval = 100;
         this.cursorSize = C64Blackbox.rowHeight - 7;
         this.cursorVisible = true;
-        this.texture = null; // Initialize texture to null
+        this.texture = null;
 		this.context = null
 
         this.init();
@@ -30,22 +30,21 @@ class C64Blackbox {
         canvas.width = 520;
         canvas.height = 512;
 
-        this.texture = new THREE.CanvasTexture(canvas); // Create texture
+        this.texture = new THREE.CanvasTexture(canvas);
         const planeMaterial = new THREE.MeshBasicMaterial({ map: this.texture });
         this.plane = new THREE.Mesh(this.planeGeometry, planeMaterial);
         this.plane.rotation.x = -Math.PI / 12;
-		this.drawInitialText(this.context); // Draw initial text on the canvas
+		this.drawInitialText(this.context);
         this.scene.add(this.plane);
 
         this.camera.position.z = 5;
 
         window.addEventListener('keydown', this.handleKeyDown.bind(this));
-        this.animate();
+        requestAnimationFrame(() => this.animate());
     }
 
     drawInitialText(context) {
         this.cursorPosition = { x: Math.floor(this.cursorSize / 2) + 1, y: 6.5 * C64Blackbox.rowHeight };
-		C64Blackbox.backgroundColor = C64Blackbox.lightgrayColor;
         context.fillStyle = '#494949';
         context.fillRect(0, 0, context.canvas.width, context.canvas.height);
         context.fillStyle = C64Blackbox.backgroundColor;
@@ -56,36 +55,34 @@ class C64Blackbox {
         context.fillText('64K RAM SYSTEM   38911  BASIC BYTES FREE', 0, 4 * C64Blackbox.rowHeight);
         context.fillStyle = 'black';
         context.fillText('READY.', 0, 6 * C64Blackbox.rowHeight);
-		context.fillStyle = '#494949';
         
-        this.texture.needsUpdate = true; // Notify the texture that it should update
+        this.texture.needsUpdate = true;
     }
 
     clearOutput() {
-
         const context = this.texture.image.getContext('2d');
         context.clearRect(0, 0, this.texture.image.width, this.texture.image.height);
         this.drawInitialText(context); 
-        this.texture.needsUpdate = true;
-		
+        this.texture.needsUpdate = true;		
 		console.log('Output resetted. C64 screen redrawn.');
     }
 
     handleF1() {
         console.log('1 or F1 was pressed');
-        this.clearOutput(); // Clear output when F1 is pressed
+		C64Blackbox.backgroundColor = C64Blackbox.lightgrayColor;
+        this.clearOutput();
     }
 
     handleF2() {
         console.log('2 or F2 was pressed');
 		C64Blackbox.backgroundColor = C64Blackbox.yellowColor;
+		this.clearOutput();
     }
 
     handleF4() {
         console.log('3, 4 or F4 was pressed');
 		
-		this.clearCursor(this.context);
-		
+		this.clearCursor(this.context);		
 		this.context.fillStyle = 'black';
         this.context.fillText(String.fromCharCode(0xe05f) + 'K&A', 0, 7 * C64Blackbox.rowHeight);
         this.context.fillText('READY.', 0, 9 * C64Blackbox.rowHeight);
@@ -145,20 +142,18 @@ class C64Blackbox {
 	}
 	
     conditionalRotationReset() {
-        if (this.plane.rotation.y < -0.80 * Math.PI / 2 || this.plane.rotation.y > 0.80 * Math.PI / 2) {
-            this.delta = -this.delta;
+        if (Math.abs(this.plane.rotation.y) > 0.80 * Math.PI / 2) {
+            this.delta *= -1;
         }
     }
 
     animate() {
         this.runningTime++;
-        requestAnimationFrame(this.animate.bind(this));
         this.plane.rotation.y += this.delta;
-
         this.blinkCursor();
         this.conditionalRotationReset();
-
         this.renderer.render(this.scene, this.camera);
+		requestAnimationFrame(() => this.animate());
     }
 }
 
