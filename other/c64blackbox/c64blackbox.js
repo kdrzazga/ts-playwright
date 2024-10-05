@@ -13,8 +13,7 @@ class C64Blackbox {
         this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         this.planeGeometry = new THREE.PlaneGeometry(5, 5);
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
-        this.delta = 0.006;        
-        this.blinkInterval = 100;
+        this.delta = 0.006;   
         this.texture = null;
 		this.context = null
 		this.cursor = null;
@@ -112,27 +111,9 @@ class C64Blackbox {
             }
         }
     }
-    blinkCursor() {
-        if (Globals.runningTime % this.blinkInterval == Math.floor(this.blinkInterval / 2)) {
-            this.cursor.visible = true;
-        } else if (Globals.runningTime % this.blinkInterval == 0) {
-            this.cursor.visible = false;
-        }
 
-        const context = this.texture.image.getContext('2d');
-        
-        var x = this.cursor.position.x - this.cursor.size / 2;
-        var y = this.cursor.position.y - this.cursor.size / 2;
-        
-        context.clearRect(x, y, this.cursor.size, this.cursor.size);
-        
-        if (this.cursor.visible) {
-            context.fillStyle = 'black';
-            context.fillRect(x, y, this.cursor.size, this.cursor.size);
-        } else {
-			this.cursor.clear(context);
-        }
-        
+    blinkCursor(context) {
+		this.cursor.blinkCursor(context);        
         this.texture.needsUpdate = true;
     }
 	
@@ -145,7 +126,8 @@ class C64Blackbox {
     animate() {
         Globals.runningTime++;
         this.plane.rotation.y += this.delta;
-        this.blinkCursor();
+		const context = this.texture.image.getContext('2d');
+        this.blinkCursor(context);
         this.conditionalRotationReset();
         this.renderer.render(this.scene, this.camera);
 		requestAnimationFrame(() => this.animate());
@@ -153,6 +135,8 @@ class C64Blackbox {
 }
 
 class Cursor{
+	
+	 static blinkInterval = 100;
 	
 	constructor(context){
 		this.size = C64Blackbox.rowHeight - 7;
@@ -169,6 +153,24 @@ class Cursor{
         context.fillRect(x, y, this.size, this.size);	
 	}
 	
+    blinkCursor(context) {
+        if (Globals.runningTime % Cursor.blinkInterval == Math.floor(Cursor.blinkInterval / 2)) {
+            this.visible = true;
+        } else if (Globals.runningTime % Cursor.blinkInterval == 0) {
+            this.visible = false;
+        }
+        var x = this.position.x - this.size / 2;
+        var y = this.position.y - this.size / 2;
+        
+        context.clearRect(x, y, this.size, this.size);
+        
+        if (this.visible) {
+            context.fillStyle = 'black';
+            context.fillRect(x, y, this.size, this.size);
+        } else {
+			this.clear(context);
+        }
+	}
 }
 
 const c64 = new C64Blackbox();
