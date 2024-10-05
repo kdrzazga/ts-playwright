@@ -84,12 +84,40 @@ class C64Blackbox {
     handleF4() {
         console.log('3, 4 or F4 was pressed');
 		
-		this.cursor.clear(this.context);		
+		this.cursor.clear();		
 		this.context.fillStyle = 'black';
         this.context.fillText(String.fromCharCode(0xe05f) + 'K&A', 0, 7 * C64Blackbox.rowHeight);
-        this.context.fillText('READY.', 0, 9 * C64Blackbox.rowHeight);
-		this.cursor.position = { x: Math.floor(this.cursor.size / 2) + 1, y: 9.5 * C64Blackbox.rowHeight }
+        this.context.fillText('READY.', 0, 13 * C64Blackbox.rowHeight);
+		this.cursor.position = { x: Math.floor(this.cursor.size / 2) + 1, y: 13.5 * C64Blackbox.rowHeight }
+		
+		this.loadPicture(0, 8 * C64Blackbox.rowHeight);
     }
+	
+	loadPicture(x, y) {
+		const textureLoader = new THREE.TextureLoader();
+	
+		textureLoader.load('logo.png', (texture) => {
+			
+			const tmpCanvas = document.createElement('canvas');
+			const tmpCtx = tmpCanvas.getContext('2d');
+			
+			tmpCanvas.width = this.context.canvas.width;
+			tmpCanvas.height = this.context.canvas.height;
+			
+			tmpCtx.drawImage(this.context.canvas, 0, 0);
+			
+			tmpCtx.drawImage(texture.image, x, y);
+			
+			this.context.clearRect(0, 0, this.context.canvas.width, this.context.canvas.height);
+			this.context.drawImage(tmpCanvas, 0, 0);
+			
+			this.texture.needsUpdate = true;
+			
+			console.log('Picture loaded and displayed at', x, y);
+		}, undefined, (error) => {
+			console.error('An error occurred while loading the texture:', error);
+		});
+	}
 
     handleKeyDown(event) {
         const keyMapping = {
@@ -112,8 +140,8 @@ class C64Blackbox {
         }
     }
 
-    blinkCursor(context) {
-		this.cursor.blinkCursor(context);        
+    blinkCursor() {
+		this.cursor.blinkCursor();        
         this.texture.needsUpdate = true;
     }
 	
@@ -126,8 +154,7 @@ class C64Blackbox {
     animate() {
         Globals.runningTime++;
         this.plane.rotation.y += this.delta;
-		const context = this.texture.image.getContext('2d');
-        this.blinkCursor(context);
+        this.blinkCursor();
         this.conditionalRotationReset();
         this.renderer.render(this.scene, this.camera);
 		requestAnimationFrame(() => this.animate());
@@ -139,21 +166,21 @@ class Cursor{
 	 static blinkInterval = 100;
 	
 	constructor(context){
+		this.context = context;
 		this.size = C64Blackbox.rowHeight - 7;
         this.position = { x: Math.floor(this.size / 2) + 1, y: 6.5 * C64Blackbox.rowHeight }
 		this.visible = true;
 	}
 	
-	clear(context){
-		
+	clear(){		
         var x = this.position.x - this.size / 2;
         var y = this.position.y - this.size / 2;
 		
-		context.fillStyle = Globals.backgroundColor;
-        context.fillRect(x, y, this.size, this.size);	
+		this.context.fillStyle = Globals.backgroundColor;
+        this.context.fillRect(x, y, this.size, this.size);	
 	}
 	
-    blinkCursor(context) {
+    blinkCursor() {
         if (Globals.runningTime % Cursor.blinkInterval == Math.floor(Cursor.blinkInterval / 2)) {
             this.visible = true;
         } else if (Globals.runningTime % Cursor.blinkInterval == 0) {
@@ -162,13 +189,13 @@ class Cursor{
         var x = this.position.x - this.size / 2;
         var y = this.position.y - this.size / 2;
         
-        context.clearRect(x, y, this.size, this.size);
+        this.context.clearRect(x, y, this.size, this.size);
         
         if (this.visible) {
-            context.fillStyle = 'black';
-            context.fillRect(x, y, this.size, this.size);
+            this.context.fillStyle = 'black';
+            this.context.fillRect(x, y, this.size, this.size);
         } else {
-			this.clear(context);
+			this.clear();
         }
 	}
 }
