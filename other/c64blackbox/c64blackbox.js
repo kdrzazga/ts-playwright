@@ -163,8 +163,8 @@ class C64Blackbox {
 class Cursor{
 	
 	constructor(context){
-		this.size = rowHeight - 7;
-        this.position = { x: Math.floor(this.size / 2) + 1, y: 6.5 * Globals.rowHeight }
+		this.size = C64Blackbox.rowHeight - 7;
+        this.position = { x: Math.floor(this.size / 2) + 1, y: 6.5 * C64Blackbox.rowHeight }
 		this.visible = true;
 	}
 	
