@@ -2,10 +2,10 @@ class Globals{
 	static runningTime = 0;	
     static backgroundColor = '#979797';
     static yellowColor = '#ffff00';
+    static lightgrayColor = '#979797';
 }
 
 class C64Blackbox {
-    static lightgrayColor = '#979797';
     static rowHeight = 20;
 
     constructor() {
@@ -46,7 +46,7 @@ class C64Blackbox {
     }
 
     drawInitialText(context) {;
-		this.cursor = new Cursor(context, C64Blackbox.rowHeight);
+		this.cursor = new Cursor(context);
 		
         context.fillStyle = '#494949';
         context.fillRect(0, 0, context.canvas.width, context.canvas.height);
@@ -162,9 +162,9 @@ class C64Blackbox {
 
 class Cursor{
 	
-	constructor(context, rowHeight){
+	constructor(context){
 		this.size = rowHeight - 7;
-        this.position = { x: Math.floor(this.size / 2) + 1, y: 6.5 * rowHeight }
+        this.position = { x: Math.floor(this.size / 2) + 1, y: 6.5 * Globals.rowHeight }
 		this.visible = true;
 	}
 	
