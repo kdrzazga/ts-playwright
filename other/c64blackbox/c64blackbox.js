@@ -50,7 +50,7 @@ class C64Blackbox {
         requestAnimationFrame(() => this.animate());
     }
 
-    drawInitialText(context) {;
+    drawInitialText(context) {
 		this.cursor = new Cursor(context);
 		
         context.fillStyle = Globals.colors[11];
@@ -70,9 +70,15 @@ class C64Blackbox {
     clearOutput() {
         const context = C64Blackbox.texture.image.getContext('2d');
         context.clearRect(0, 0, C64Blackbox.texture.image.width, C64Blackbox.texture.image.height);
-        this.drawInitialText(context); 
-        C64Blackbox.texture.needsUpdate = true;		
+        this.drawInitialText(context); 		
 		console.log('Output resetted. C64 screen redrawn.');
+    }
+	
+    clearOutputBottom(thresholdY) {
+        const context = C64Blackbox.texture.image.getContext('2d');
+		context.fillStyle = Globals.backgroundColor;
+        context.fillRect(0, thresholdY, C64Blackbox.texture.image.width, C64Blackbox.texture.image.height);
+		console.log('Bottom Output resetted.');
     }
 
     handleF1() {
@@ -125,6 +131,8 @@ class C64Blackbox {
 		console.log('F4 was pressed. Simple game');
 		this.game.reset();
 		this.game.activate();
+		
+		this.clearOutputBottom(Math.floor(5 * Globals.screenHeight / 6));
 	}
 	handleUp(){
 		if (this.game.active){
@@ -139,12 +147,14 @@ class C64Blackbox {
 	handleLeft(){
 		if (this.game.active){
 			console.log('LEFT key was pressed.');
+			this.clearOutputBottom(Math.floor(5 * Globals.screenHeight / 6));
 			this.game.player.moveLeft();
 		}
 	}
 	handleRight(){
 		if (this.game.active){
 			console.log('RIGHT key was pressed.');
+			this.clearOutputBottom(Math.floor(5 * Globals.screenHeight / 6));
 			this.game.player.moveRight();
 		}
 	}
@@ -172,10 +182,10 @@ class C64Blackbox {
             'F2': ['F2', 113, '2', '8', 'i', 'k'],
             'F4': ['F4', 115, '3', '4', '9', 'o', 'l'],
             'F6': ['F6', 117, '5', '0', 'p', ';'],
-			'w': ['w'],
-			's': ['s'],
-			'a': ['a'],
-			'd': ['d']
+			'w': ['w', 'ArrowUp'],
+			's': ['s', 'ArrowDown'],
+			'a': ['a', 'ArrowLeft'],
+			'd': ['d', 'ArrowRight']
         };
 
         for (const [key, values] of Object.entries(keyTriggers)) {
