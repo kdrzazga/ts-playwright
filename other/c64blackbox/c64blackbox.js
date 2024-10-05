@@ -1,7 +1,11 @@
-class C64Blackbox {
+class Globals{
+	static runningTime = 0;	
     static backgroundColor = '#979797';
-    static lightgrayColor = '#979797';
     static yellowColor = '#ffff00';
+}
+
+class C64Blackbox {
+    static lightgrayColor = '#979797';
     static rowHeight = 20;
 
     constructor() {
@@ -9,10 +13,8 @@ class C64Blackbox {
         this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         this.planeGeometry = new THREE.PlaneGeometry(5, 5);
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
-        this.delta = 0.006;
-        this.runningTime = 0;
+        this.delta = 0.006;        
         this.blinkInterval = 100;
-        this.cursorVisible = true;
         this.texture = null;
 		this.context = null
 		this.cursor = null;
@@ -48,7 +50,7 @@ class C64Blackbox {
 		
         context.fillStyle = '#494949';
         context.fillRect(0, 0, context.canvas.width, context.canvas.height);
-        context.fillStyle = C64Blackbox.backgroundColor;
+        context.fillStyle = Globals.backgroundColor;
         context.fillRect(0, 90, context.canvas.width, context.canvas.height);
         context.fillStyle = '#979797';
         context.font = '13px c64mono';
@@ -70,13 +72,13 @@ class C64Blackbox {
 
     handleF1() {
         console.log('1 or F1 was pressed');
-		C64Blackbox.backgroundColor = C64Blackbox.lightgrayColor;
+		Globals.backgroundColor = Globals.lightgrayColor;
         this.clearOutput();
     }
 
     handleF2() {
         console.log('2 or F2 was pressed');
-		C64Blackbox.backgroundColor = C64Blackbox.yellowColor;
+		Globals.backgroundColor = Globals.yellowColor;
 		this.clearOutput();
     }
 
@@ -111,10 +113,10 @@ class C64Blackbox {
         }
     }
     blinkCursor() {
-        if (this.runningTime % this.blinkInterval == Math.floor(this.blinkInterval / 2)) {
-            this.cursorVisible = true;
-        } else if (this.runningTime % this.blinkInterval == 0) {
-            this.cursorVisible = false;
+        if (Globals.runningTime % this.blinkInterval == Math.floor(this.blinkInterval / 2)) {
+            this.cursor.visible = true;
+        } else if (Globals.runningTime % this.blinkInterval == 0) {
+            this.cursor.visible = false;
         }
 
         const context = this.texture.image.getContext('2d');
@@ -124,7 +126,7 @@ class C64Blackbox {
         
         context.clearRect(x, y, this.cursor.size, this.cursor.size);
         
-        if (this.cursorVisible) {
+        if (this.cursor.visible) {
             context.fillStyle = 'black';
             context.fillRect(x, y, this.cursor.size, this.cursor.size);
         } else {
@@ -138,7 +140,7 @@ class C64Blackbox {
         var x = this.cursor.position.x - this.cursor.size / 2;
         var y = this.cursor.position.y - this.cursor.size / 2;
 		
-		context.fillStyle = C64Blackbox.backgroundColor;
+		context.fillStyle = Globals.backgroundColor;
         context.fillRect(x, y, this.cursor.size, this.cursor.size);			
 	}
 	
@@ -149,7 +151,7 @@ class C64Blackbox {
     }
 
     animate() {
-        this.runningTime++;
+        Globals.runningTime++;
         this.plane.rotation.y += this.delta;
         this.blinkCursor();
         this.conditionalRotationReset();
@@ -162,7 +164,8 @@ class Cursor{
 	
 	constructor(context, rowHeight){
 		this.size = rowHeight - 7;
-        this.position = { x: Math.floor(this.size / 2) + 1, y: 6.5 * C64Blackbox.rowHeight }
+        this.position = { x: Math.floor(this.size / 2) + 1, y: 6.5 * rowHeight }
+		this.visible = true;
 	}
 	
 }
