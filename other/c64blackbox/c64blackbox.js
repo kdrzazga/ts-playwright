@@ -1,12 +1,13 @@
 class Globals{
 	static runningTime = 0;	
     static backgroundColor = '#979797';
-    static yellowColor = '#ffff00';
+    static colors = ['black', 'white', 'red', 'cyan', 'magenta', 'green', 'blue', 'yellow'];
     static lightgrayColor = '#979797';
 }
 
 class C64Blackbox {
     static rowHeight = 20;
+	static currentColorIndex = 7;
 
     constructor() {
         this.scene = new THREE.Scene();
@@ -77,7 +78,9 @@ class C64Blackbox {
 
     handleF2() {
         console.log('2 or F2 was pressed');
-		Globals.backgroundColor = Globals.yellowColor;
+		Globals.backgroundColor = Globals.colors[C64Blackbox.currentColorIndex];
+		C64Blackbox.currentColorIndex = (C64Blackbox.currentColorIndex + 1) % Globals.colors.length;
+		console.log(C64Blackbox.currentColorIndex);
 		this.clearOutput();
     }
 
@@ -107,9 +110,9 @@ class C64Blackbox {
         };
 
         const keyTriggers = {
-            'F1': ['F1', 112, '1'],
-            'F2': ['F2', 113, '2'],
-            'F4': ['F4', 115, '3', '4']
+            'F1': ['F1', 112, '1', 'q', 'a', 'z'],
+            'F2': ['F2', 113, '2', 'w', 's', 'x'],
+            'F4': ['F4', 115, '3', '4', 'e', 'd', 'c']
         };
 
         for (const [key, values] of Object.entries(keyTriggers)) {
