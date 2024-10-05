@@ -12,10 +12,10 @@ class C64Blackbox {
         this.delta = 0.006;
         this.runningTime = 0;
         this.blinkInterval = 100;
-        this.cursorSize = C64Blackbox.rowHeight - 7;
         this.cursorVisible = true;
         this.texture = null;
 		this.context = null
+		this.cursor = null;
 
         this.init();
     }
@@ -43,8 +43,9 @@ class C64Blackbox {
         requestAnimationFrame(() => this.animate());
     }
 
-    drawInitialText(context) {
-        this.cursorPosition = { x: Math.floor(this.cursorSize / 2) + 1, y: 6.5 * C64Blackbox.rowHeight };
+    drawInitialText(context) {;
+		this.cursor = new Cursor(context, C64Blackbox.rowHeight);
+		
         context.fillStyle = '#494949';
         context.fillRect(0, 0, context.canvas.width, context.canvas.height);
         context.fillStyle = C64Blackbox.backgroundColor;
@@ -86,7 +87,7 @@ class C64Blackbox {
 		this.context.fillStyle = 'black';
         this.context.fillText(String.fromCharCode(0xe05f) + 'K&A', 0, 7 * C64Blackbox.rowHeight);
         this.context.fillText('READY.', 0, 9 * C64Blackbox.rowHeight);
-		this.cursorPosition = { x: Math.floor(this.cursorSize / 2) + 1, y: 9.5 * C64Blackbox.rowHeight }
+		this.cursor.position = { x: Math.floor(this.cursor.size / 2) + 1, y: 9.5 * C64Blackbox.rowHeight }
     }
 
     handleKeyDown(event) {
@@ -118,14 +119,14 @@ class C64Blackbox {
 
         const context = this.texture.image.getContext('2d');
         
-        var x = this.cursorPosition.x - this.cursorSize / 2;
-        var y = this.cursorPosition.y - this.cursorSize / 2;
+        var x = this.cursor.position.x - this.cursor.size / 2;
+        var y = this.cursor.position.y - this.cursor.size / 2;
         
-        context.clearRect(x, y, this.cursorSize, this.cursorSize);
+        context.clearRect(x, y, this.cursor.size, this.cursor.size);
         
         if (this.cursorVisible) {
             context.fillStyle = 'black';
-            context.fillRect(x, y, this.cursorSize, this.cursorSize);
+            context.fillRect(x, y, this.cursor.size, this.cursor.size);
         } else {
 			this.clearCursor(context);
         }
@@ -134,11 +135,11 @@ class C64Blackbox {
     }
 	
 	clearCursor(context){
-        var x = this.cursorPosition.x - this.cursorSize / 2;
-        var y = this.cursorPosition.y - this.cursorSize / 2;
+        var x = this.cursor.position.x - this.cursor.size / 2;
+        var y = this.cursor.position.y - this.cursor.size / 2;
 		
 		context.fillStyle = C64Blackbox.backgroundColor;
-        context.fillRect(x, y, this.cursorSize, this.cursorSize);			
+        context.fillRect(x, y, this.cursor.size, this.cursor.size);			
 	}
 	
     conditionalRotationReset() {
@@ -155,6 +156,15 @@ class C64Blackbox {
         this.renderer.render(this.scene, this.camera);
 		requestAnimationFrame(() => this.animate());
     }
+}
+
+class Cursor{
+	
+	constructor(context, rowHeight){
+		this.size = rowHeight - 7;
+        this.position = { x: Math.floor(this.size / 2) + 1, y: 6.5 * C64Blackbox.rowHeight }
+	}
+	
 }
 
 const c64 = new C64Blackbox();
