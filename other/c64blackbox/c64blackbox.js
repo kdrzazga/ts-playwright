@@ -6,7 +6,6 @@ class Globals{
 	static screenWidth = 520;
 	static screenHeight = 512;
     static colors = ['black', 'white', 'red', 'cyan', 'magenta', 'green', 'blue', 'yellow', '#675200', '#c33d00', '#c18178', '#606060', '#8a8a8a', '#b3ec91', '#867ade', Globals.lightgrayColor];
-	static playbackPunch = false;
 }
 
 class C64Blackbox {
@@ -339,9 +338,8 @@ class Fighter{
 	
 	punch(){
 		console.log('PUNCH');
-		Globals.playbackPunch = true;
+		this.punchAudio.enable();
 		this.punchAudio.playAudio();
-		Globals.playbackPunch = false;
 	}
 	
 }
@@ -407,26 +405,16 @@ class PunchAudio {
     constructor(audioFile) {
         this.audio = new Audio(audioFile);
         this.audio.preload = 'auto';
-        this.isPlaying = false;
-
-        this.audio.addEventListener('ended', () => {
-            this.isPlaying = false;
-            if (Globals.playbackPunch) {
-                this.playAudio();
-            }
-        });
+		this.playback = false;
     }
+	
+	enable(){
+		this.playback = true;
+	}
 
     playAudio() {
-        if (!this.isPlaying) {
-            this.isPlaying = true;
-            this.audio.currentTime = 0;
-            this.audio.play();
-        }
-    }
-
-    stop() {
-        this.isPlaying = false;
+        this.audio.play();
+		this.playback = false;
     }
 }
 
