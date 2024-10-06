@@ -148,14 +148,14 @@ class C64Blackbox {
 		if (this.game.active){
 			console.log('LEFT key was pressed.');
 			this.clearOutputBottom(Math.floor(5 * Globals.screenHeight / 6));
-			this.game.player.moveLeft();
+			this.game.moveFighterLeft(this.game.player);
 		}
 	}
 	handleRight(){
 		if (this.game.active){
 			console.log('RIGHT key was pressed.');
 			this.clearOutputBottom(Math.floor(5 * Globals.screenHeight / 6));
-			this.game.player.moveRight();
+			this.game.moveFighterRight(this.game.player);
 		}
 	}
 	
@@ -289,23 +289,21 @@ class PictureLoader{
 	
 }
 
-class Player{
+class Fighter{
 	constructor(canvas){
-		this.x = Math.floor(Globals.screenWidth / 2);
+		this.x = 0;
 		this.y = Globals.screenHeight - 75;
 		this.canvas = canvas;
-		this.picPath = "fatman.png";
+		this.picPath = "";
 		this.speed = 3;
 	}
 	
 	moveRight(){
 		this.x += this.speed;
-		this.draw();
 	}
 	
 	moveLeft(){
 		this.x -= this.speed;
-		this.draw();
 	}
 	
 	draw(){
@@ -317,6 +315,22 @@ class Player{
 	
 }
 
+class Player extends Fighter{
+	constructor(canvas){
+		super(canvas);		
+		this.x = Math.floor(Globals.screenWidth / 2);		
+		this.picPath = "fatman.png";
+	}
+}
+
+class Enemy extends Fighter{
+	constructor(canvas){
+		super(canvas);		
+		this.x = 10;		
+		this.picPath = "blee.png";
+	}
+}
+
 class Game{
 	constructor(canvas){
 		this.canvas = canvas;
@@ -326,14 +340,30 @@ class Game{
 	activate(){
 		this.active = true;
 		console.log("Game started.");
-		this.player.draw();
+		this.draw();
+	}
+	
+	moveFighterLeft(fighter){
+		fighter.moveLeft();
+		this.draw();
+	}
+	
+	moveFighterRight(fighter){
+		fighter.moveRight();
+		this.draw();		
 	}
 	
 	reset(){
 		this.active = false;
 		this.player = new Player(this.canvas);
+		this.enemy = new Enemy(this.canvas);
 		
 		console.log("Game reset.");
+	}
+	
+	draw(){		
+		this.player.draw();
+		this.enemy.draw();
 	}
 }
 
