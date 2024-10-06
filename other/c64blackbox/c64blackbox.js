@@ -357,6 +357,29 @@ class Enemy extends Fighter{
 		super(canvas);		
 		this.x = 10;		
 		this.picPath = "blee.png";
+		this.direction = 'right';
+	}
+	
+	move(){
+		if (this.direction == 'left'){
+			if (this.x < 10){
+				this.direction = 'right';
+			}
+			else{
+				this.moveLeft();
+			}
+		}
+		else {
+			if (this.x > Globals.screenWidth - 100){
+				this.direction = 'left';
+			}
+			else{
+				this.moveRight();
+			}			
+		}
+		const context = C64Blackbox.texture.image.getContext('2d');
+		context.fillStyle = Globals.backgroundColor;
+        context.fillRect(0, Math.floor(5 * Globals.screenHeight / 6), C64Blackbox.texture.image.width, C64Blackbox.texture.image.height);
 	}
 }
 
@@ -367,10 +390,28 @@ class Game{
 	}
 	
 	activate(){
+		this.reset();
 		this.active = true;
 		console.log("Game started.");
 		this.draw();
+		this.startMainLoop();
 	}
+	
+    startMainLoop() {
+        if (this.active) {
+            this.mainLoop();
+            setInterval(() => {
+                if (this.active) {
+                    this.mainLoop();
+                }
+            }, 30);
+        }
+    }
+
+    mainLoop() {
+        this.enemy.move();
+        this.draw();
+    }
 	
 	moveFighterLeft(fighter){
 		fighter.moveLeft();
