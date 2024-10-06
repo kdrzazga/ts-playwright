@@ -118,11 +118,11 @@ class C64Blackbox {
         console.log('3, 4 or F4 was pressed');
 		
 		this.game.reset();
-		this.cursor.clear();		
+		this.clearOutput();	
 		this.context.fillStyle = 'black';
         this.context.fillText(String.fromCharCode(0xe05f) + 'K&A+', 0, 7 * C64Blackbox.rowHeight);
-        this.context.fillText('READY.', 0, 13 * C64Blackbox.rowHeight);
-		this.cursor.position = { x: Math.floor(this.cursor.size / 2) + 1, y: 13.5 * C64Blackbox.rowHeight }
+        this.context.fillText('READY.', 0, 13 * C64Blackbox.rowHeight + 2);
+		this.cursor.position = { x: Math.floor(this.cursor.size / 2) + 1, y: 13.5 * C64Blackbox.rowHeight}
 		
 		this.loadPicture('logo.png', 0, 8 * C64Blackbox.rowHeight);
     }
@@ -130,10 +130,18 @@ class C64Blackbox {
 	handleF6(){
 		console.log('F4 was pressed. Simple game');
 		this.game.reset();
-		this.game.activate();
-		
+		this.game.activate();		
 		this.clearOutputBottom(Math.floor(5 * Globals.screenHeight / 6));
+				
+		this.cursor.clear();
+		this.context.fillStyle = 'black';
+		this.context.fillText(String.fromCharCode(0xe05f) + 'BRUCE LEE', 0, this.cursor.position.y + 4);
+		this.cursor.moveDown(2);
+		this.context.fillStyle = 'black';
+		this.context.fillText('READY.', 0, this.cursor.position.y + 5);
+		this.cursor.moveDown(1);
 	}
+	
 	handleUp(){
 		if (this.game.active){
 			console.log('UP key was pressed.');
@@ -159,6 +167,14 @@ class C64Blackbox {
 		}
 	}
 	
+	handleFire(){
+		if (this.game.active){
+			console.log('FIRE key was pressed.');
+			this.clearOutputBottom(Math.floor(5 * Globals.screenHeight / 6));
+			this.game.punch(this.game.player);
+		}		
+	}
+	
 	loadPicture(fileName, x, y) {
 		let pictureLoader = new PictureLoader(this.context);
 		pictureLoader.load(fileName, x, y);		
@@ -174,7 +190,8 @@ class C64Blackbox {
             'w': this.handleUp.bind(this),
             's': this.handleDown.bind(this),
             'a': this.handleLeft.bind(this),
-            'd': this.handleRight.bind(this)
+            'd': this.handleRight.bind(this),
+			'fire': this.handleFire.bind(this)
         };
 
         const keyTriggers = {
@@ -185,7 +202,8 @@ class C64Blackbox {
 			'w': ['w', 'ArrowUp'],
 			's': ['s', 'ArrowDown'],
 			'a': ['a', 'ArrowLeft'],
-			'd': ['d', 'ArrowRight']
+			'd': ['d', 'ArrowRight'],
+			'fire' : ['Control', 17, 'Space', 32, 'Enter', 13]
         };
 
         for (const [key, values] of Object.entries(keyTriggers)) {
@@ -226,6 +244,10 @@ class Cursor{
 		this.size = C64Blackbox.rowHeight - 7;
         this.position = { x: Math.floor(this.size / 2) + 1, y: 6.5 * C64Blackbox.rowHeight }
 		this.visible = true;
+	}
+	
+	moveDown(times){
+		this.position.y += times * this.size;
 	}
 	
 	clear(){		
@@ -313,6 +335,10 @@ class Fighter{
         C64Blackbox.texture.needsUpdate = true;
 	}
 	
+	punch(){
+		console.log('PUNCH');
+	}
+	
 }
 
 class Player extends Fighter{
@@ -351,6 +377,11 @@ class Game{
 	moveFighterRight(fighter){
 		fighter.moveRight();
 		this.draw();		
+	}
+	
+	punch(fighter){
+		fighter.punch();
+		this.draw();
 	}
 	
 	reset(){
