@@ -80,6 +80,28 @@ class C64Blackbox {
         context.fillRect(0, thresholdY, C64Blackbox.texture.image.width, C64Blackbox.texture.image.height);
 		console.log('Bottom Output resetted.');
     }
+	
+	handleHelp(){
+		console.log("HELP");
+		this.clearOutput();
+		const context = C64Blackbox.texture.image.getContext('2d');
+		context.fillStyle = 'black';
+
+		context.fillText(String.fromCharCode(0xe05f) + 'HELP', 0, this.cursor.position.y + Math.floor(this.cursor.size / 2));
+		this.cursor.position.y += 2*(this.cursor.size + 2);
+		context.fillText('F1, 1, Q - ' +String.fromCharCode(0xe05f) + 'HELP, DISPLAY THIS HELP', 0, this.cursor.position.y + Math.floor(this.cursor.size / 2));
+		this.cursor.position.y += this.cursor.size + 2;
+		context.fillText('F2, 2, 8, U, J - SOFT RESET', 0, this.cursor.position.y + Math.floor(this.cursor.size / 2));
+		this.cursor.position.y += this.cursor.size + 2;
+		context.fillText('F3, 3, 9, I, K - CHANGE BACKGROUND COLOR', 0, this.cursor.position.y + Math.floor(this.cursor.size / 2));
+		this.cursor.position.y += this.cursor.size + 2;
+		context.fillText('F6, 6, 0, =, O, L - ' + String.fromCharCode(0xe05f) + 'K&A+ LOGO', 0, this.cursor.position.y + Math.floor(this.cursor.size / 2));
+		this.cursor.position.y += this.cursor.size + 2;
+		context.fillText('F7, 7, -, P, ; - ' + String.fromCharCode(0xe05f) + 'BRUCE LEE SIMPLE GAME', 0, this.cursor.position.y + Math.floor(this.cursor.size / 2));
+		this.cursor.position.y += 2*(this.cursor.size + 2);
+		context.fillText('READY.', 0, this.cursor.position.y + Math.floor(this.cursor.size / 2));
+		this.cursor.position.y += this.cursor.size + 2;
+	}
 
     handleF1() {
         console.log('1 or F1 was pressed');
@@ -183,6 +205,7 @@ class C64Blackbox {
 
     handleKeyDown(event) {
         const keyMapping = {
+            'help': this.handleHelp.bind(this),
             'F1': this.handleF1.bind(this),
             'F2': this.handleF2.bind(this),
             'F4': this.handleF4.bind(this),
@@ -195,10 +218,11 @@ class C64Blackbox {
         };
 
         const keyTriggers = {
-            'F1': ['F1', 112, '1', '7', 'u', 'j'],
-            'F2': ['F2', 113, '2', '8', 'i', 'k'],
-            'F4': ['F4', 115, '3', '4', '9', 'o', 'l'],
-            'F6': ['F6', 117, '5', '0', 'p', ';'],
+            'help': ['F1', 111, '1', 'q'],
+            'F1': ['F2', 112, '2', '8', 'u', 'j'],
+            'F2': ['F3', 113, '3', '9', 'i', 'k'],
+            'F4': ['F6', 115, '6', '0', '=', 'o', 'l'],
+            'F6': ['F7', 117, '7', '-', 'p', ';'],
 			'w': ['w', 'ArrowUp'],
 			's': ['s', 'ArrowDown'],
 			'a': ['a', 'ArrowLeft'],
@@ -312,22 +336,28 @@ class PictureLoader{
 
 class Fighter{
 	constructor(canvas){
+		this.speed = 3;
+		this.hp = 4;
 		this.x = 0;
 		this.y = Globals.screenHeight - 75;
+		this.name = "fighter";
 		this.canvas = canvas;
 		this.picPath = "";
 		this.punchPicPath = "";
 		this.punching = false;
-		this.speed = 3;
 		this.punchAudio = new PunchAudio("punch.mp3");
 	}
 	
 	moveRight(){
-		this.x += this.speed;
+		if (this.hp > 0){
+			this.x += this.speed;
+		}
 	}
 	
 	moveLeft(){
-		this.x -= this.speed;
+		if (this.hp > 0){
+			this.x -= this.speed;
+		}
 	}
 	
 	draw(){
@@ -358,12 +388,26 @@ class Fighter{
 		
 	}
 	
+	checkIfDead(){
+		if (this.hp <= 0){
+			console.log(this.name + " is dead.\n\n\n");
+			c64.loadPicture('gameover.png', 8 * C64Blackbox.rowHeight, 4.75 * C64Blackbox.rowHeight);
+			new Promise((resolve) => {
+				setTimeout(() => {
+					location.reload();
+					resolve();		
+				}, 4000);
+			});
+		}
+	}
+	
 }
 
 class Player extends Fighter{
 	constructor(canvas){
 		super(canvas);		
-		this.x = Math.floor(Globals.screenWidth / 2);		
+		this.x = Math.floor(Globals.screenWidth / 2);
+		this.name = "player";
 		this.picPath = "fatman.png";
 		this.punchPicPath = "fatmanPunch.png";
 	}
@@ -378,6 +422,7 @@ class Enemy extends Fighter{
 	constructor(canvas){
 		super(canvas);		
 		this.x = 10;		
+		this.name = "enemy";
 		this.picPath = "blee.png";
 		this.direction = Direction.RIGHT;
 	}
@@ -455,7 +500,14 @@ class Game{
 		}		
 			this.draw();
 			var anotherFighter = this.getFighters().filter(f => f !== fighter)[0]
-			return this.checkHitDistance(fighter, anotherFighter);
+			if (this.checkHitDistance(fighter, anotherFighter)){
+				if (anotherFighter.hp > 0){
+					anotherFighter.hp--;
+				}
+				else {
+					anotherFighter.checkIfDead();
+				}
+			}
 	}
 	
 	checkHitDistance(attackingFighter, receivingFighter){
