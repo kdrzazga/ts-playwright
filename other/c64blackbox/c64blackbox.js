@@ -164,28 +164,26 @@ class C64Blackbox {
 		this.cursor.moveDown(1);
 	}
 	
-	handleUp(){
-		if (this.game.active){
-			console.log('UP key was pressed.');
-		}
-	}
-	handleDown(){
-		if (this.game.active){
-			console.log('DOWN key was pressed.');
-		}
-	}
-	handleLeft(){
-		if (this.game.active){
-			console.log('LEFT key was pressed.');
-			this.clearOutputBottom(Math.floor(5 * Globals.screenHeight / 6));
-			this.game.moveFighterLeft(this.game.player);
-		}
-	}
-	handleRight(){
-		if (this.game.active){
-			console.log('RIGHT key was pressed.');
-			this.clearOutputBottom(Math.floor(5 * Globals.screenHeight / 6));
-			this.game.moveFighterRight(this.game.player);
+	handleMovement(direction) {
+		this.clearOutputBottom(Math.floor(5 * Globals.screenHeight / 6));
+	
+		if (this.game.active) {
+			switch (direction) {
+				case 'up':
+					console.log('UP key was pressed.');
+					break;
+				case 'down':
+					console.log('DOWN key was pressed.');
+					break;
+				case 'left':
+					console.log('LEFT key was pressed.');
+					this.game.moveFighterLeft(this.game.player);
+					break;
+				case 'right':
+					console.log('RIGHT key was pressed.');
+					this.game.moveFighterRight(this.game.player);
+					break;
+			}
 		}
 	}
 	
@@ -205,16 +203,16 @@ class C64Blackbox {
 
     handleKeyDown(event) {
         const keyMapping = {
-            'help': this.handleHelp.bind(this),
-            'F1': this.handleF1.bind(this),
-            'F2': this.handleF2.bind(this),
-            'F4': this.handleF4.bind(this),
-            'F6': this.handleF6.bind(this),
-            'w': this.handleUp.bind(this),
-            's': this.handleDown.bind(this),
-            'a': this.handleLeft.bind(this),
-            'd': this.handleRight.bind(this),
-			'fire': this.handleFire.bind(this)
+            help: () => this.handleHelp(),
+            'F1': () => this.handleF1(),
+            'F2': () => this.handleF2(),
+            'F4': () => this.handleF4(),
+            'F6': () => this.handleF6(),
+            w: () => this.handleMovement('up'),
+            s: () => this.handleMovement('down'),
+            a: () => this.handleMovement('left'),
+            d: () => this.handleMovement('right'),
+            fire: () => this.handleFire(),
         };
 
         const keyTriggers = {
