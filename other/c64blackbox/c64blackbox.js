@@ -370,18 +370,23 @@ class Player extends Fighter{
 	}
 }
 
+const Direction = Object.freeze({
+    LEFT: 'left',
+    RIGHT: 'right'
+});
+
 class Enemy extends Fighter{
 	constructor(canvas){
 		super(canvas);		
 		this.x = 10;		
 		this.picPath = "blee.png";
-		this.direction = 'right';
+		this.direction = Direction.RIGHT;
 	}
 	
 	move(){
-		if (this.direction == 'left'){
+		if (this.direction == Direction.LEFT){
 			if (this.x < 10){
-				this.direction = 'right';
+				this.direction = Direction.RIGHT;
 			}
 			else{
 				this.moveLeft();
@@ -389,7 +394,7 @@ class Enemy extends Fighter{
 		}
 		else {
 			if (this.x > Globals.screenWidth - 100){
-				this.direction = 'left';
+				this.direction = Direction.LEFT;
 			}
 			else{
 				this.moveRight();
@@ -442,11 +447,12 @@ class Game{
 	}
 	
 	punch(fighter){
+		var hit = false;
 		if (!fighter.punching){
 			fighter.punch();
-		}
-		
+		}		
 			this.draw();
+			return hit;
 	}
 	
 	reset(){
@@ -481,4 +487,3 @@ class PunchAudio {
 }
 
 const c64 = new C64Blackbox();
-
