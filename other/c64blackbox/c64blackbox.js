@@ -302,8 +302,7 @@ class PictureLoader{
 			this.context.clearRect(0, 0, this.context.canvas.width, this.context.canvas.height);
 			this.context.drawImage(tmpCanvas, 0, 0);
 			
-			
-			console.log('Picture loaded and displayed at', x, y);
+			//console.log('Picture loaded and displayed at', x, y);
 		}, undefined, (error) => {
 			console.error('An error occurred while loading the texture:', error);
 		});
@@ -317,7 +316,10 @@ class Fighter{
 		this.y = Globals.screenHeight - 75;
 		this.canvas = canvas;
 		this.picPath = "";
+		this.punchPicPath = "";
+		this.punching = false;
 		this.speed = 3;
+		this.punchAudio = new PunchAudio("punch.mp3");
 	}
 	
 	moveRight(){
@@ -337,6 +339,23 @@ class Fighter{
 	
 	punch(){
 		console.log('PUNCH');
+		let tempPicPath = this.picPath;
+		this.picPath = this.punchPicPath;
+		this.draw();
+		this.punchAudio.enable();
+		this.punchAudio.playAudio();
+		
+		this.punching = true;
+		
+		new Promise((resolve) => {
+			setTimeout(() => {				
+				this.picPath = tempPicPath;
+				this.draw();
+				this.punching = false;
+				resolve();
+			}, 500);
+		});
+		
 	}
 	
 }
@@ -346,28 +365,78 @@ class Player extends Fighter{
 		super(canvas);		
 		this.x = Math.floor(Globals.screenWidth / 2);		
 		this.picPath = "fatman.png";
+		this.punchPicPath = "fatmanPunch.png";
 	}
 }
+
+const Direction = Object.freeze({
+    LEFT: 'left',
+    RIGHT: 'right'
+});
 
 class Enemy extends Fighter{
 	constructor(canvas){
 		super(canvas);		
 		this.x = 10;		
 		this.picPath = "blee.png";
+		this.direction = Direction.RIGHT;
+	}
+	
+	move(){
+		if (this.direction == Direction.LEFT){
+			if (this.x < 10){
+				this.direction = Direction.RIGHT;
+			}
+			else{
+				this.moveLeft();
+			}
+		}
+		else {
+			if (this.x > Globals.screenWidth - 100){
+				this.direction = Direction.LEFT;
+			}
+			else{
+				this.moveRight();
+			}			
+		}
+		const context = C64Blackbox.texture.image.getContext('2d');
+		context.fillStyle = Globals.backgroundColor;
+        context.fillRect(0, Math.floor(5 * Globals.screenHeight / 6), C64Blackbox.texture.image.width, C64Blackbox.texture.image.height);
 	}
 }
 
 class Game{
+	
+	static hitDistance = 50;
+	
 	constructor(canvas){
 		this.canvas = canvas;
 		this.reset();
 	}
 	
 	activate(){
+		this.reset();
 		this.active = true;
 		console.log("Game started.");
 		this.draw();
+		this.startMainLoop();
 	}
+	
+    startMainLoop() {
+        if (this.active) {
+            this.mainLoop();
+            setInterval(() => {
+                if (this.active) {
+                    this.mainLoop();
+                }
+            }, 30);
+        }
+    }
+
+    mainLoop() {
+        this.enemy.move();
+        this.draw();
+    }
 	
 	moveFighterLeft(fighter){
 		fighter.moveLeft();
@@ -380,8 +449,26 @@ class Game{
 	}
 	
 	punch(fighter){
-		fighter.punch();
-		this.draw();
+		var hit = false;
+		if (!fighter.punching){
+			fighter.punch();
+		}		
+			this.draw();
+			var anotherFighter = this.getFighters().filter(f => f !== fighter)[0]
+			return this.checkHitDistance(fighter, anotherFighter);
+	}
+	
+	checkHitDistance(attackingFighter, receivingFighter){
+		var distance = Math.abs(attackingFighter.x - receivingFighter.x);
+		
+		if (attackingFighter instanceof Player && receivingFighter instanceof Enemy) {
+			console.log("Attacker = Player. Enemy under attack. Distance =" + distance);
+		}
+		else{
+			console.log("Attacker = Enemy. Player under attack.. Distance =" + distance);
+		}
+		
+		return distance < Game.hitDistance;
 	}
 	
 	reset(){
@@ -396,6 +483,27 @@ class Game{
 		this.player.draw();
 		this.enemy.draw();
 	}
+	
+	getFighters(){
+		return [this.player, this.enemy];
+	}
+}
+
+class PunchAudio {
+    constructor(audioFile) {
+        this.audio = new Audio(audioFile);
+        this.audio.preload = 'auto';
+		this.playback = false;
+    }
+	
+	enable(){
+		this.playback = true;
+	}
+
+    playAudio() {
+        this.audio.play();
+		this.playback = false;
+    }
 }
 
 const c64 = new C64Blackbox();
