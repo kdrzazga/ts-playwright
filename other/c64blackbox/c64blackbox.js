@@ -302,8 +302,7 @@ class PictureLoader{
 			this.context.clearRect(0, 0, this.context.canvas.width, this.context.canvas.height);
 			this.context.drawImage(tmpCanvas, 0, 0);
 			
-			
-			console.log('Picture loaded and displayed at', x, y);
+			//console.log('Picture loaded and displayed at', x, y);
 		}, undefined, (error) => {
 			console.error('An error occurred while loading the texture:', error);
 		});
@@ -407,6 +406,9 @@ class Enemy extends Fighter{
 }
 
 class Game{
+	
+	static hitDistance = 50;
+	
 	constructor(canvas){
 		this.canvas = canvas;
 		this.reset();
@@ -452,7 +454,21 @@ class Game{
 			fighter.punch();
 		}		
 			this.draw();
-			return hit;
+			var anotherFighter = this.getFighters().filter(f => f !== fighter)[0]
+			return this.checkHitDistance(fighter, anotherFighter);
+	}
+	
+	checkHitDistance(attackingFighter, receivingFighter){
+		var distance = Math.abs(attackingFighter.x - receivingFighter.x);
+		
+		if (attackingFighter instanceof Player && receivingFighter instanceof Enemy) {
+			console.log("Attacker = Player. Enemy under attack. Distance =" + distance);
+		}
+		else{
+			console.log("Attacker = Enemy. Player under attack.. Distance =" + distance);
+		}
+		
+		return distance < Game.hitDistance;
 	}
 	
 	reset(){
@@ -466,6 +482,10 @@ class Game{
 	draw(){		
 		this.player.draw();
 		this.enemy.draw();
+	}
+	
+	getFighters(){
+		return [this.player, this.enemy];
 	}
 }
 
