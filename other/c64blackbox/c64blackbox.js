@@ -8,6 +8,13 @@ class Globals{
     static colors = ['black', 'white', 'red', 'cyan', 'magenta', 'green', 'blue', 'yellow', '#675200', '#c33d00', '#c18178', '#606060', '#8a8a8a', '#b3ec91', '#867ade', Globals.lightgrayColor];
 }
 
+const Direction = Object.freeze({
+    LEFT: 'left',
+    RIGHT: 'right',
+	UP: 'up',
+	DOWN: 'down'
+});
+
 class C64Blackbox {
     static rowHeight = 20;
 	static currentColorIndex = 7;
@@ -18,7 +25,8 @@ class C64Blackbox {
         this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         this.planeGeometry = new THREE.PlaneGeometry(5, 5);
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
-        this.delta = 0.006;  
+        
+		this.delta = 0.006;  
 		this.context = null
 		this.cursor = null;
 		this.game = null;
@@ -27,9 +35,7 @@ class C64Blackbox {
     }
 
     init() {
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
-        this.renderer.setClearColor(Globals.colors[11], 1);
-        document.body.appendChild(this.renderer.domElement);
+        this.setupRenderer();
 
         const canvas = document.createElement('canvas');
         this.context = canvas.getContext('2d');
@@ -38,16 +44,26 @@ class C64Blackbox {
 		this.game = new Game(canvas);
 
         C64Blackbox.texture = new THREE.CanvasTexture(canvas);
-        const planeMaterial = new THREE.MeshBasicMaterial({ map: C64Blackbox.texture });
-        this.plane = new THREE.Mesh(this.planeGeometry, planeMaterial);
-        this.plane.rotation.x = -Math.PI / 12;
 		this.drawInitialText(this.context);
-        this.scene.add(this.plane);
-
-        this.camera.position.z = 5;
+		
+		this.setupPlane();
 
         window.addEventListener('keydown', this.handleKeyDown.bind(this));
         requestAnimationFrame(() => this.animate());
+    }
+	
+    setupRenderer() {
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.renderer.setClearColor(Globals.colors[11], 1);
+        document.body.appendChild(this.renderer.domElement);
+    }
+
+    setupPlane() {
+        const planeMaterial = new THREE.MeshBasicMaterial({ map: C64Blackbox.texture });
+        this.plane = new THREE.Mesh(this.planeGeometry, planeMaterial);
+        this.plane.rotation.x = -Math.PI / 12;
+        this.scene.add(this.plane);
+        this.camera.position.z = 5;
     }
 
     drawInitialText(context) {
@@ -57,15 +73,25 @@ class C64Blackbox {
         context.fillRect(0, 0, context.canvas.width, context.canvas.height);
         context.fillStyle = Globals.backgroundColor;
         context.fillRect(0, 90, context.canvas.width, context.canvas.height);
-        context.fillStyle = Globals.colors[12];
-        context.font = '13px c64mono';
-        context.fillText('* C-64 BASIC IMPROVED BY BLACK BOX V.3 *', 0, 2 * C64Blackbox.rowHeight);
-        context.fillText('64K RAM SYSTEM   38911  BASIC BYTES FREE', 0, 4 * C64Blackbox.rowHeight);
-        context.fillStyle = 'black';
-        context.fillText('READY.', 0, 6 * C64Blackbox.rowHeight);
-        
+		
+		this.renderText();
         C64Blackbox.texture.needsUpdate = true;
     }
+	
+	renderText() {
+		const textLines = [
+			{ text: '* C-64 BASIC IMPROVED BY BLACK BOX V.3 *', color: Globals.lightgrayColor },
+			{ text: '64K RAM SYSTEM   38911  BASIC BYTES FREE', color: Globals.lightgrayColor },
+			{ text: 'READY.', color: 'black' }
+		];
+	
+		this.context.font = '13px c64mono';
+
+		textLines.forEach((line, index) => {
+			this.context.fillStyle = line.color;
+			this.context.fillText(line.text, 0, (2 + index * 2) * C64Blackbox.rowHeight);
+		});
+	}
 
     clearOutput() {
         const context = C64Blackbox.texture.image.getContext('2d');
@@ -169,17 +195,17 @@ class C64Blackbox {
 	
 		if (this.game.active) {
 			switch (direction) {
-				case 'up':
+				case Direction.UP:
 					console.log('UP key was pressed.');
 					break;
-				case 'down':
+				case Direction.DOWN:
 					console.log('DOWN key was pressed.');
 					break;
-				case 'left':
+				case Direction.LEFT:
 					console.log('LEFT key was pressed.');
 					this.game.moveFighterLeft(this.game.player);
 					break;
-				case 'right':
+				case Direction.RIGHT:
 					console.log('RIGHT key was pressed.');
 					this.game.moveFighterRight(this.game.player);
 					break;
@@ -208,10 +234,10 @@ class C64Blackbox {
             'F2': () => this.handleF2(),
             'F4': () => this.handleF4(),
             'F6': () => this.handleF6(),
-            w: () => this.handleMovement('up'),
-            s: () => this.handleMovement('down'),
-            a: () => this.handleMovement('left'),
-            d: () => this.handleMovement('right'),
+            w: () => this.handleMovement(Direction.UP),
+            s: () => this.handleMovement(Direction.DOWN),
+            a: () => this.handleMovement(Direction.LEFT),
+            d: () => this.handleMovement(Direction.RIGHT),
             fire: () => this.handleFire(),
         };
 
@@ -410,11 +436,6 @@ class Player extends Fighter{
 		this.punchPicPath = "fatmanPunch.png";
 	}
 }
-
-const Direction = Object.freeze({
-    LEFT: 'left',
-    RIGHT: 'right'
-});
 
 class Enemy extends Fighter{
 	constructor(canvas){
