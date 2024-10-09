@@ -317,6 +317,8 @@ class Fighter{
 		this.y = Globals.screenHeight - 75;
 		this.canvas = canvas;
 		this.picPath = "";
+		this.punchPicPath = "";
+		this.punching = false;
 		this.speed = 3;
 		this.punchAudio = new PunchAudio("punch.mp3");
 	}
@@ -338,8 +340,23 @@ class Fighter{
 	
 	punch(){
 		console.log('PUNCH');
+		let tempPicPath = this.picPath;
+		this.picPath = this.punchPicPath;
+		this.draw();
 		this.punchAudio.enable();
 		this.punchAudio.playAudio();
+		
+		this.punching = true;
+		
+		new Promise((resolve) => {
+			setTimeout(() => {				
+				this.picPath = tempPicPath;
+				this.draw();
+				this.punching = false;
+				resolve();
+			}, 500);
+		});
+		
 	}
 	
 }
@@ -349,6 +366,7 @@ class Player extends Fighter{
 		super(canvas);		
 		this.x = Math.floor(Globals.screenWidth / 2);		
 		this.picPath = "fatman.png";
+		this.punchPicPath = "fatmanPunch.png";
 	}
 }
 
@@ -424,8 +442,11 @@ class Game{
 	}
 	
 	punch(fighter){
-		fighter.punch();
-		this.draw();
+		if (!fighter.punching){
+			fighter.punch();
+		}
+		
+			this.draw();
 	}
 	
 	reset(){
@@ -460,3 +481,4 @@ class PunchAudio {
 }
 
 const c64 = new C64Blackbox();
+
