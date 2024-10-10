@@ -2,10 +2,9 @@ class Globals{
 	static runningTime = 0;	
 	
     static lightgrayColor = '#b3b3b3';
-    static backgroundColor = Globals.lightgrayColor;
 	static screenWidth = 520;
 	static screenHeight = 512;
-    static colors = ['black', 'white', 'red', 'cyan', 'magenta', 'green', 'blue', 'yellow', '#675200', '#c33d00', '#c18178', '#606060', '#8a8a8a', '#b3ec91', '#867ade', Globals.lightgrayColor];
+    static colors = ['black', 'white', 'red', 'cyan', 'magenta', 'green', '#4536a6', 'yellow', '#675200', '#c33d00', '#c18178', '#606060', '#8a8a8a', '#b3ec91', '#867ade', Globals.lightgrayColor];
 }
 
 const Direction = Object.freeze({
@@ -18,7 +17,8 @@ const Direction = Object.freeze({
 class C64Blackbox {
     static rowHeight = 20;
 	static currentColorIndex = 7;
-	static texture = null;
+	static texture = null;	
+    static backgroundColor = Globals.lightgrayColor;
 
     constructor() {
         this.scene = new THREE.Scene();
@@ -26,14 +26,14 @@ class C64Blackbox {
         this.planeGeometry = new THREE.PlaneGeometry(5, 5);
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
         
-	this.delta = 0.006;  
-	this.headerLines = [];
-	this.context = null
-	this.cursor = null;
-	this.game = null;
-
-        this.init();
-    }
+		this.delta = 0.006;  
+		this.headerLines = [];
+		this.context = null
+		this.cursor = null;
+		this.game = null;		
+		this.clearColor = Globals.colors[11];
+		this.defaultColor = 'black';
+	}
 
     init() {
         this.setupRenderer();
@@ -43,12 +43,12 @@ class C64Blackbox {
         this.context = canvas.getContext('2d');
         canvas.width = Globals.screenWidth;
         canvas.height = Globals.screenHeight;
-	this.game = new Game(canvas);
+		this.game = new Game(canvas);
 
         C64Blackbox.texture = new THREE.CanvasTexture(canvas);
-	this.drawInitialText(this.context);
+		this.drawInitialText(this.context);
 		
-	this.setupPlane();
+		this.setupPlane();
 
         window.addEventListener('keydown', this.handleKeyDown.bind(this));
         requestAnimationFrame(() => this.animate());
@@ -64,7 +64,7 @@ class C64Blackbox {
 	
     setupRenderer() {
         this.renderer.setSize(window.innerWidth, window.innerHeight);
-        this.renderer.setClearColor(Globals.colors[11], 1);
+        this.renderer.setClearColor(this.clearColor, 1);
         document.body.appendChild(this.renderer.domElement);
     }
 
@@ -81,7 +81,7 @@ class C64Blackbox {
 		
         context.fillStyle = Globals.colors[11];
         context.fillRect(0, 0, context.canvas.width, context.canvas.height);
-        context.fillStyle = Globals.backgroundColor;
+        context.fillStyle = C64Blackbox.backgroundColor;
         context.fillRect(0, 90, context.canvas.width, context.canvas.height);
 		
 	this.renderHeader();
@@ -106,7 +106,7 @@ class C64Blackbox {
 	
     clearOutputBottom(thresholdY) {
         const context = C64Blackbox.texture.image.getContext('2d');
-		context.fillStyle = Globals.backgroundColor;
+		context.fillStyle = C64Blackbox.backgroundColor;
         context.fillRect(0, thresholdY, C64Blackbox.texture.image.width, C64Blackbox.texture.image.height);
 		console.log('Bottom Output resetted.');
     }
@@ -115,7 +115,7 @@ class C64Blackbox {
 		console.log("HELP");
 		this.clearOutput();
 		const context = C64Blackbox.texture.image.getContext('2d');
-		context.fillStyle = 'black';
+		context.fillStyle = this.defaultColor;
 
 		context.fillText(String.fromCharCode(0xe05f) + 'HELP', 0, this.cursor.position.y + Math.floor(this.cursor.size / 2));
 		this.cursor.position.y += 2*(this.cursor.size + 2);
@@ -136,7 +136,7 @@ class C64Blackbox {
     handleF1() {
         console.log('1 or F1 was pressed');
 		this.game.reset();
-		Globals.backgroundColor = Globals.lightgrayColor;
+		C64Blackbox.backgroundColor = Globals.lightgrayColor;
         this.clearOutput();
     }
 
@@ -145,7 +145,7 @@ class C64Blackbox {
 		this.game.reset();
 		this.cursor.clear();
 		const context = C64Blackbox.texture.image.getContext('2d');
-		context.fillStyle = 'black';
+		context.fillStyle = this.defaultColor;
 
 		context.fillText('POKE 53281, ' + C64Blackbox.currentColorIndex, 0, this.cursor.position.y + Math.floor(this.cursor.size / 2));
 		this.cursor.position.x = 15 * this.cursor.size - 3;
@@ -157,7 +157,7 @@ class C64Blackbox {
 		const promise = new Promise((resolve) => {
 			setTimeout(() => {
 				
-		Globals.backgroundColor = Globals.colors[C64Blackbox.currentColorIndex];
+		C64Blackbox.backgroundColor = Globals.colors[C64Blackbox.currentColorIndex];
 		C64Blackbox.currentColorIndex = (C64Blackbox.currentColorIndex + 1) % Globals.colors.length;
 		console.log(C64Blackbox.currentColorIndex);
 		this.clearOutput();
@@ -170,8 +170,8 @@ class C64Blackbox {
         console.log('3, 4 or F4 was pressed');
 		
 		this.game.reset();
-		this.clearOutput();	
-		this.context.fillStyle = 'black';
+		this.clearOutput();
+		this.context.fillStyle = this.defaultColor;
         this.context.fillText(String.fromCharCode(0xe05f) + 'K&A+', 0, 7 * C64Blackbox.rowHeight);
         this.context.fillText('READY.', 0, 13 * C64Blackbox.rowHeight + 2);
 		this.cursor.position = { x: Math.floor(this.cursor.size / 2) + 1, y: 13.5 * C64Blackbox.rowHeight}
@@ -186,10 +186,10 @@ class C64Blackbox {
 		this.clearOutputBottom(Math.floor(5 * Globals.screenHeight / 6));
 				
 		this.cursor.clear();
-		this.context.fillStyle = 'black';
+		this.context.fillStyle = this.defaultColor;
 		this.context.fillText(String.fromCharCode(0xe05f) + 'BRUCE LEE', 0, this.cursor.position.y + 4);
 		this.cursor.moveDown(2);
-		this.context.fillStyle = 'black';
+		this.context.fillStyle = this.defaultColor;
 		this.context.fillText('READY.', 0, this.cursor.position.y + 5);
 		this.cursor.moveDown(1);
 	}
@@ -287,6 +287,23 @@ class C64Blackbox {
     }
 }
 
+
+class ClassicC64 extends C64Blackbox{
+	constructor(){
+		super();
+		this.clearColor = Globals.colors[14];		
+		this.defaultColor = Globals.colors[14];
+	}
+	
+    setupHeaderContent(){
+		this.headerLines = [
+			{ text: '    **** COMMODORE 64 BASIC V2 ****', color: Globals.colors[14] },
+			{ text: '64K RAM SYSTEM   38911  BASIC BYTES FREE', color: Globals.colors[14] },
+			{ text: 'READY.', color: Globals.colors[14] }
+		];
+    }	
+}
+
 class Cursor{
 	
 	 static blinkInterval = 100;
@@ -306,7 +323,7 @@ class Cursor{
         var x = this.position.x - this.size / 2;
         var y = this.position.y - this.size / 2;
 		
-		this.context.fillStyle = Globals.backgroundColor;
+		this.context.fillStyle = C64Blackbox.backgroundColor;
         this.context.fillRect(x, y, this.size, this.size);	
 	}
 	
@@ -468,7 +485,7 @@ class Enemy extends Fighter{
 			}			
 		}
 		const context = C64Blackbox.texture.image.getContext('2d');
-		context.fillStyle = Globals.backgroundColor;
+		context.fillStyle = C64Blackbox.backgroundColor;
         context.fillRect(0, Math.floor(5 * Globals.screenHeight / 6), C64Blackbox.texture.image.width, C64Blackbox.texture.image.height);
 	}
 }
@@ -582,3 +599,6 @@ class PunchAudio {
 }
 
 const c64 = new C64Blackbox();
+//const c64 = new ClassicC64();
+
+c64.init();
