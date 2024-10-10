@@ -37,6 +37,7 @@ class C64Blackbox {
 
     init() {
         this.setupRenderer();
+		this.setupHeaderContent();
 
         const canvas = document.createElement('canvas');
         this.context = canvas.getContext('2d');
