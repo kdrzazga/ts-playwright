@@ -26,10 +26,11 @@ class C64Blackbox {
         this.planeGeometry = new THREE.PlaneGeometry(5, 5);
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
         
-		this.delta = 0.006;  
-		this.context = null
-		this.cursor = null;
-		this.game = null;
+	this.delta = 0.006;  
+	this.headerLines = [];
+	this.context = null
+	this.cursor = null;
+	this.game = null;
 
         this.init();
     }
@@ -41,15 +42,23 @@ class C64Blackbox {
         this.context = canvas.getContext('2d');
         canvas.width = Globals.screenWidth;
         canvas.height = Globals.screenHeight;
-		this.game = new Game(canvas);
+	this.game = new Game(canvas);
 
         C64Blackbox.texture = new THREE.CanvasTexture(canvas);
-		this.drawInitialText(this.context);
+	this.drawInitialText(this.context);
 		
-		this.setupPlane();
+	this.setupPlane();
 
         window.addEventListener('keydown', this.handleKeyDown.bind(this));
         requestAnimationFrame(() => this.animate());
+    }
+
+    setupHeaderContent(){
+		this.headerLines = [
+			{ text: '* C-64 BASIC IMPROVED BY BLACK BOX V.3 *', color: Globals.lightgrayColor },
+			{ text: '64K RAM SYSTEM   38911  BASIC BYTES FREE', color: Globals.lightgrayColor },
+			{ text: 'READY.', color: 'black' }
+		];
     }
 	
     setupRenderer() {
@@ -74,20 +83,14 @@ class C64Blackbox {
         context.fillStyle = Globals.backgroundColor;
         context.fillRect(0, 90, context.canvas.width, context.canvas.height);
 		
-		this.renderText();
+	this.renderHeader();
         C64Blackbox.texture.needsUpdate = true;
     }
 	
-	renderText() {
-		const textLines = [
-			{ text: '* C-64 BASIC IMPROVED BY BLACK BOX V.3 *', color: Globals.lightgrayColor },
-			{ text: '64K RAM SYSTEM   38911  BASIC BYTES FREE', color: Globals.lightgrayColor },
-			{ text: 'READY.', color: 'black' }
-		];
-	
+	renderHeader() {
 		this.context.font = '13px c64mono';
 
-		textLines.forEach((line, index) => {
+		this.headerLines.forEach((line, index) => {
 			this.context.fillStyle = line.color;
 			this.context.fillText(line.text, 0, (2 + index * 2) * C64Blackbox.rowHeight);
 		});
