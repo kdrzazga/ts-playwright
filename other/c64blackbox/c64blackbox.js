@@ -19,6 +19,7 @@ class C64Blackbox {
 	static currentColorIndex = 7;
 	static texture = null;	
     static backgroundColor = Globals.lightgrayColor;
+    static secondaryBackgroundColor = Globals.colors[11];
 
     constructor() {
         this.scene = new THREE.Scene();
@@ -80,7 +81,7 @@ class C64Blackbox {
     drawInitialText(context) {
 		this.cursor = new Cursor(context, this.defaultColor);
 		
-        context.fillStyle = Globals.colors[11];
+        context.fillStyle = this.classRef.secondaryBackgroundColor;
         context.fillRect(0, 0, context.canvas.width, context.canvas.height);
         context.fillStyle = this.classRef.backgroundColor;
         context.fillRect(0, 90, context.canvas.width, context.canvas.height);
