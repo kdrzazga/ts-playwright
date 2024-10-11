@@ -77,7 +77,7 @@ class C64Blackbox {
     }
 
     drawInitialText(context) {
-		this.cursor = new Cursor(context);
+		this.cursor = new Cursor(context, this.defaultColor);
 		
         context.fillStyle = Globals.colors[11];
         context.fillRect(0, 0, context.canvas.width, context.canvas.height);
@@ -292,8 +292,9 @@ class Cursor{
 	
 	 static blinkInterval = 100;
 	
-	constructor(context){
+	constructor(context, color){
 		this.context = context;
+		this.color = color;
 		this.size = C64Blackbox.rowHeight - 7;
         this.position = { x: Math.floor(this.size / 2) + 1, y: 6.5 * C64Blackbox.rowHeight }
 		this.visible = true;
@@ -323,7 +324,7 @@ class Cursor{
         this.context.clearRect(x, y, this.size, this.size);
         
         if (this.visible) {
-            this.context.fillStyle = 'black';
+            this.context.fillStyle = this.color;
             this.context.fillRect(x, y, this.size, this.size);
         } else {
 			this.clear();
