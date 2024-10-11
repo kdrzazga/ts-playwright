@@ -1,8 +1,13 @@
 class ClassicC64 extends C64Blackbox{
+	static backgroundColor = Globals.colors[6];	
+    static secondaryBackgroundColor = Globals.colors[6];
+	
 	constructor(){
 		super();
 		this.clearColor = Globals.colors[14];		
 		this.defaultColor = Globals.colors[14];
+		
+		this.classRef = ClassicC64;
 	}
 	
     setupHeaderContent(){
