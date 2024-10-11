@@ -113,26 +113,27 @@ class C64Blackbox {
 		console.log('Bottom Output resetted.');
     }
 	
-	handleHelp(){
+	handleHelp() {
 		console.log("HELP");
 		this.clearOutput();
+		
 		const context = C64Blackbox.texture.image.getContext('2d');
 		context.fillStyle = this.defaultColor;
-
-		context.fillText(String.fromCharCode(0xe05f) + 'HELP', 0, this.cursor.position.y + Math.floor(this.cursor.size / 2));
-		this.cursor.position.y += 2*(this.cursor.size + 2);
-		context.fillText('F1, 1, Q - ' +String.fromCharCode(0xe05f) + 'HELP, DISPLAY THIS HELP', 0, this.cursor.position.y + Math.floor(this.cursor.size / 2));
-		this.cursor.position.y += this.cursor.size + 2;
-		context.fillText('F2, 2, 8, U, J - SOFT RESET', 0, this.cursor.position.y + Math.floor(this.cursor.size / 2));
-		this.cursor.position.y += this.cursor.size + 2;
-		context.fillText('F3, 3, 9, I, K - CHANGE BACKGROUND COLOR', 0, this.cursor.position.y + Math.floor(this.cursor.size / 2));
-		this.cursor.position.y += this.cursor.size + 2;
-		context.fillText('F6, 6, 0, =, O, L - ' + String.fromCharCode(0xe05f) + 'K&A+ LOGO', 0, this.cursor.position.y + Math.floor(this.cursor.size / 2));
-		this.cursor.position.y += this.cursor.size + 2;
-		context.fillText('F7, 7, -, P, ; - ' + String.fromCharCode(0xe05f) + 'BRUCE LEE SIMPLE GAME', 0, this.cursor.position.y + Math.floor(this.cursor.size / 2));
-		this.cursor.position.y += 2*(this.cursor.size + 2);
-		context.fillText('READY.', 0, this.cursor.position.y + Math.floor(this.cursor.size / 2));
-		this.cursor.position.y += this.cursor.size + 2;
+	
+		const helpTexts = [
+			[String.fromCharCode(0xe05f) + 'HELP', 2],
+			['F1, 1, Q - ' + String.fromCharCode(0xe05f) + 'HELP, DISPLAY THIS HELP', 1],
+			['F2, 2, 8, U, J - SOFT RESET', 1],
+			['F3, 3, 9, I, K - CHANGE BACKGROUND COLOR', 1],
+			['F6, 6, 0, =, O, L - ' + String.fromCharCode(0xe05f) + 'K&A+ LOGO', 1],
+			['F7, 7, -, P, ; - ' + String.fromCharCode(0xe05f) + 'BRUCE LEE SIMPLE GAME', 2],
+			['READY.', 1]
+		];
+	
+		for (const [text, movement] of helpTexts) {
+			context.fillText(text, 0, this.cursor.position.y + Math.floor(this.cursor.size / 2));
+			this.cursor.position.y += (this.cursor.size + 2) * movement;
+		}
 	}
 
     handleF1() {
