@@ -420,7 +420,12 @@ class Fighter{
 	checkIfDead(){
 		if (this.hp <= 0){
 			console.log(this.name + " is dead.\n\n\n");
-			c64.loadPicture('gameover.png', 8 * C64Blackbox.rowHeight, 4.75 * C64Blackbox.rowHeight);
+			
+			let context = this.canvas.getContext('2d');
+			let pictureLoader = new PictureLoader(context);
+			pictureLoader.load('gameover.png', 8 * C64Blackbox.rowHeight, 4.75 * C64Blackbox.rowHeight);
+			C64Blackbox.texture.needsUpdate = true;	
+			
 			new Promise((resolve) => {
 				setTimeout(() => {
 					location.reload();
