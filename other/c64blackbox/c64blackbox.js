@@ -33,6 +33,7 @@ class C64Blackbox {
 		this.game = null;		
 		this.clearColor = Globals.colors[11];
 		this.defaultColor = 'black';
+		this.classRef = C64Blackbox;
 	}
 
     init() {
@@ -81,7 +82,7 @@ class C64Blackbox {
 		
         context.fillStyle = Globals.colors[11];
         context.fillRect(0, 0, context.canvas.width, context.canvas.height);
-        context.fillStyle = C64Blackbox.backgroundColor;
+        context.fillStyle = this.classRef.backgroundColor;
         context.fillRect(0, 90, context.canvas.width, context.canvas.height);
 		
 	this.renderHeader();
