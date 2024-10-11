@@ -2,35 +2,43 @@ class Globals{
 	static runningTime = 0;	
 	
     static lightgrayColor = '#b3b3b3';
-    static backgroundColor = Globals.lightgrayColor;
 	static screenWidth = 520;
 	static screenHeight = 512;
-    static colors = ['black', 'white', 'red', 'cyan', 'magenta', 'green', 'blue', 'yellow', '#675200', '#c33d00', '#c18178', '#606060', '#8a8a8a', '#b3ec91', '#867ade', Globals.lightgrayColor];
+    static colors = ['black', 'white', 'red', 'cyan', 'magenta', 'green', '#4536a6', 'yellow', '#675200', '#c33d00', '#c18178', '#606060', '#8a8a8a', '#b3ec91', '#867ade', Globals.lightgrayColor];
 }
+
+const Direction = Object.freeze({
+    LEFT: 'left',
+    RIGHT: 'right',
+	UP: 'up',
+	DOWN: 'down'
+});
 
 class C64Blackbox {
     static rowHeight = 20;
 	static currentColorIndex = 7;
-	static texture = null;
+	static texture = null;	
+    static backgroundColor = Globals.lightgrayColor;
 
     constructor() {
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         this.planeGeometry = new THREE.PlaneGeometry(5, 5);
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
-        this.delta = 0.006;  
+        
+		this.delta = 0.006;  
+		this.headerLines = [];
 		this.context = null
 		this.cursor = null;
-		this.game = null;
-
-        this.init();
-    }
+		this.game = null;		
+		this.clearColor = Globals.colors[11];
+		this.defaultColor = 'black';
+	}
 
     init() {
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
-        this.renderer.setClearColor(Globals.colors[11], 1);
-        document.body.appendChild(this.renderer.domElement);
-
+        this.setupRenderer();
+		this.setupHeaderContent();
+		
         const canvas = document.createElement('canvas');
         this.context = canvas.getContext('2d');
         canvas.width = Globals.screenWidth;
@@ -38,16 +46,34 @@ class C64Blackbox {
 		this.game = new Game(canvas);
 
         C64Blackbox.texture = new THREE.CanvasTexture(canvas);
-        const planeMaterial = new THREE.MeshBasicMaterial({ map: C64Blackbox.texture });
-        this.plane = new THREE.Mesh(this.planeGeometry, planeMaterial);
-        this.plane.rotation.x = -Math.PI / 12;
 		this.drawInitialText(this.context);
-        this.scene.add(this.plane);
-
-        this.camera.position.z = 5;
+		
+		this.setupPlane();
 
         window.addEventListener('keydown', this.handleKeyDown.bind(this));
         requestAnimationFrame(() => this.animate());
+    }
+
+    setupHeaderContent(){
+		this.headerLines = [
+			{ text: '* C-64 BASIC IMPROVED BY BLACK BOX V.3 *', color: Globals.lightgrayColor },
+			{ text: '64K RAM SYSTEM   38911  BASIC BYTES FREE', color: Globals.lightgrayColor },
+			{ text: 'READY.', color: 'black' }
+		];
+    }
+	
+    setupRenderer() {
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.renderer.setClearColor(this.clearColor, 1);
+        document.body.appendChild(this.renderer.domElement);
+    }
+
+    setupPlane() {
+        const planeMaterial = new THREE.MeshBasicMaterial({ map: C64Blackbox.texture });
+        this.plane = new THREE.Mesh(this.planeGeometry, planeMaterial);
+        this.plane.rotation.x = -Math.PI / 12;
+        this.scene.add(this.plane);
+        this.camera.position.z = 5;
     }
 
     drawInitialText(context) {
@@ -55,17 +81,21 @@ class C64Blackbox {
 		
         context.fillStyle = Globals.colors[11];
         context.fillRect(0, 0, context.canvas.width, context.canvas.height);
-        context.fillStyle = Globals.backgroundColor;
+        context.fillStyle = C64Blackbox.backgroundColor;
         context.fillRect(0, 90, context.canvas.width, context.canvas.height);
-        context.fillStyle = Globals.colors[12];
-        context.font = '13px c64mono';
-        context.fillText('* C-64 BASIC IMPROVED BY BLACK BOX V.3 *', 0, 2 * C64Blackbox.rowHeight);
-        context.fillText('64K RAM SYSTEM   38911  BASIC BYTES FREE', 0, 4 * C64Blackbox.rowHeight);
-        context.fillStyle = 'black';
-        context.fillText('READY.', 0, 6 * C64Blackbox.rowHeight);
-        
+		
+	this.renderHeader();
         C64Blackbox.texture.needsUpdate = true;
     }
+	
+	renderHeader() {
+		this.context.font = '13px c64mono';
+
+		this.headerLines.forEach((line, index) => {
+			this.context.fillStyle = line.color;
+			this.context.fillText(line.text, 0, (2 + index * 2) * C64Blackbox.rowHeight);
+		});
+	}
 
     clearOutput() {
         const context = C64Blackbox.texture.image.getContext('2d');
@@ -76,15 +106,37 @@ class C64Blackbox {
 	
     clearOutputBottom(thresholdY) {
         const context = C64Blackbox.texture.image.getContext('2d');
-		context.fillStyle = Globals.backgroundColor;
+		context.fillStyle = C64Blackbox.backgroundColor;
         context.fillRect(0, thresholdY, C64Blackbox.texture.image.width, C64Blackbox.texture.image.height);
 		console.log('Bottom Output resetted.');
     }
+	
+	handleHelp(){
+		console.log("HELP");
+		this.clearOutput();
+		const context = C64Blackbox.texture.image.getContext('2d');
+		context.fillStyle = this.defaultColor;
+
+		context.fillText(String.fromCharCode(0xe05f) + 'HELP', 0, this.cursor.position.y + Math.floor(this.cursor.size / 2));
+		this.cursor.position.y += 2*(this.cursor.size + 2);
+		context.fillText('F1, 1, Q - ' +String.fromCharCode(0xe05f) + 'HELP, DISPLAY THIS HELP', 0, this.cursor.position.y + Math.floor(this.cursor.size / 2));
+		this.cursor.position.y += this.cursor.size + 2;
+		context.fillText('F2, 2, 8, U, J - SOFT RESET', 0, this.cursor.position.y + Math.floor(this.cursor.size / 2));
+		this.cursor.position.y += this.cursor.size + 2;
+		context.fillText('F3, 3, 9, I, K - CHANGE BACKGROUND COLOR', 0, this.cursor.position.y + Math.floor(this.cursor.size / 2));
+		this.cursor.position.y += this.cursor.size + 2;
+		context.fillText('F6, 6, 0, =, O, L - ' + String.fromCharCode(0xe05f) + 'K&A+ LOGO', 0, this.cursor.position.y + Math.floor(this.cursor.size / 2));
+		this.cursor.position.y += this.cursor.size + 2;
+		context.fillText('F7, 7, -, P, ; - ' + String.fromCharCode(0xe05f) + 'BRUCE LEE SIMPLE GAME', 0, this.cursor.position.y + Math.floor(this.cursor.size / 2));
+		this.cursor.position.y += 2*(this.cursor.size + 2);
+		context.fillText('READY.', 0, this.cursor.position.y + Math.floor(this.cursor.size / 2));
+		this.cursor.position.y += this.cursor.size + 2;
+	}
 
     handleF1() {
         console.log('1 or F1 was pressed');
 		this.game.reset();
-		Globals.backgroundColor = Globals.lightgrayColor;
+		C64Blackbox.backgroundColor = Globals.lightgrayColor;
         this.clearOutput();
     }
 
@@ -93,7 +145,7 @@ class C64Blackbox {
 		this.game.reset();
 		this.cursor.clear();
 		const context = C64Blackbox.texture.image.getContext('2d');
-		context.fillStyle = 'black';
+		context.fillStyle = this.defaultColor;
 
 		context.fillText('POKE 53281, ' + C64Blackbox.currentColorIndex, 0, this.cursor.position.y + Math.floor(this.cursor.size / 2));
 		this.cursor.position.x = 15 * this.cursor.size - 3;
@@ -105,7 +157,7 @@ class C64Blackbox {
 		const promise = new Promise((resolve) => {
 			setTimeout(() => {
 				
-		Globals.backgroundColor = Globals.colors[C64Blackbox.currentColorIndex];
+		C64Blackbox.backgroundColor = Globals.colors[C64Blackbox.currentColorIndex];
 		C64Blackbox.currentColorIndex = (C64Blackbox.currentColorIndex + 1) % Globals.colors.length;
 		console.log(C64Blackbox.currentColorIndex);
 		this.clearOutput();
@@ -118,8 +170,8 @@ class C64Blackbox {
         console.log('3, 4 or F4 was pressed');
 		
 		this.game.reset();
-		this.clearOutput();	
-		this.context.fillStyle = 'black';
+		this.clearOutput();
+		this.context.fillStyle = this.defaultColor;
         this.context.fillText(String.fromCharCode(0xe05f) + 'K&A+', 0, 7 * C64Blackbox.rowHeight);
         this.context.fillText('READY.', 0, 13 * C64Blackbox.rowHeight + 2);
 		this.cursor.position = { x: Math.floor(this.cursor.size / 2) + 1, y: 13.5 * C64Blackbox.rowHeight}
@@ -134,36 +186,34 @@ class C64Blackbox {
 		this.clearOutputBottom(Math.floor(5 * Globals.screenHeight / 6));
 				
 		this.cursor.clear();
-		this.context.fillStyle = 'black';
+		this.context.fillStyle = this.defaultColor;
 		this.context.fillText(String.fromCharCode(0xe05f) + 'BRUCE LEE', 0, this.cursor.position.y + 4);
 		this.cursor.moveDown(2);
-		this.context.fillStyle = 'black';
+		this.context.fillStyle = this.defaultColor;
 		this.context.fillText('READY.', 0, this.cursor.position.y + 5);
 		this.cursor.moveDown(1);
 	}
 	
-	handleUp(){
-		if (this.game.active){
-			console.log('UP key was pressed.');
-		}
-	}
-	handleDown(){
-		if (this.game.active){
-			console.log('DOWN key was pressed.');
-		}
-	}
-	handleLeft(){
-		if (this.game.active){
-			console.log('LEFT key was pressed.');
-			this.clearOutputBottom(Math.floor(5 * Globals.screenHeight / 6));
-			this.game.moveFighterLeft(this.game.player);
-		}
-	}
-	handleRight(){
-		if (this.game.active){
-			console.log('RIGHT key was pressed.');
-			this.clearOutputBottom(Math.floor(5 * Globals.screenHeight / 6));
-			this.game.moveFighterRight(this.game.player);
+	handleMovement(direction) {
+		this.clearOutputBottom(Math.floor(5 * Globals.screenHeight / 6));
+	
+		if (this.game.active) {
+			switch (direction) {
+				case Direction.UP:
+					console.log('UP key was pressed.');
+					break;
+				case Direction.DOWN:
+					console.log('DOWN key was pressed.');
+					break;
+				case Direction.LEFT:
+					console.log('LEFT key was pressed.');
+					this.game.moveFighterLeft(this.game.player);
+					break;
+				case Direction.RIGHT:
+					console.log('RIGHT key was pressed.');
+					this.game.moveFighterRight(this.game.player);
+					break;
+			}
 		}
 	}
 	
@@ -183,22 +233,24 @@ class C64Blackbox {
 
     handleKeyDown(event) {
         const keyMapping = {
-            'F1': this.handleF1.bind(this),
-            'F2': this.handleF2.bind(this),
-            'F4': this.handleF4.bind(this),
-            'F6': this.handleF6.bind(this),
-            'w': this.handleUp.bind(this),
-            's': this.handleDown.bind(this),
-            'a': this.handleLeft.bind(this),
-            'd': this.handleRight.bind(this),
-			'fire': this.handleFire.bind(this)
+            help: () => this.handleHelp(),
+            'F1': () => this.handleF1(),
+            'F2': () => this.handleF2(),
+            'F4': () => this.handleF4(),
+            'F6': () => this.handleF6(),
+            w: () => this.handleMovement(Direction.UP),
+            s: () => this.handleMovement(Direction.DOWN),
+            a: () => this.handleMovement(Direction.LEFT),
+            d: () => this.handleMovement(Direction.RIGHT),
+            fire: () => this.handleFire(),
         };
 
         const keyTriggers = {
-            'F1': ['F1', 112, '1', '7', 'u', 'j'],
-            'F2': ['F2', 113, '2', '8', 'i', 'k'],
-            'F4': ['F4', 115, '3', '4', '9', 'o', 'l'],
-            'F6': ['F6', 117, '5', '0', 'p', ';'],
+            'help': ['F1', 111, '1', 'q'],
+            'F1': ['F2', 112, '2', '8', 'u', 'j'],
+            'F2': ['F3', 113, '3', '9', 'i', 'k'],
+            'F4': ['F6', 115, '6', '0', '=', 'o', 'l'],
+            'F6': ['F7', 117, '7', '-', 'p', ';'],
 			'w': ['w', 'ArrowUp'],
 			's': ['s', 'ArrowDown'],
 			'a': ['a', 'ArrowLeft'],
@@ -235,6 +287,7 @@ class C64Blackbox {
     }
 }
 
+
 class Cursor{
 	
 	 static blinkInterval = 100;
@@ -254,7 +307,7 @@ class Cursor{
         var x = this.position.x - this.size / 2;
         var y = this.position.y - this.size / 2;
 		
-		this.context.fillStyle = Globals.backgroundColor;
+		this.context.fillStyle = C64Blackbox.backgroundColor;
         this.context.fillRect(x, y, this.size, this.size);	
 	}
 	
@@ -312,22 +365,28 @@ class PictureLoader{
 
 class Fighter{
 	constructor(canvas){
+		this.speed = 3;
+		this.hp = 4;
 		this.x = 0;
 		this.y = Globals.screenHeight - 75;
+		this.name = "fighter";
 		this.canvas = canvas;
 		this.picPath = "";
 		this.punchPicPath = "";
 		this.punching = false;
-		this.speed = 3;
 		this.punchAudio = new PunchAudio("punch.mp3");
 	}
 	
 	moveRight(){
-		this.x += this.speed;
+		if (this.hp > 0){
+			this.x += this.speed;
+		}
 	}
 	
 	moveLeft(){
-		this.x -= this.speed;
+		if (this.hp > 0){
+			this.x -= this.speed;
+		}
 	}
 	
 	draw(){
@@ -358,26 +417,36 @@ class Fighter{
 		
 	}
 	
+	checkIfDead(){
+		if (this.hp <= 0){
+			console.log(this.name + " is dead.\n\n\n");
+			c64.loadPicture('gameover.png', 8 * C64Blackbox.rowHeight, 4.75 * C64Blackbox.rowHeight);
+			new Promise((resolve) => {
+				setTimeout(() => {
+					location.reload();
+					resolve();		
+				}, 4000);
+			});
+		}
+	}
+	
 }
 
 class Player extends Fighter{
 	constructor(canvas){
 		super(canvas);		
-		this.x = Math.floor(Globals.screenWidth / 2);		
+		this.x = Math.floor(Globals.screenWidth / 2);
+		this.name = "player";
 		this.picPath = "fatman.png";
 		this.punchPicPath = "fatmanPunch.png";
 	}
 }
 
-const Direction = Object.freeze({
-    LEFT: 'left',
-    RIGHT: 'right'
-});
-
 class Enemy extends Fighter{
 	constructor(canvas){
 		super(canvas);		
 		this.x = 10;		
+		this.name = "enemy";
 		this.picPath = "blee.png";
 		this.direction = Direction.RIGHT;
 	}
@@ -400,7 +469,7 @@ class Enemy extends Fighter{
 			}			
 		}
 		const context = C64Blackbox.texture.image.getContext('2d');
-		context.fillStyle = Globals.backgroundColor;
+		context.fillStyle = C64Blackbox.backgroundColor;
         context.fillRect(0, Math.floor(5 * Globals.screenHeight / 6), C64Blackbox.texture.image.width, C64Blackbox.texture.image.height);
 	}
 }
@@ -455,7 +524,14 @@ class Game{
 		}		
 			this.draw();
 			var anotherFighter = this.getFighters().filter(f => f !== fighter)[0]
-			return this.checkHitDistance(fighter, anotherFighter);
+			if (this.checkHitDistance(fighter, anotherFighter)){
+				if (anotherFighter.hp > 0){
+					anotherFighter.hp--;
+				}
+				else {
+					anotherFighter.checkIfDead();
+				}
+			}
 	}
 	
 	checkHitDistance(attackingFighter, receivingFighter){
