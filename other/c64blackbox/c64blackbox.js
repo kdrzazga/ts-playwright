@@ -38,7 +38,7 @@ class C64Blackbox {
     init() {
         this.setupRenderer();
 		this.setupHeaderContent();
-
+		
         const canvas = document.createElement('canvas');
         this.context = canvas.getContext('2d');
         canvas.width = Globals.screenWidth;
@@ -287,22 +287,6 @@ class C64Blackbox {
     }
 }
 
-
-class ClassicC64 extends C64Blackbox{
-	constructor(){
-		super();
-		this.clearColor = Globals.colors[14];		
-		this.defaultColor = Globals.colors[14];
-	}
-	
-    setupHeaderContent(){
-		this.headerLines = [
-			{ text: '    **** COMMODORE 64 BASIC V2 ****', color: Globals.colors[14] },
-			{ text: '64K RAM SYSTEM   38911  BASIC BYTES FREE', color: Globals.colors[14] },
-			{ text: 'READY.', color: Globals.colors[14] }
-		];
-    }	
-}
 
 class Cursor{
 	
@@ -599,6 +583,3 @@ class PunchAudio {
 }
 
 const c64 = new C64Blackbox();
-//const c64 = new ClassicC64();
-
-c64.init();
