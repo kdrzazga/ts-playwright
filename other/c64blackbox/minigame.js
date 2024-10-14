@@ -161,14 +161,7 @@ class Enemy extends Fighter{
 			}			
 			
 		}
-		
-		
-		let accidentalPunch = Math.random() < 0.009;
-			
-		if (accidentalPunch){
-			this.punch();
-		}
-			
+					
 		const context = C64Blackbox.texture.image.getContext('2d');
 		context.fillStyle = C64Blackbox.backgroundColor;
         context.fillRect(0, Math.floor(5 * Globals.screenHeight / 6), C64Blackbox.texture.image.width, C64Blackbox.texture.image.height);
@@ -205,6 +198,11 @@ class Game{
 
     mainLoop() {
         this.enemy.move();
+		let accidentalPunch = Math.random() < 0.009;
+			
+		if (accidentalPunch){
+			this.punch(this.enemy);
+		}
         this.draw();
     }
 	
@@ -218,6 +216,7 @@ class Game{
 		this.draw();		
 	}
 	
+		
 	punch(fighter){
 		var hit = false;
 		if (!fighter.punching){
