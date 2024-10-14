@@ -137,14 +137,14 @@ class C64Blackbox {
 		}
 	}
 
-    handleF1() {
+    handleF2() {
         console.log('2 or F2 was pressed');
 		this.game.reset();
 		C64Blackbox.backgroundColor = Globals.lightgrayColor;
         this.clearOutput();
     }
 
-    handleF2() {
+    handleF3() {
         console.log('3, 9, I, K or F3 was pressed');
 		this.game.reset();
 		this.cursor.clear();
@@ -158,19 +158,15 @@ class C64Blackbox {
 		}
 		C64Blackbox.texture.needsUpdate = true;
 		
-		const promise = new Promise((resolve) => {
-			setTimeout(() => {
-				
-				C64Blackbox.backgroundColor = Globals.colors[C64Blackbox.currentColorIndex];
-				C64Blackbox.currentColorIndex = (C64Blackbox.currentColorIndex + 1) % 	Globals.colors.length;
-				console.log(C64Blackbox.currentColorIndex);
-				this.clearOutput();
-			resolve();
-			}, 1000);
-		});
+		setTimeout(() => {				
+			C64Blackbox.backgroundColor = Globals.colors[C64Blackbox.currentColorIndex];
+			C64Blackbox.currentColorIndex = (C64Blackbox.currentColorIndex + 1) % 	Globals.colors.length;
+			console.log(C64Blackbox.currentColorIndex);
+			this.clearOutput();
+		}, 1000);
     }
 
-    handleF4() {
+    handleF6() {
         console.log('6, 0, =, O, L or F6 was pressed');
 		
 		this.game.reset();
@@ -184,7 +180,7 @@ class C64Blackbox {
 		this.loadPicture(C64Blackbox.logoPictures[0], 0, 8 * C64Blackbox.rowHeight);
     }
 	
-	handleF6(){
+	handleF7(){
 		console.log('7, -, P, ; or F7 was pressed. Simple game');
 		this.game.reset();
 		this.game.activate();		
@@ -239,10 +235,10 @@ class C64Blackbox {
     handleKeyDown(event) {
         const keyMapping = {
             help: () => this.handleHelp(),
-            'F1': () => this.handleF1(),
             'F2': () => this.handleF2(),
-            'F4': () => this.handleF4(),
+            'F3': () => this.handleF3(),
             'F6': () => this.handleF6(),
+            'F7': () => this.handleF7(),
             w: () => this.handleMovement(Direction.UP),
             s: () => this.handleMovement(Direction.DOWN),
             a: () => this.handleMovement(Direction.LEFT),
@@ -252,10 +248,10 @@ class C64Blackbox {
 
         const keyTriggers = {
             'help': ['F1', 111, '1', 'q'],
-            'F1': ['F2', 112, '2', '8', 'u', 'j'],
-            'F2': ['F3', 113, '3', '9', 'i', 'k'],
-            'F4': ['F6', 115, '6', '0', '=', 'o', 'l'],
-            'F6': ['F7', 117, '7', '-', 'p', ';'],
+            'F2': ['F2', 112, '2', '8', 'u', 'j'],
+            'F3': ['F3', 113, '3', '9', 'i', 'k'],
+            'F6': ['F6', 115, '6', '0', '=', 'o', 'l'],
+            'F7': ['F7', 117, '7', '-', 'p', ';'],
 			'w': ['w', 'ArrowUp'],
 			's': ['s', 'ArrowDown'],
 			'a': ['a', 'ArrowLeft'],
