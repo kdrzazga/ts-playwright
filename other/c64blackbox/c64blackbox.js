@@ -20,6 +20,7 @@ class C64Blackbox {
 	static texture = null;	
     static backgroundColor = Globals.lightgrayColor;
     static secondaryBackgroundColor = Globals.colors[11];
+	static logoPictures = ['logo.png'];
 
     constructor() {
         this.scene = new THREE.Scene();
@@ -137,14 +138,14 @@ class C64Blackbox {
 	}
 
     handleF1() {
-        console.log('1 or F1 was pressed');
+        console.log('2 or F2 was pressed');
 		this.game.reset();
 		C64Blackbox.backgroundColor = Globals.lightgrayColor;
         this.clearOutput();
     }
 
     handleF2() {
-        console.log('2 or F2 was pressed');
+        console.log('3, 9, I, K or F3 was pressed');
 		this.game.reset();
 		this.cursor.clear();
 		const context = C64Blackbox.texture.image.getContext('2d');
@@ -160,30 +161,31 @@ class C64Blackbox {
 		const promise = new Promise((resolve) => {
 			setTimeout(() => {
 				
-		C64Blackbox.backgroundColor = Globals.colors[C64Blackbox.currentColorIndex];
-		C64Blackbox.currentColorIndex = (C64Blackbox.currentColorIndex + 1) % Globals.colors.length;
-		console.log(C64Blackbox.currentColorIndex);
-		this.clearOutput();
+				C64Blackbox.backgroundColor = Globals.colors[C64Blackbox.currentColorIndex];
+				C64Blackbox.currentColorIndex = (C64Blackbox.currentColorIndex + 1) % 	Globals.colors.length;
+				console.log(C64Blackbox.currentColorIndex);
+				this.clearOutput();
 			resolve();
 			}, 1000);
 		});
     }
 
     handleF4() {
-        console.log('3, 4 or F4 was pressed');
+        console.log('6, 0, =, O, L or F6 was pressed');
 		
 		this.game.reset();
 		this.clearOutput();
 		this.context.fillStyle = this.defaultColor;
         this.context.fillText(String.fromCharCode(0xe05f) + 'K&A+', 0, 7 * C64Blackbox.rowHeight);
-        this.context.fillText('READY.', 0, 13 * C64Blackbox.rowHeight + 2);
-		this.cursor.position = { x: Math.floor(this.cursor.size / 2) + 1, y: 13.5 * C64Blackbox.rowHeight}
+        this.context.fillText('http://www.ka-plus.pl', 0, 13 * C64Blackbox.rowHeight + 2);
+        this.context.fillText('READY.', 0, 14 * C64Blackbox.rowHeight + 2);
+		this.cursor.position = { x: Math.floor(this.cursor.size / 2) + 1, y: 14.5 * C64Blackbox.rowHeight}
 		
-		this.loadPicture('logo.png', 0, 8 * C64Blackbox.rowHeight);
+		this.loadPicture(C64Blackbox.logoPictures[0], 0, 8 * C64Blackbox.rowHeight);
     }
 	
 	handleF6(){
-		console.log('F4 was pressed. Simple game');
+		console.log('7, -, P, ; or F7 was pressed. Simple game');
 		this.game.reset();
 		this.game.activate();		
 		this.clearOutputBottom(Math.floor(5 * Globals.screenHeight / 6));
