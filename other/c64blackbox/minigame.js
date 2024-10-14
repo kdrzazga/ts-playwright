@@ -3,12 +3,12 @@ class PictureLoader{
 	
 	constructor(context){
 		this.context = context;
+		this.textureLoader = new THREE.TextureLoader();
 	}
 	
 	load(fileName, x, y) {
-		const textureLoader = new THREE.TextureLoader();
 	
-		textureLoader.load(fileName, (texture) => {
+		this.textureLoader.load(fileName, (texture) => {
 			
 			const tmpCanvas = document.createElement('canvas');
 			const tmpCtx = tmpCanvas.getContext('2d');
@@ -92,14 +92,11 @@ class Fighter{
 		
 		this.punching = true;
 		
-		new Promise((resolve) => {
-			setTimeout(() => {				
-				this.picPath = tempPicPath;
-				this.draw();
-				this.punching = false;
-				resolve();
-			}, 500);
-		});
+		setTimeout(() => {				
+			this.picPath = tempPicPath;
+			this.draw();
+			this.punching = false;
+		}, 500);
 		
 	}
 	
@@ -112,12 +109,9 @@ class Fighter{
 			pictureLoader.load('gameover.png', 8 * C64Blackbox.rowHeight, 4.75 * C64Blackbox.rowHeight);
 			C64Blackbox.texture.needsUpdate = true;	
 			
-			new Promise((resolve) => {
-				setTimeout(() => {
-					location.reload();
-					resolve();		
-				}, 4000);
-			});
+			setTimeout(() => {
+				location.reload();
+			}, 4000);
 		}
 	}
 	
