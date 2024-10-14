@@ -3,12 +3,12 @@ class PictureLoader{
 	
 	constructor(context){
 		this.context = context;
+		this.textureLoader = new THREE.TextureLoader();
 	}
 	
 	load(fileName, x, y) {
-		const textureLoader = new THREE.TextureLoader();
 	
-		textureLoader.load(fileName, (texture) => {
+		this.textureLoader.load(fileName, (texture) => {
 			
 			const tmpCanvas = document.createElement('canvas');
 			const tmpCtx = tmpCanvas.getContext('2d');
@@ -40,20 +40,38 @@ class Fighter{
 		this.name = "fighter";
 		this.canvas = canvas;
 		this.picPath = "";
+		this.picLeftPath = "";
+		this.picRightPath = "";
 		this.punchPicPath = "";
+		this.punchLeftPicPath = "";
 		this.punching = false;
 		this.punchAudio = new PunchAudio("punch.mp3");
 	}
 	
 	moveRight(){
 		if (this.hp > 0){
-			this.x += this.speed;
+			this.x += this.speed;			
+			this.picPath = this.picRightPath;
 		}
 	}
 	
 	moveLeft(){
 		if (this.hp > 0){
 			this.x -= this.speed;
+			this.picPath = this.picLeftPath;
+		}
+	}
+	
+	moveBack(times){
+		if (this.direction == Direction.LEFT){
+			for (var i = 0; i < times; i++){
+				this.moveRight();
+			}
+		}
+		else {
+			for (var i = 0; i < times; i++){
+				this.moveLeft();
+			}
 		}
 	}
 	
@@ -74,14 +92,11 @@ class Fighter{
 		
 		this.punching = true;
 		
-		new Promise((resolve) => {
-			setTimeout(() => {				
-				this.picPath = tempPicPath;
-				this.draw();
-				this.punching = false;
-				resolve();
-			}, 500);
-		});
+		setTimeout(() => {				
+			this.picPath = tempPicPath;
+			this.draw();
+			this.punching = false;
+		}, 500);
 		
 	}
 	
@@ -94,12 +109,9 @@ class Fighter{
 			pictureLoader.load('gameover.png', 8 * C64Blackbox.rowHeight, 4.75 * C64Blackbox.rowHeight);
 			C64Blackbox.texture.needsUpdate = true;	
 			
-			new Promise((resolve) => {
-				setTimeout(() => {
-					location.reload();
-					resolve();		
-				}, 4000);
-			});
+			setTimeout(() => {
+				location.reload();
+			}, 4000);
 		}
 	}
 	
@@ -111,7 +123,10 @@ class Player extends Fighter{
 		this.x = Math.floor(Globals.screenWidth / 2);
 		this.name = "player";
 		this.picPath = "fatman.png";
+		this.picRightPath = "fatman.png";
+		this.picLeftPath = "fatmanL.png";
 		this.punchPicPath = "fatmanPunch.png";
+		this.punchLeftPicPath = "fatmanPunch.png";
 	}
 }
 
@@ -121,6 +136,10 @@ class Enemy extends Fighter{
 		this.x = 10;		
 		this.name = "enemy";
 		this.picPath = "blee.png";
+		this.picRightPath = "blee.png";
+		this.picLeftPath = "bleeL.png";
+		this.punchPicPath = "bleePunch.png";
+		this.punchLeftPicPath = "bleeL.png";
 		this.direction = Direction.RIGHT;
 	}
 	
@@ -140,7 +159,9 @@ class Enemy extends Fighter{
 			else{
 				this.moveRight();
 			}			
+			
 		}
+					
 		const context = C64Blackbox.texture.image.getContext('2d');
 		context.fillStyle = C64Blackbox.backgroundColor;
         context.fillRect(0, Math.floor(5 * Globals.screenHeight / 6), C64Blackbox.texture.image.width, C64Blackbox.texture.image.height);
@@ -177,6 +198,11 @@ class Game{
 
     mainLoop() {
         this.enemy.move();
+		let accidentalPunch = Math.random() < 0.009;
+			
+		if (accidentalPunch){
+			this.punch(this.enemy);
+		}
         this.draw();
     }
 	
@@ -190,6 +216,7 @@ class Game{
 		this.draw();		
 	}
 	
+		
 	punch(fighter){
 		var hit = false;
 		if (!fighter.punching){
@@ -200,6 +227,7 @@ class Game{
 			if (this.checkHitDistance(fighter, anotherFighter)){
 				if (anotherFighter.hp > 0){
 					anotherFighter.hp--;
+					anotherFighter.moveBack(17);
 				}
 				else {
 					anotherFighter.checkIfDead();

@@ -20,6 +20,7 @@ class C64Blackbox {
 	static texture = null;	
     static backgroundColor = Globals.lightgrayColor;
     static secondaryBackgroundColor = Globals.colors[11];
+	static logoPictures = ['logo.png'];
 
     constructor() {
         this.scene = new THREE.Scene();
@@ -113,37 +114,38 @@ class C64Blackbox {
 		console.log('Bottom Output resetted.');
     }
 	
-	handleHelp(){
+	handleHelp() {
 		console.log("HELP");
 		this.clearOutput();
+		
 		const context = C64Blackbox.texture.image.getContext('2d');
 		context.fillStyle = this.defaultColor;
-
-		context.fillText(String.fromCharCode(0xe05f) + 'HELP', 0, this.cursor.position.y + Math.floor(this.cursor.size / 2));
-		this.cursor.position.y += 2*(this.cursor.size + 2);
-		context.fillText('F1, 1, Q - ' +String.fromCharCode(0xe05f) + 'HELP, DISPLAY THIS HELP', 0, this.cursor.position.y + Math.floor(this.cursor.size / 2));
-		this.cursor.position.y += this.cursor.size + 2;
-		context.fillText('F2, 2, 8, U, J - SOFT RESET', 0, this.cursor.position.y + Math.floor(this.cursor.size / 2));
-		this.cursor.position.y += this.cursor.size + 2;
-		context.fillText('F3, 3, 9, I, K - CHANGE BACKGROUND COLOR', 0, this.cursor.position.y + Math.floor(this.cursor.size / 2));
-		this.cursor.position.y += this.cursor.size + 2;
-		context.fillText('F6, 6, 0, =, O, L - ' + String.fromCharCode(0xe05f) + 'K&A+ LOGO', 0, this.cursor.position.y + Math.floor(this.cursor.size / 2));
-		this.cursor.position.y += this.cursor.size + 2;
-		context.fillText('F7, 7, -, P, ; - ' + String.fromCharCode(0xe05f) + 'BRUCE LEE SIMPLE GAME', 0, this.cursor.position.y + Math.floor(this.cursor.size / 2));
-		this.cursor.position.y += 2*(this.cursor.size + 2);
-		context.fillText('READY.', 0, this.cursor.position.y + Math.floor(this.cursor.size / 2));
-		this.cursor.position.y += this.cursor.size + 2;
+	
+		const helpTexts = [
+			[String.fromCharCode(0xe05f) + 'HELP', 2],
+			['F1, 1, Q - ' + String.fromCharCode(0xe05f) + 'HELP, DISPLAY THIS HELP', 1],
+			['F2, 2, 8, U, J - SOFT RESET', 1],
+			['F3, 3, 9, I, K - CHANGE BACKGROUND COLOR', 1],
+			['F6, 6, 0, =, O, L - ' + String.fromCharCode(0xe05f) + 'K&A+ LOGO', 1],
+			['F7, 7, -, P, ; - ' + String.fromCharCode(0xe05f) + 'BRUCE LEE SIMPLE GAME', 2],
+			['READY.', 1]
+		];
+	
+		for (const [text, movement] of helpTexts) {
+			context.fillText(text, 0, this.cursor.position.y + Math.floor(this.cursor.size / 2));
+			this.cursor.position.y += (this.cursor.size + 2) * movement;
+		}
 	}
 
-    handleF1() {
-        console.log('1 or F1 was pressed');
+    handleF2() {
+        console.log('2 or F2 was pressed');
 		this.game.reset();
 		C64Blackbox.backgroundColor = Globals.lightgrayColor;
         this.clearOutput();
     }
 
-    handleF2() {
-        console.log('2 or F2 was pressed');
+    handleF3() {
+        console.log('3, 9, I, K or F3 was pressed');
 		this.game.reset();
 		this.cursor.clear();
 		const context = C64Blackbox.texture.image.getContext('2d');
@@ -156,33 +158,30 @@ class C64Blackbox {
 		}
 		C64Blackbox.texture.needsUpdate = true;
 		
-		const promise = new Promise((resolve) => {
-			setTimeout(() => {
-				
-		C64Blackbox.backgroundColor = Globals.colors[C64Blackbox.currentColorIndex];
-		C64Blackbox.currentColorIndex = (C64Blackbox.currentColorIndex + 1) % Globals.colors.length;
-		console.log(C64Blackbox.currentColorIndex);
-		this.clearOutput();
-			resolve();
-			}, 1000);
-		});
+		setTimeout(() => {				
+			C64Blackbox.backgroundColor = Globals.colors[C64Blackbox.currentColorIndex];
+			C64Blackbox.currentColorIndex = (C64Blackbox.currentColorIndex + 1) % 	Globals.colors.length;
+			console.log(C64Blackbox.currentColorIndex);
+			this.clearOutput();
+		}, 1000);
     }
 
-    handleF4() {
-        console.log('3, 4 or F4 was pressed');
+    handleF6() {
+        console.log('6, 0, =, O, L or F6 was pressed');
 		
 		this.game.reset();
 		this.clearOutput();
 		this.context.fillStyle = this.defaultColor;
         this.context.fillText(String.fromCharCode(0xe05f) + 'K&A+', 0, 7 * C64Blackbox.rowHeight);
-        this.context.fillText('READY.', 0, 13 * C64Blackbox.rowHeight + 2);
-		this.cursor.position = { x: Math.floor(this.cursor.size / 2) + 1, y: 13.5 * C64Blackbox.rowHeight}
+        this.context.fillText('http://www.ka-plus.pl', 0, 13 * C64Blackbox.rowHeight + 2);
+        this.context.fillText('READY.', 0, 14 * C64Blackbox.rowHeight + 2);
+		this.cursor.position = { x: Math.floor(this.cursor.size / 2) + 1, y: 14.5 * C64Blackbox.rowHeight}
 		
-		this.loadPicture('logo.png', 0, 8 * C64Blackbox.rowHeight);
+		this.loadPicture(C64Blackbox.logoPictures[0], 0, 8 * C64Blackbox.rowHeight);
     }
 	
-	handleF6(){
-		console.log('F4 was pressed. Simple game');
+	handleF7(){
+		console.log('7, -, P, ; or F7 was pressed. Simple game');
 		this.game.reset();
 		this.game.activate();		
 		this.clearOutputBottom(Math.floor(5 * Globals.screenHeight / 6));
@@ -236,10 +235,10 @@ class C64Blackbox {
     handleKeyDown(event) {
         const keyMapping = {
             help: () => this.handleHelp(),
-            'F1': () => this.handleF1(),
             'F2': () => this.handleF2(),
-            'F4': () => this.handleF4(),
+            'F3': () => this.handleF3(),
             'F6': () => this.handleF6(),
+            'F7': () => this.handleF7(),
             w: () => this.handleMovement(Direction.UP),
             s: () => this.handleMovement(Direction.DOWN),
             a: () => this.handleMovement(Direction.LEFT),
@@ -249,10 +248,10 @@ class C64Blackbox {
 
         const keyTriggers = {
             'help': ['F1', 111, '1', 'q'],
-            'F1': ['F2', 112, '2', '8', 'u', 'j'],
-            'F2': ['F3', 113, '3', '9', 'i', 'k'],
-            'F4': ['F6', 115, '6', '0', '=', 'o', 'l'],
-            'F6': ['F7', 117, '7', '-', 'p', ';'],
+            'F2': ['F2', 112, '2', '8', 'u', 'j'],
+            'F3': ['F3', 113, '3', '9', 'i', 'k'],
+            'F6': ['F6', 115, '6', '0', '=', 'o', 'l'],
+            'F7': ['F7', 117, '7', '-', 'p', ';'],
 			'w': ['w', 'ArrowUp'],
 			's': ['s', 'ArrowDown'],
 			'a': ['a', 'ArrowLeft'],
