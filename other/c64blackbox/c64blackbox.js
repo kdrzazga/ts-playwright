@@ -34,6 +34,7 @@ class C64Blackbox {
 		this.cursor = null;
 		this.game = null;		
 		this.clearColor = Globals.colors[11];
+		this.backgroundColor = Globals.lightgrayColor;
 		this.defaultColor = 'black';
 		this.classRef = C64Blackbox;
 	}
@@ -80,7 +81,7 @@ class C64Blackbox {
     }
 
     drawInitialText(context) {
-		this.cursor = new Cursor(context, this.defaultColor);
+		this.cursor = new Cursor(context, this.defaultColor, this.backgroundColor);
 		
         context.fillStyle = this.classRef.secondaryBackgroundColor;
         context.fillRect(0, 0, context.canvas.width, context.canvas.height);
@@ -109,7 +110,7 @@ class C64Blackbox {
 	
     clearOutputBottom(thresholdY) {
         const context = C64Blackbox.texture.image.getContext('2d');
-		context.fillStyle = C64Blackbox.backgroundColor;
+		context.fillStyle = this.backgroundColor;
         context.fillRect(0, thresholdY, C64Blackbox.texture.image.width, C64Blackbox.texture.image.height);
 		console.log('Bottom Output resetted.');
     }
@@ -160,6 +161,7 @@ class C64Blackbox {
 		
 		setTimeout(() => {				
 			C64Blackbox.backgroundColor = Globals.colors[C64Blackbox.currentColorIndex];
+			this.backgroundColor = C64Blackbox.backgroundColor;
 			C64Blackbox.currentColorIndex = (C64Blackbox.currentColorIndex + 1) % 	Globals.colors.length;
 			console.log(C64Blackbox.currentColorIndex);
 			this.clearOutput();
@@ -293,9 +295,10 @@ class Cursor{
 	
 	 static blinkInterval = 100;
 	
-	constructor(context, color){
+	constructor(context, color, backgroundColor){
 		this.context = context;
 		this.color = color;
+		this.backgroundColor = backgroundColor;
 		this.size = C64Blackbox.rowHeight - 7;
         this.position = { x: Math.floor(this.size / 2) + 1, y: 6.5 * C64Blackbox.rowHeight }
 		this.visible = true;
@@ -309,28 +312,23 @@ class Cursor{
         var x = this.position.x - this.size / 2;
         var y = this.position.y - this.size / 2;
 		
-		this.context.fillStyle = C64Blackbox.backgroundColor;
+		this.context.fillStyle = this.backgroundColor;
         this.context.fillRect(x, y, this.size, this.size);	
 	}
 	
     blinkCursor() {
-        if (Globals.runningTime % Cursor.blinkInterval == Math.floor(Cursor.blinkInterval / 2)) {
-            this.visible = true;
-        } else if (Globals.runningTime % Cursor.blinkInterval == 0) {
-            this.visible = false;
-        }
-        var x = this.position.x - this.size / 2;
-        var y = this.position.y - this.size / 2;
-        
+        const blinkState = Math.floor(Globals.runningTime / Cursor.blinkInterval) % 2;
+
+        const x = this.position.x - this.size / 2;
+        const y = this.position.y - this.size / 2;
+
+        // Clear the rectangle before drawing, to avoid ghosting
+        this.clear();
+
         this.context.clearRect(x, y, this.size, this.size);
-        
-        if (this.visible) {
-            this.context.fillStyle = this.color;
-            this.context.fillRect(x, y, this.size, this.size);
-        } else {
-			this.clear();
-        }
-	}
+        this.context.fillStyle = (blinkState === 0) ? this.color : this.backgroundColor;
+        this.context.fillRect(x, y, this.size, this.size);
+    }
 }
 
 const c64 = new C64Blackbox();
