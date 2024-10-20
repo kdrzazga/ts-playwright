@@ -136,7 +136,7 @@ class Enemy extends Fighter{
 	}
 }
 
-class Game{
+class BruceGame{
 	
 	static hitDistance = 50;
 	
@@ -213,7 +213,7 @@ class Game{
 			console.log("Attacker = Enemy. Player under attack.. Distance =" + distance);
 		}
 		
-		return distance < Game.hitDistance;
+		return distance < BruceGame.hitDistance;
 	}
 	
 	reset(){
