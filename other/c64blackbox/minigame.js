@@ -125,11 +125,11 @@ class Player extends Fighter{
 		this.x = Math.floor(Globals.screenWidth / 2);
 		this.y = Globals.screenHeight - 60;
 		this.name = "player";
-		this.picPath = "greenHonda/honda_w1.png";
-		this.picRightPath = "greenHonda/honda_w2.png";
-		this.picLeftPath = "greenHonda/honda_w2L.png";
-		this.punchPicPath = "greenHonda/honda_punch.png";
-		this.punchLeftPicPath = "greenHonda/honda_punchL.png";
+		this.picPath = "bruce/honda_w1.png";
+		this.picRightPath = "bruce/honda_w2.png";
+		this.picLeftPath = "bruce/honda_w2L.png";
+		this.punchPicPath = "bruce/honda_punch.png";
+		this.punchLeftPicPath = "bruce/honda_punchL.png";
 	}
 }
 
@@ -138,11 +138,11 @@ class Enemy extends Fighter{
 		super(canvas);		
 		this.x = 10;		
 		this.name = "enemy";
-		this.picPath = "blee.png";
-		this.picRightPath = "blee.png";
-		this.picLeftPath = "bleeL.png";
-		this.punchPicPath = "bleePunch.png";
-		this.punchLeftPicPath = "bleeL.png";
+		this.picPath = "bruce/blee.png";
+		this.picRightPath = "bruce/blee.png";
+		this.picLeftPath = "bruce/bleeL.png";
+		this.punchPicPath = "bruce/bleePunch.png";
+		this.punchLeftPicPath = "bruce/bleeL.png";
 		this.direction = Direction.RIGHT;
 	}
 	
