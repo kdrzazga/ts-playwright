@@ -140,8 +140,13 @@ class C64Blackbox {
 
     handleF2() {
         console.log('2 or F2 was pressed');
-		this.game.reset();
-		C64Blackbox.backgroundColor = Globals.lightgrayColor;
+        this.softReset(Globals.lightgrayColor);
+    }
+
+    softReset(color){
+    	this.game.reset();
+    	this.classRef.backgroundColor = color;
+    	this.backgroundColor = color;
         this.clearOutput();
     }
 
@@ -158,11 +163,12 @@ class C64Blackbox {
 			this.cursor.position.x -= this.cursor.size;
 		}
 		C64Blackbox.texture.needsUpdate = true;
-		
+
 		setTimeout(() => {				
 			C64Blackbox.backgroundColor = Globals.colors[C64Blackbox.currentColorIndex];
 			this.backgroundColor = C64Blackbox.backgroundColor;
 			C64Blackbox.currentColorIndex = (C64Blackbox.currentColorIndex + 1) % 	Globals.colors.length;
+
 			console.log(C64Blackbox.currentColorIndex);
 			this.clearOutput();
 		}, 1000);

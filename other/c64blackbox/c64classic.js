@@ -17,7 +17,12 @@ class ClassicC64 extends C64Blackbox{
 			{ text: '64K RAM SYSTEM   38911  BASIC BYTES FREE', color: Globals.colors[14] },
 			{ text: 'READY.', color: Globals.colors[14] }
 		];
-    }	
+    }
+
+     handleF2() {
+         console.log('2 or F2 was pressed');
+         this.softReset(Globals.colors[6]);
+     }
 }
 
 const c64classic = new ClassicC64();
