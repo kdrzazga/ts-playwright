@@ -52,6 +52,7 @@ class Fighter{
 		if (this.hp > 0){
 			this.x += this.speed;			
 			this.picPath = this.picRightPath;
+			this.direction = Direction.RIGHT;
 		}
 	}
 	
@@ -59,6 +60,7 @@ class Fighter{
 		if (this.hp > 0){
 			this.x -= this.speed;
 			this.picPath = this.picLeftPath;
+			this.direction = Direction.LEFT;
 		}
 	}
 	
@@ -85,7 +87,7 @@ class Fighter{
 	punch(){
 		console.log('PUNCH');
 		let tempPicPath = this.picPath;
-		this.picPath = this.punchPicPath;
+		this.picPath = (this.direction == Direction.LEFT) ? this.punchLeftPicPath: this.punchPicPath;
 		this.draw();
 		this.punchAudio.enable();
 		this.punchAudio.playAudio();
@@ -121,12 +123,13 @@ class Player extends Fighter{
 	constructor(canvas){
 		super(canvas);		
 		this.x = Math.floor(Globals.screenWidth / 2);
+		this.y = Globals.screenHeight - 60;
 		this.name = "player";
-		this.picPath = "fatman.png";
-		this.picRightPath = "fatman.png";
-		this.picLeftPath = "fatmanL.png";
-		this.punchPicPath = "fatmanPunch.png";
-		this.punchLeftPicPath = "fatmanPunch.png";
+		this.picPath = "greenHonda/honda_w1.png";
+		this.picRightPath = "greenHonda/honda_w2.png";
+		this.picLeftPath = "greenHonda/honda_w2L.png";
+		this.punchPicPath = "greenHonda/honda_punch.png";
+		this.punchLeftPicPath = "greenHonda/honda_punchL.png";
 	}
 }
 
@@ -158,10 +161,8 @@ class Enemy extends Fighter{
 			}
 			else{
 				this.moveRight();
-			}			
-			
+			}
 		}
-					
 		const context = C64Blackbox.texture.image.getContext('2d');
 		context.fillStyle = C64Blackbox.backgroundColor;
         context.fillRect(0, Math.floor(5 * Globals.screenHeight / 6), C64Blackbox.texture.image.width, C64Blackbox.texture.image.height);

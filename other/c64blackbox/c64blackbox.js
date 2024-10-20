@@ -163,11 +163,12 @@ class C64Blackbox {
 			this.cursor.position.x -= this.cursor.size;
 		}
 		C64Blackbox.texture.needsUpdate = true;
-		
-		setTimeout(() => {
-		    this.backgroundColor = Globals.colors[C64Blackbox.currentColorIndex];
-			C64Blackbox.backgroundColor = this.backgroundColor;
-			C64Blackbox.currentColorIndex = (C64Blackbox.currentColorIndex + 1) % Globals.colors.length;
+
+		setTimeout(() => {				
+			C64Blackbox.backgroundColor = Globals.colors[C64Blackbox.currentColorIndex];
+			this.backgroundColor = C64Blackbox.backgroundColor;
+			C64Blackbox.currentColorIndex = (C64Blackbox.currentColorIndex + 1) % 	Globals.colors.length;
+
 			console.log(C64Blackbox.currentColorIndex);
 			this.clearOutput();
 		}, 1000);
