@@ -20,7 +20,8 @@ class C64Blackbox {
         this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         this.planeGeometry = new THREE.PlaneGeometry(5, 5);
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
-        
+
+        this.functionKeysActivated = true;
 		this.delta = 0.006;  
 		this.headerLines = [];
 		this.context = null
@@ -37,6 +38,7 @@ class C64Blackbox {
         this.setupRenderer();
 		this.setupHeaderContent();
 		
+        this.functionKeysActivated = true;
         const canvas = document.createElement('canvas');
         this.context = canvas.getContext('2d');
         canvas.width = Globals.screenWidth;
@@ -111,6 +113,9 @@ class C64Blackbox {
     }
 	
 	handleHelp() {
+	    if (!this.functionKeysActivated)
+	        return;
+	        
 		console.log("F1. HELP");
 		this.clearOutput();
 		
@@ -135,6 +140,8 @@ class C64Blackbox {
 	}
 
     handleF2() {
+	    if (!this.functionKeysActivated)
+	        return;
         console.log('2 or F2 was pressed. Soft reset.');
         this.softReset(Globals.lightgrayColor);
     }
@@ -147,6 +154,8 @@ class C64Blackbox {
     }
 
     handleF3() {
+	    if (!this.functionKeysActivated)
+	        return;
         console.log('3, 9, I, K or F3 was pressed. POKE 53281,color');
 		this.game.reset();
 		this.cursor.clear();
@@ -171,6 +180,8 @@ class C64Blackbox {
     }
 
     handleF6() {
+	    if (!this.functionKeysActivated)
+	        return;
         console.log('6, 0, =, O, L or F6 was pressed. LOGO');
 		
 		this.game.reset();
@@ -185,6 +196,8 @@ class C64Blackbox {
     }
 	
 	handleF7(){
+	    if (!this.functionKeysActivated)
+	        return;
 		console.log('7, -, P, ; or F7 was pressed. Simple game Bruce');
 		this.game.reset();
 		this.game.activate();		
@@ -200,6 +213,8 @@ class C64Blackbox {
 	}
 
 	handleF9(){
+	    if (!this.functionKeysActivated)
+	        return;
 	    console.log('F9 was pressed. Simple game Dizzol')
 
 	    this.cursor.clear();
@@ -212,8 +227,13 @@ class C64Blackbox {
 
 		setTimeout(() => {
 		    this.clearOutput();
-        }, 1000);
-
+		    this.functionKeysActivated = false;
+		    setTimeout(() => {
+		                this.dizzolGame.draw();
+		                C64Blackbox.texture.needsUpdate = true;
+            		    //location.reload();
+                    }, 1500);
+        }, 6000);
 	}
 	
 	handleMovement(direction) {
