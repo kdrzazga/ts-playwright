@@ -201,6 +201,19 @@ class C64Blackbox {
 
 	handleF9(){
 	    console.log('F9 was pressed. Simple game Dizzol')
+
+	    this.cursor.clear();
+	    this.context.fillStyle = this.defaultColor;
+	    this.context.fillText(String.fromCharCode(0xe05f) + 'DIZZY', 0, this.cursor.position.y + 4);
+	    this.cursor.moveDown(2);
+	    this.context.fillStyle = this.defaultColor;
+	    this.context.fillText('READY.', 0, this.cursor.position.y + 5);
+	    this.cursor.moveDown(1);
+
+		setTimeout(() => {
+		    this.clearOutput();
+        }, 1000);
+
 	}
 	
 	handleMovement(direction) {
