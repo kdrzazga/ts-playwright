@@ -21,6 +21,8 @@ class DizzolGame{
         this.currentRoomId = 1;
         let roomReg = new RoomRegistry();
         this.rooms = roomReg.createRoomSet();
+
+        this.dizzy = new Dizzy(canvas);
     }
 
     draw(){
@@ -30,6 +32,8 @@ class DizzolGame{
         let pictureLoader = new PictureLoader(context);
         console.log(currentRoom.number + " " + currentRoom.picPath);
         pictureLoader.load(currentRoom.picPath, 0, 9 * C64Blackbox.rowHeight);
+
+        pictureLoader.load(this.dizzy.picPath, 289, 20.5 * C64Blackbox.rowHeight);
     }
 
 
