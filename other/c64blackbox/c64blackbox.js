@@ -7,13 +7,6 @@ class Globals{
     static colors = ['black', 'white', 'red', 'cyan', 'magenta', 'green', '#4536a6', 'yellow', '#675200', '#c33d00', '#c18178', '#606060', '#8a8a8a', '#b3ec91', '#867ade', Globals.lightgrayColor];
 }
 
-const Direction = Object.freeze({
-    LEFT: 'left',
-    RIGHT: 'right',
-	UP: 'up',
-	DOWN: 'down'
-});
-
 class C64Blackbox {
     static rowHeight = 20;
 	static currentColorIndex = 7;
@@ -32,7 +25,8 @@ class C64Blackbox {
 		this.headerLines = [];
 		this.context = null
 		this.cursor = null;
-		this.game = null;		
+		this.game = null;
+		this.dizzolGame = null;
 		this.clearColor = Globals.colors[11];
 		this.backgroundColor = Globals.lightgrayColor;
 		this.defaultColor = 'black';
@@ -47,7 +41,8 @@ class C64Blackbox {
         this.context = canvas.getContext('2d');
         canvas.width = Globals.screenWidth;
         canvas.height = Globals.screenHeight;
-		this.game = new Game(canvas);
+		this.game = new BruceGame(canvas);
+		this.dizzolGame = new DizzolGame(canvas);
 
         C64Blackbox.texture = new THREE.CanvasTexture(canvas);
 		this.drawInitialText(this.context);
@@ -116,7 +111,7 @@ class C64Blackbox {
     }
 	
 	handleHelp() {
-		console.log("HELP");
+		console.log("F1. HELP");
 		this.clearOutput();
 		
 		const context = C64Blackbox.texture.image.getContext('2d');
@@ -128,7 +123,8 @@ class C64Blackbox {
 			['F2, 2, 8, U, J - SOFT RESET', 1],
 			['F3, 3, 9, I, K - CHANGE BACKGROUND COLOR', 1],
 			['F6, 6, 0, =, O, L - ' + String.fromCharCode(0xe05f) + 'K&A+ LOGO', 1],
-			['F7, 7, -, P, ; - ' + String.fromCharCode(0xe05f) + 'BRUCE LEE SIMPLE GAME', 2],
+			['F7, 7, -, P, ; - ' + String.fromCharCode(0xe05f) + 'BRUCE LEE SIMPLE GAME', 1],
+			['F9,  - ' + String.fromCharCode(0xe05f) + 'DIZZOL SIMPLE GAME', 2],
 			['READY.', 1]
 		];
 	
@@ -139,7 +135,7 @@ class C64Blackbox {
 	}
 
     handleF2() {
-        console.log('2 or F2 was pressed');
+        console.log('2 or F2 was pressed. Soft reset.');
         this.softReset(Globals.lightgrayColor);
     }
 
@@ -151,7 +147,7 @@ class C64Blackbox {
     }
 
     handleF3() {
-        console.log('3, 9, I, K or F3 was pressed');
+        console.log('3, 9, I, K or F3 was pressed. POKE 53281,color');
 		this.game.reset();
 		this.cursor.clear();
 		const context = C64Blackbox.texture.image.getContext('2d');
@@ -175,7 +171,7 @@ class C64Blackbox {
     }
 
     handleF6() {
-        console.log('6, 0, =, O, L or F6 was pressed');
+        console.log('6, 0, =, O, L or F6 was pressed. LOGO');
 		
 		this.game.reset();
 		this.clearOutput();
@@ -189,7 +185,7 @@ class C64Blackbox {
     }
 	
 	handleF7(){
-		console.log('7, -, P, ; or F7 was pressed. Simple game');
+		console.log('7, -, P, ; or F7 was pressed. Simple game Bruce');
 		this.game.reset();
 		this.game.activate();		
 		this.clearOutputBottom(Math.floor(5 * Globals.screenHeight / 6));
@@ -201,6 +197,23 @@ class C64Blackbox {
 		this.context.fillStyle = this.defaultColor;
 		this.context.fillText('READY.', 0, this.cursor.position.y + 5);
 		this.cursor.moveDown(1);
+	}
+
+	handleF9(){
+	    console.log('F9 was pressed. Simple game Dizzol')
+
+	    this.cursor.clear();
+	    this.context.fillStyle = this.defaultColor;
+	    this.context.fillText(String.fromCharCode(0xe05f) + 'DIZZY', 0, this.cursor.position.y + 4);
+	    this.cursor.moveDown(2);
+	    this.context.fillStyle = this.defaultColor;
+	    this.context.fillText('READY.', 0, this.cursor.position.y + 5);
+	    this.cursor.moveDown(1);
+
+		setTimeout(() => {
+		    this.clearOutput();
+        }, 1000);
+
 	}
 	
 	handleMovement(direction) {
@@ -247,6 +260,7 @@ class C64Blackbox {
             'F3': () => this.handleF3(),
             'F6': () => this.handleF6(),
             'F7': () => this.handleF7(),
+            'F9': () => this.handleF9(),
             w: () => this.handleMovement(Direction.UP),
             s: () => this.handleMovement(Direction.DOWN),
             a: () => this.handleMovement(Direction.LEFT),
@@ -260,6 +274,7 @@ class C64Blackbox {
             'F3': ['F3', 113, '3', '9', 'i', 'k'],
             'F6': ['F6', 115, '6', '0', '=', 'o', 'l'],
             'F7': ['F7', 117, '7', '-', 'p', ';'],
+            'F9': ['F9', 119],
 			'w': ['w', 'ArrowUp'],
 			's': ['s', 'ArrowDown'],
 			'a': ['a', 'ArrowLeft'],
