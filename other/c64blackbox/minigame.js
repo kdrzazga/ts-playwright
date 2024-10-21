@@ -1,34 +1,12 @@
-class Fighter{
+class Fighter extends Sprite{
 	constructor(canvas){
-		this.speed = 3;
-		this.hp = 4;
-		this.x = 0;
-		this.y = Globals.screenHeight - 75;
-		this.name = "fighter";
-		this.canvas = canvas;
-		this.picPath = "";
-		this.picLeftPath = "";
-		this.picRightPath = "";
+        super(canvas);
+
+    	this.y = Globals.screenHeight - 75;
 		this.punchPicPath = "";
 		this.punchLeftPicPath = "";
 		this.punching = false;
 		this.punchAudio = new PunchAudio("punch.mp3");
-	}
-	
-	moveRight(){
-		if (this.hp > 0){
-			this.x += this.speed;			
-			this.picPath = this.picRightPath;
-			this.direction = Direction.RIGHT;
-		}
-	}
-	
-	moveLeft(){
-		if (this.hp > 0){
-			this.x -= this.speed;
-			this.picPath = this.picLeftPath;
-			this.direction = Direction.LEFT;
-		}
 	}
 	
 	moveBack(times){
@@ -45,9 +23,7 @@ class Fighter{
 	}
 	
 	draw(){
-		let context = this.canvas.getContext('2d');
-		let pictureLoader = new PictureLoader(context);
-		pictureLoader.load(this.picPath, this.x, this.y);        
+		super.draw();
         C64Blackbox.texture.needsUpdate = true;
 	}
 	

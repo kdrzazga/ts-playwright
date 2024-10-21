@@ -7,13 +7,6 @@ class Globals{
     static colors = ['black', 'white', 'red', 'cyan', 'magenta', 'green', '#4536a6', 'yellow', '#675200', '#c33d00', '#c18178', '#606060', '#8a8a8a', '#b3ec91', '#867ade', Globals.lightgrayColor];
 }
 
-const Direction = Object.freeze({
-    LEFT: 'left',
-    RIGHT: 'right',
-	UP: 'up',
-	DOWN: 'down'
-});
-
 class C64Blackbox {
     static rowHeight = 20;
 	static currentColorIndex = 7;
