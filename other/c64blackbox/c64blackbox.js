@@ -126,10 +126,10 @@ class C64Blackbox {
 			[String.fromCharCode(0xe05f) + 'HELP', 2],
 			['F1, 1, Q - ' + String.fromCharCode(0xe05f) + 'HELP, DISPLAY THIS HELP', 1],
 			['F2, 2, 8, U, J - SOFT RESET', 1],
-			['F3, 3, 9, I, K - CHANGE BACKGROUND COLOR', 1],
+			['F3, 3, I, K - CHANGE BACKGROUND COLOR', 1],
 			['F6, 6, 0, =, O, L - ' + String.fromCharCode(0xe05f) + 'K&A+ LOGO', 1],
 			['F7, 7, -, P, ; - ' + String.fromCharCode(0xe05f) + 'BRUCE LEE SIMPLE GAME', 1],
-			['F9,  - ' + String.fromCharCode(0xe05f) + 'DIZZOL SIMPLE GAME', 2],
+			['F9, 9  - ' + String.fromCharCode(0xe05f) + 'DIZZOL SIMPLE GAME', 2],
 			['READY.', 1]
 		];
 	
@@ -156,7 +156,7 @@ class C64Blackbox {
     handleF3() {
 	    if (!this.functionKeysActivated)
 	        return;
-        console.log('3, 9, I, K or F3 was pressed. POKE 53281,color');
+        console.log('3, I, K or F3 was pressed. POKE 53281,color');
 		this.game.reset();
 		this.cursor.clear();
 		const context = C64Blackbox.texture.image.getContext('2d');
@@ -237,9 +237,9 @@ class C64Blackbox {
 	}
 	
 	handleMovement(direction) {
-		this.clearOutputBottom(Math.floor(5 * Globals.screenHeight / 6));
-	
 		if (this.game.active) {
+		    this.clearOutputBottom(Math.floor(5 * Globals.screenHeight / 6));
+
 			switch (direction) {
 				case Direction.UP:
 					console.log('UP key was pressed.');
@@ -291,10 +291,10 @@ class C64Blackbox {
         const keyTriggers = {
             'help': ['F1', 111, '1', 'q'],
             'F2': ['F2', 112, '2', '8', 'u', 'j'],
-            'F3': ['F3', 113, '3', '9', 'i', 'k'],
+            'F3': ['F3', 113, '3', 'i', 'k'],
             'F6': ['F6', 115, '6', '0', '=', 'o', 'l'],
             'F7': ['F7', 117, '7', '-', 'p', ';'],
-            'F9': ['F9', 119],
+            'F9': ['F9', 119, '9'],
 			'w': ['w', 'ArrowUp'],
 			's': ['s', 'ArrowDown'],
 			'a': ['a', 'ArrowLeft'],
