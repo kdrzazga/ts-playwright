@@ -18,12 +18,23 @@ class DizzolGame{
 
     constructor(canvas){
         this.canvas = canvas;
-        this.currentRoomId = 1;
         let roomReg = new RoomRegistry();
         this.rooms = roomReg.createRoomSet();
 
-        this.dizzy = new Dizzy(canvas);
+        this.player = new Dizzy(canvas);
+        this.reset();
     }
+
+    reset(){
+        this.active = false;
+        this.currentRoomId = 1;
+    }
+
+	activate(){
+		this.reset();
+		this.active = true;
+		console.log("Dizzol Game started.");
+	}
 
     draw(){
         let currentRoom = this.rooms.find(room => room.number === this.currentRoomId);
@@ -33,9 +44,18 @@ class DizzolGame{
         console.log(currentRoom.number + " " + currentRoom.picPath);
         pictureLoader.load(currentRoom.picPath, 0, 9 * C64Blackbox.rowHeight);
 
-        pictureLoader.load(this.dizzy.picPath, 289, 20.5 * C64Blackbox.rowHeight);
+        pictureLoader.load(this.player.picPath, 289, 20.5 * C64Blackbox.rowHeight);
     }
 
+    moveFighterLeft(fighter){
+        console.log('Dizzy left')
+    //TODO
+    }
+
+    moveFighterRight(fighter){
+        console.log('Dizzy right')
+    //TODO
+    }
 
 }
 

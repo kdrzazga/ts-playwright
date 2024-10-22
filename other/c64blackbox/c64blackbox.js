@@ -24,9 +24,9 @@ class C64Blackbox {
         this.functionKeysActivated = true;
 		this.delta = 0.006;  
 		this.headerLines = [];
-		this.context = null
+		this.context = null;
 		this.cursor = null;
-		this.game = null;
+		this.bruceGame = null;
 		this.dizzolGame = null;
 		this.clearColor = Globals.colors[11];
 		this.backgroundColor = Globals.lightgrayColor;
@@ -43,7 +43,7 @@ class C64Blackbox {
         this.context = canvas.getContext('2d');
         canvas.width = Globals.screenWidth;
         canvas.height = Globals.screenHeight;
-		this.game = new BruceGame(canvas);
+		this.bruceGame = new BruceGame(canvas);
 		this.dizzolGame = new DizzolGame(canvas);
 
         C64Blackbox.texture = new THREE.CanvasTexture(canvas);
@@ -147,7 +147,7 @@ class C64Blackbox {
     }
 
     softReset(color){
-    	this.game.reset();
+    	this.bruceGame.reset();
     	this.classRef.backgroundColor = color;
     	this.backgroundColor = color;
         this.clearOutput();
@@ -157,7 +157,7 @@ class C64Blackbox {
 	    if (!this.functionKeysActivated)
 	        return;
         console.log('3, I, K or F3 was pressed. POKE 53281,color');
-		this.game.reset();
+		this.bruceGame.reset();
 		this.cursor.clear();
 		const context = C64Blackbox.texture.image.getContext('2d');
 		context.fillStyle = this.defaultColor;
@@ -184,7 +184,7 @@ class C64Blackbox {
 	        return;
         console.log('6, 0, =, O, L or F6 was pressed. LOGO');
 		
-		this.game.reset();
+		this.bruceGame.reset();
 		this.clearOutput();
 		this.context.fillStyle = this.defaultColor;
         this.context.fillText(String.fromCharCode(0xe05f) + 'K&A+', 0, 7 * C64Blackbox.rowHeight);
@@ -199,8 +199,8 @@ class C64Blackbox {
 	    if (!this.functionKeysActivated)
 	        return;
 		console.log('7, -, P, ; or F7 was pressed. Simple game Bruce');
-		this.game.reset();
-		this.game.activate();		
+		this.bruceGame.reset();
+		this.bruceGame.activate();
 		this.clearOutputBottom(Math.floor(5 * Globals.screenHeight / 6));
 				
 		this.cursor.clear();
@@ -217,7 +217,7 @@ class C64Blackbox {
 	        return;
 	    console.log('F9 was pressed. Simple game Dizzol')
 
-        this.game.reset();
+        this.bruceGame.reset();
 	    this.cursor.clear();
 	    this.context.fillStyle = this.defaultColor;
 	    this.context.fillText(String.fromCharCode(0xe05f) + 'DIZZY', 0, this.cursor.position.y + 4);
@@ -231,40 +231,48 @@ class C64Blackbox {
 		    this.functionKeysActivated = false;
 		    setTimeout(() => {
 		                this.dizzolGame.draw();
+		                this.dizzolGame.activate();
             		    //location.reload();
                     }, 1500);
         }, 6000);
 	}
 	
 	handleMovement(direction) {
-		if (this.game.active) {
-		    this.clearOutputBottom(Math.floor(5 * Globals.screenHeight / 6));
 
-			switch (direction) {
-				case Direction.UP:
-					console.log('UP key was pressed.');
-					break;
-				case Direction.DOWN:
-					console.log('DOWN key was pressed.');
-					break;
-				case Direction.LEFT:
-					console.log('LEFT key was pressed.');
-					this.game.moveFighterLeft(this.game.player);
-					break;
-				case Direction.RIGHT:
-					console.log('RIGHT key was pressed.');
-					this.game.moveFighterRight(this.game.player);
-					break;
-			}
+        if (!this.bruceGame.active && !this.dizzolGame.active){
+            return;
+        }
+
+	    let game = this.bruceGame.active ? this.bruceGame : this.dizzolGame;
+
+		if (this.bruceGame.active) {
+		    this.clearOutputBottom(Math.floor(5 * Globals.screenHeight / 6));
+        }
+		switch (direction) {
+			case Direction.UP:
+				console.log('UP key was pressed.');
+				break;
+			case Direction.DOWN:
+				console.log('DOWN key was pressed.');
+				break;
+			case Direction.LEFT:
+				console.log('LEFT key was pressed.');
+				game.moveFighterLeft(game.player);
+				break;
+			case Direction.RIGHT:
+				console.log('RIGHT key was pressed.');
+				game.moveFighterRight(game.player);
+				break;
 		}
+
 	}
 	
 	handleFire(){
-		if (this.game.active){
+		if (this.bruceGame.active){
 			console.log('FIRE key was pressed.');
 			this.clearOutputBottom(Math.floor(5 * Globals.screenHeight / 6));
-			this.game.punch(this.game.player);
-		}		
+			this.bruceGame.punch(this.bruceGame.player);
+		}
 	}
 	
 	loadPicture(fileName, x, y) {
