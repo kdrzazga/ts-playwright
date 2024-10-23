@@ -48,13 +48,15 @@ class DizzolGame{
     }
 
     moveFighterLeft(fighter){
-        console.log('Dizzy left')
-    //TODO
+        console.log('Dizzy left');
+        this.player.moveLeft();
+        //TODO - efficient refresh needed, no picture loading
     }
 
     moveFighterRight(fighter){
-        console.log('Dizzy right')
-    //TODO
+        console.log('Dizzy right');
+        this.player.moveRight();
+        //TODO - efficient refresh needed, no picture loading
     }
 
 }
