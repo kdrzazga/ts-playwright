@@ -20,6 +20,10 @@ class Room{
         this.loader = new PictureLoader(context);
     }
 
+    draw(){
+        this.loader.draw(0, 9 * C64Blackbox.rowHeight);
+    }
+
     addCheckpoint(x, y){
         this.checkpoints.push([x, y]);
     }
@@ -56,7 +60,7 @@ class DizzolGame{
 
     draw(){
         let currentRoom = this.rooms.find(room => room.number === this.currentRoomId);
-        currentRoom.loader.draw(0, 9 * C64Blackbox.rowHeight);
+        currentRoom.draw();
         this.dizzyPicLoader.draw(this.player.x , 20.5 * C64Blackbox.rowHeight);
     }
 
