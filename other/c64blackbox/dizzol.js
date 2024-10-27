@@ -20,6 +20,10 @@ class Room{
         this.loader = new PictureLoader(context);
     }
 
+    load(){
+        this.loader.load(this.picPath, 0, 9 * C64Blackbox.rowHeight);
+    }
+
     draw(){
         this.loader.draw(0, 9 * C64Blackbox.rowHeight);
     }
@@ -54,7 +58,7 @@ class DizzolGame{
 
         let currentRoom = this.rooms.find(room => room.number === this.currentRoomId);
         console.log("Total rooms = " + this.rooms.length + " Current room =" + currentRoom.number + " " + currentRoom.picPath);
-        currentRoom.loader.load(currentRoom.picPath, 0, 9 * C64Blackbox.rowHeight);
+        currentRoom.load();
         this.dizzyPicLoader.load(this.player.picPath, 289, 20.5 * C64Blackbox.rowHeight);
 	}
 
