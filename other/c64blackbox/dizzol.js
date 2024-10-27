@@ -75,7 +75,7 @@ class DizzolGame{
 	}
 
     draw(){
-        let currentRoom = this.getCurrentRoom();
+        const currentRoom = this.getCurrentRoom();
         currentRoom.draw();
         this.dizzyPicLoader.draw(this.player.x , this.player.y);
     }
@@ -95,7 +95,7 @@ class DizzolGame{
     }
 
     checkLeftExit(){
-        let room = this.getCurrentRoom();
+        const room = this.getCurrentRoom();
         if (null == room.leftExit){
             console.log("No left exit");
             return;
@@ -112,7 +112,7 @@ class DizzolGame{
     }
 
     checkRightExit(){
-        let room = this.getCurrentRoom();
+        const room = this.getCurrentRoom();
         if (null == room.rightExit){
             console.log("No right exit");
             return;
@@ -150,13 +150,12 @@ class RoomExit{
     static size = 15;
 
     constructor(x, y){
-        this.none = false;
         this.x = x;
         this.y = y;
     }
 
     contains(sprite){
-        let distance = Math.sqrt( (this.x - sprite.x) ** 2 + (this.y - sprite.y) ** 2);
+        const distance = Math.sqrt( (this.x - sprite.x) ** 2 + (this.y - sprite.y) ** 2);
         return distance < RoomExit.size;
     }
 }
