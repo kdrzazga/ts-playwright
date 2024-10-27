@@ -230,8 +230,8 @@ class C64Blackbox {
 		    this.clearOutput();
 		    this.functionKeysActivated = false;
 		    setTimeout(() => {
-		                this.dizzolGame.draw();
 		                this.dizzolGame.activate();
+		                this.dizzolGame.draw();
             		    //location.reload();
                     }, 1500);
         }, 6000);

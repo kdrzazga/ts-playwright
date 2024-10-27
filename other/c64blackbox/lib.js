@@ -82,8 +82,8 @@ class PictureLoader {
         tmpCanvas.width = this.context.canvas.width;
         tmpCanvas.height = this.context.canvas.height;
 
-        tmpCtx.drawImage(this.context.canvas, 0, 0);
-        tmpCtx.drawImage(this.texture.image, x, y);
+        tmpCtx.drawImage(this.context.canvas, 0, 0); //draw background
+        tmpCtx.drawImage(this.texture.image, x, y); //draw Dizzy
 
         this.context.clearRect(0, 0, this.context.canvas.width, this.context.canvas.height);
         this.context.drawImage(tmpCanvas, 0, 0);
