@@ -24,10 +24,14 @@ class Room{
     }
 
     load(){
+        this.read();
+        this.draw();
+    }
+
+    read(){
         this.loader.fileName = this.picPath;
         this.loader.read().then(texture => {
             this.loader.texture = texture;
-                this.draw();
         }).catch(error => {
             console.error('Failed to load picture:', error);
         });
@@ -102,11 +106,7 @@ class DizzolGame{
 
             if (this.currentRoomId == 1){
                 this.player.x = 500;
-                /*
-                TODO
-                this.activate();
                 this.currentRoomId = 2;
-                */
             }
         }
     }
@@ -122,6 +122,7 @@ class DizzolGame{
             console.log("Player is exiting RIGHT.");
             if (this.currentRoomId == 2){
                 this.player.x = 5;
+                this.currentRoomId = 1;
             }
 
         }
@@ -137,7 +138,9 @@ class RoomRegistry{
     createRoomSet(canvas){
         const room1 = new Room(1, canvas, "dizzol/1.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), null);
         room1.addCheckpoint(10, 300);
+        room1.read();
         const room2 = new Room(2, canvas, "dizzol/2.png", new RoomExit(100, 20.5 * C64Blackbox.rowHeight), new RoomExit(500, 20.5 * C64Blackbox.rowHeight));
+        room2.read();
 
         return [room1, room2];
     }
