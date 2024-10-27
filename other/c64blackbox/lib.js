@@ -37,7 +37,7 @@ class Sprite{
 		let context = this.canvas.getContext('2d');
 		let pictureLoader = new PictureLoader(context);
 		pictureLoader.load(this.picPath, this.x, this.y);
-		//dont forget to update the texture in derived class
+		//don't forget to update the texture in derived class
 	}
 }
 
@@ -45,20 +45,24 @@ class PictureLoader {
     constructor(context) {
         this.context = context;
         this.textureLoader = new THREE.TextureLoader();
+        this.fileName = "";
+        this.texture = null;
     }
 
     load(fileName, x, y) {
-        this.read(fileName).then(texture => {
-            this.draw(texture, x, y);
+        this.fileName = fileName;
+        this.read().then(texture => {
+            this.texture = texture;
+            this.draw(x, y);
         }).catch(error => {
             console.error('Failed to load picture:', error);
         });
     }
 
-    read(fileName) {
+    read() {
         return new Promise((resolve, reject) => {
             this.textureLoader.load(
-                fileName,
+                this.fileName,
                 (texture) => {
                     resolve(texture);
                 },
@@ -71,7 +75,7 @@ class PictureLoader {
         });
     }
 
-    draw(texture, x, y) {
+    draw(x, y) {
         const tmpCanvas = document.createElement('canvas');
         const tmpCtx = tmpCanvas.getContext('2d');
 
@@ -79,7 +83,7 @@ class PictureLoader {
         tmpCanvas.height = this.context.canvas.height;
 
         tmpCtx.drawImage(this.context.canvas, 0, 0);
-        tmpCtx.drawImage(texture.image, x, y);
+        tmpCtx.drawImage(this.texture.image, x, y);
 
         this.context.clearRect(0, 0, this.context.canvas.width, this.context.canvas.height);
         this.context.drawImage(tmpCanvas, 0, 0);
