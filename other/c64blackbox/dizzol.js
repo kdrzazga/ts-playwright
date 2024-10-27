@@ -5,16 +5,19 @@ class Dizzy extends Sprite{
     	this.picPath = "dizzol/jajo.png";
     	this.picLeftPath = "dizzol/jajo.png";
     	this.picRightPath = "dizzol/jajo.png";
-    	this.x = 289;
+    	this.x = 389;
+    	this.y = 20.5 * C64Blackbox.rowHeight;
     }
 }
 
 class Room{
 
-    constructor(number, canvas, picPath){
+    constructor(number, canvas, picPath, leftExit, rightExit){
         this.number = number;
         this.picPath = picPath;
         this.checkpoints = [];
+        this.leftExit = leftExit;
+        this.rightExit = rightExit;
 
         let context = canvas.getContext('2d');
         this.loader = new PictureLoader(context);
@@ -48,7 +51,7 @@ class DizzolGame{
 
     reset(){
         this.active = false;
-        this.currentRoomId = 2;
+        this.currentRoomId = 1;
     }
 
 	activate(){
@@ -57,38 +60,90 @@ class DizzolGame{
 		console.log("Dizzol Game started.");
 
         let currentRoom = this.rooms.find(room => room.number === this.currentRoomId);
-        console.log("Total rooms = " + this.rooms.length + " Current room =" + currentRoom.number + " " + currentRoom.picPath);
         currentRoom.load();
-        this.dizzyPicLoader.load(this.player.picPath, 289, 20.5 * C64Blackbox.rowHeight);
+        this.dizzyPicLoader.load(this.player.picPath, this.player.x, this.player.y);
 	}
 
     draw(){
-        let currentRoom = this.rooms.find(room => room.number === this.currentRoomId);
+        let currentRoom = this.getCurrentRoom();
         currentRoom.draw();
-        this.dizzyPicLoader.draw(this.player.x , 20.5 * C64Blackbox.rowHeight);
+        this.dizzyPicLoader.draw(this.player.x , this.player.y);
     }
 
-    moveFighterLeft(fighter){
+    moveFighterLeft(fighter){//fighter only for backward compatibility
         console.log('Dizzy left');
         this.player.moveLeft();
         this.draw();
+        this.checkLeftExit();
     }
 
-    moveFighterRight(fighter){
+    moveFighterRight(fighter){//fighter only for backward compatibility
         console.log('Dizzy right');
         this.player.moveRight();
         this.draw();
+        this.checkRightExit();
     }
 
+    checkLeftExit(){
+        let room = this.getCurrentRoom();
+        if (null == room.leftExit){
+            console.log("No left exit");
+            return;
+        }
+
+        if (room.leftExit.contains(this.player)){
+            console.log("Player is exiting LEFT.");
+
+            if (this.currentRoomId == 1){
+                /*
+                TODO
+                this.activate();
+                this.currentRoomId = 2;
+                this.player.x = 500;
+                */
+            }
+        }
+    }
+
+    checkRightExit(){
+        let room = this.getCurrentRoom();
+        if (null == room.rightExit){
+            console.log("No right exit");
+            return;
+        }
+
+        if (room.rightExit.contains(this.player)){
+            console.log("Player is exiting RIGHT.");
+        }
+    }
+
+    getCurrentRoom(){
+        return this.rooms.find(room => room.number === this.currentRoomId);
+    }
 }
 
 class RoomRegistry{
 
     createRoomSet(canvas){
-        const room1 = new Room(1, canvas, "dizzol/1.png");
+        const room1 = new Room(1, canvas, "dizzol/1.png", new RoomExit(1, 20.5 * C64Blackbox.rowHeight), null);
         room1.addCheckpoint(10, 300);
-        const room2 = new Room(2, canvas, "dizzol/2.png");
+        const room2 = new Room(2, canvas, "dizzol/2.png", new RoomExit(100, 20.5 * C64Blackbox.rowHeight), new RoomExit(230, 20.5 * C64Blackbox.rowHeight));
 
         return [room1, room2];
+    }
+}
+
+class RoomExit{
+    static size = 25;
+
+    constructor(x, y){
+        this.none = false;
+        this.x = x;
+        this.y = y;
+    }
+
+    contains(sprite){
+        let distance = Math.sqrt( (this.x - sprite.x) ** 2 + (this.y - sprite.y) ** 2);
+        return distance < RoomExit.size;
     }
 }
