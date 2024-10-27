@@ -20,8 +20,11 @@ class DizzolGame{
         this.canvas = canvas;
         let roomReg = new RoomRegistry();
         this.rooms = roomReg.createRoomSet();
-
         this.player = new Dizzy(canvas);
+
+        let context = this.canvas.getContext('2d');
+        this.bkgndPicLoader = new PictureLoader(context);
+        this.dizzyPicLoader = new PictureLoader(context);
         this.reset();
     }
 
@@ -38,13 +41,9 @@ class DizzolGame{
 
     draw(){
         let currentRoom = this.rooms.find(room => room.number === this.currentRoomId);
-
-        let context = this.canvas.getContext('2d');
-        let pictureLoader = new PictureLoader(context);
         console.log(currentRoom.number + " " + currentRoom.picPath);
-        pictureLoader.load(currentRoom.picPath, 0, 9 * C64Blackbox.rowHeight);
-
-        pictureLoader.load(this.player.picPath, 289, 20.5 * C64Blackbox.rowHeight);
+        this.bkgndPicLoader.load(currentRoom.picPath, 0, 9 * C64Blackbox.rowHeight);
+        this.dizzyPicLoader.load(this.player.picPath, 289, 20.5 * C64Blackbox.rowHeight);
     }
 
     moveFighterLeft(fighter){
