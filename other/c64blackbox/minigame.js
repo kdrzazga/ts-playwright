@@ -124,7 +124,7 @@ class BruceGame{
 	activate(){
 		this.reset();
 		this.active = true;
-		console.log("Game started.");
+		console.log("Bruce Game started.");
 		this.draw();
 		this.startMainLoop();
 	}

@@ -37,38 +37,55 @@ class Sprite{
 		let context = this.canvas.getContext('2d');
 		let pictureLoader = new PictureLoader(context);
 		pictureLoader.load(this.picPath, this.x, this.y);
-		//dont forget to update the texture in derived class
+		//don't forget to update the texture in derived class
 	}
 }
 
-class PictureLoader{
+class PictureLoader {
+    constructor(context) {
+        this.context = context;
+        this.textureLoader = new THREE.TextureLoader();
+        this.fileName = "";
+        this.texture = null;
+    }
 
-	constructor(context){
-		this.context = context;
-		this.textureLoader = new THREE.TextureLoader();
-	}
+    load(fileName, x, y) {
+        this.fileName = fileName;
+        this.read().then(texture => {
+            this.texture = texture;
+            this.draw(x, y);
+        }).catch(error => {
+            console.error('Failed to load picture:', error);
+        });
+    }
 
-	load(fileName, x, y) {
+    read() {
+        return new Promise((resolve, reject) => {
+            this.textureLoader.load(
+                this.fileName,
+                (texture) => {
+                    resolve(texture);
+                },
+                undefined,
+                (error) => {
+                    console.error('An error occurred while loading the texture:', error);
+                    reject(error);
+                }
+            );
+        });
+    }
 
-		this.textureLoader.load(fileName, (texture) => {
+    draw(x, y) {
+        const tmpCanvas = document.createElement('canvas');
+        const tmpCtx = tmpCanvas.getContext('2d');
 
-			const tmpCanvas = document.createElement('canvas');
-			const tmpCtx = tmpCanvas.getContext('2d');
+        tmpCanvas.width = this.context.canvas.width;
+        tmpCanvas.height = this.context.canvas.height;
 
-			tmpCanvas.width = this.context.canvas.width;
-			tmpCanvas.height = this.context.canvas.height;
+        tmpCtx.drawImage(this.context.canvas, 0, 0);
+        tmpCtx.drawImage(this.texture.image, x, y);
 
-			tmpCtx.drawImage(this.context.canvas, 0, 0);
-
-			tmpCtx.drawImage(texture.image, x, y);
-
-			this.context.clearRect(0, 0, this.context.canvas.width, this.context.canvas.height);
-			this.context.drawImage(tmpCanvas, 0, 0);
-
-			//console.log('Picture loaded and displayed at', x, y);
-		}, undefined, (error) => {
-			console.error('An error occurred while loading the texture:', error);
-		});
-	}
-
+        this.context.clearRect(0, 0, this.context.canvas.width, this.context.canvas.height);
+        this.context.drawImage(tmpCanvas, 0, 0);
+    }
 }
