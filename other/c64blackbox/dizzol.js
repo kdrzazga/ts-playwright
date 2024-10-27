@@ -101,11 +101,11 @@ class DizzolGame{
             console.log("Player is exiting LEFT.");
 
             if (this.currentRoomId == 1){
+                this.player.x = 500;
                 /*
                 TODO
                 this.activate();
                 this.currentRoomId = 2;
-                this.player.x = 500;
                 */
             }
         }
@@ -131,7 +131,7 @@ class DizzolGame{
 class RoomRegistry{
 
     createRoomSet(canvas){
-        const room1 = new Room(1, canvas, "dizzol/1.png", new RoomExit(1, 20.5 * C64Blackbox.rowHeight), null);
+        const room1 = new Room(1, canvas, "dizzol/1.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), null);
         room1.addCheckpoint(10, 300);
         const room2 = new Room(2, canvas, "dizzol/2.png", new RoomExit(100, 20.5 * C64Blackbox.rowHeight), new RoomExit(230, 20.5 * C64Blackbox.rowHeight));
 
@@ -140,7 +140,7 @@ class RoomRegistry{
 }
 
 class RoomExit{
-    static size = 25;
+    static size = 15;
 
     constructor(x, y){
         this.none = false;
