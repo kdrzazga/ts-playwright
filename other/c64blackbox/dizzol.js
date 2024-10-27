@@ -24,7 +24,13 @@ class Room{
     }
 
     load(){
-        this.loader.load(this.picPath, 0, 9 * C64Blackbox.rowHeight);
+        this.loader.fileName = this.picPath;
+        this.loader.read().then(texture => {
+            this.loader.texture = texture;
+                this.draw();
+        }).catch(error => {
+            console.error('Failed to load picture:', error);
+        });
     }
 
     draw(){
