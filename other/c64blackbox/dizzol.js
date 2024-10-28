@@ -55,6 +55,11 @@ class Room{
 
 class DizzolGame{
 
+    static ROOM1 = 1;
+    static ROOM2 = 2;
+    static ROOM3 = 3;
+    static ROOM4 = 4;
+
     constructor(canvas){
         this.canvas = canvas;
         let roomReg = new RoomRegistry();
@@ -115,21 +120,21 @@ class DizzolGame{
         if (room.leftExit.contains(this.player)){
             console.log("Player is exiting LEFT.");
 
-            if (this.currentRoomId == 1){
+            if (this.currentRoomId == DizzolGame.ROOM1){
                 this.player.x = 500;
-                this.currentRoomId = 2;
+                this.currentRoomId = DizzolGame.ROOM2;
             }
 
-            else if (this.currentRoomId == 2){
+            else if (this.currentRoomId == DizzolGame.ROOM2){
                 room.checkpoint.reset();
                 this.player.x = 500;
-                this.currentRoomId = 3;
+                this.currentRoomId = DizzolGame.ROOM3;
             }
 
-            else if (this.currentRoomId == 3){
+            else if (this.currentRoomId == DizzolGame.ROOM3){
                 room.checkpoint.reset();
                 this.player.x = 500;
-                this.currentRoomId = 4;
+                this.currentRoomId = DizzolGame.ROOM4;
             }
         }
         else if (room.checkpoint.contains(this.player)){
@@ -146,20 +151,20 @@ class DizzolGame{
 
         if (room.rightExit.contains(this.player)){
             console.log("Player is exiting RIGHT.");
-            if (this.currentRoomId == 2){
+            if (this.currentRoomId == DizzolGame.ROOM2){
                 room.checkpoint.reset();
                 this.player.x = 5;
-                this.currentRoomId = 1;
+                this.currentRoomId = DizzolGame.ROOM1;
             }
 
-            else if (this.currentRoomId == 3){
+            else if (this.currentRoomId == DizzolGame.ROOM3){
                 this.player.x = 100;
-                this.currentRoomId = 2;
+                this.currentRoomId = DizzolGame.ROOM2;
             }
 
-            else if (this.currentRoomId == 4){
+            else if (this.currentRoomId == DizzolGame.ROOM4){
                 this.player.x = 5;
-                this.currentRoomId = 3;
+                this.currentRoomId = DizzolGame.ROOM3;
             }
             console.log('Moved to room ' + this.currentRoomId);
         }
