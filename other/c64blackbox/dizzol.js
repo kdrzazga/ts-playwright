@@ -198,6 +198,17 @@ class RoomRegistry{
             { range: [308, Infinity], level: 415 }
         ];
 
+        const room4floorLevels = [
+            { range: [0, 120], level: 420 },
+            { range: [121, 200], level: 410 },
+            { range: [200, 270], level: 400 },
+            { range: [271, 300], level: 390 },
+            { range: [301, 369], level: 380 },
+            { range: [370, 400], level: 370 },
+            { range: [401, 490], level: 365 },
+            { range: [491, Infinity], level: 355 }
+        ];
+
         const room2Sfx = new SfxEvent("dizzol/totem.mp3");
         const room2Checkpoint = new Checkpoint(315, 411, room2Sfx);
 
@@ -210,7 +221,7 @@ class RoomRegistry{
         const room1 = new Room(1, canvas, "dizzol/1.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), null, room1floorLevels, room1Checkpoint);
         const room2 = new Room(2, canvas, "dizzol/2.png", new RoomExit(100, 20.5 * C64Blackbox.rowHeight), new RoomExit(510, 20.5 * C64Blackbox.rowHeight), room2floorLevels, room2Checkpoint);
         const room3 = new Room(3, canvas, "dizzol/3.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), new RoomExit(530, 20.5 * C64Blackbox.rowHeight), room2floorLevels, emptyCheckpoint);
-        const room4 = new Room(4, canvas, "dizzol/4.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), new RoomExit(530, 20.5 * C64Blackbox.rowHeight), room2floorLevels, emptyCheckpoint);
+        const room4 = new Room(4, canvas, "dizzol/4.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), new RoomExit(530, 20.5 * C64Blackbox.rowHeight), room4floorLevels, emptyCheckpoint);
 
         const allRooms = [room1, room2, room3, room4];
         allRooms.forEach(room => room.read());//read = load background without displaying it
