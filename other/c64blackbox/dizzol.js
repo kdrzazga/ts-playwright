@@ -60,6 +60,21 @@ class DizzolGame{
     static ROOM3 = 3;
     static ROOM4 = 4;
 
+    static roomTransitionsLeft = {
+                [DizzolGame.ROOM1]: { edge: 500, nextRoom: DizzolGame.ROOM2 },
+                [DizzolGame.ROOM2]: { edge: 500, nextRoom: DizzolGame.ROOM3, resetCheckpoint: true },
+                [DizzolGame.ROOM3]: { edge: 500, nextRoom: DizzolGame.ROOM4, resetCheckpoint: false },
+                [DizzolGame.ROOM4]: { edge: 500, nextRoom: null, resetCheckpoint: false }
+            };
+
+    static roomTransitionsRight = {
+                [DizzolGame.ROOM1]: { edge: 5, nextRoom: null },
+                [DizzolGame.ROOM2]: { edge: 5, nextRoom: DizzolGame.ROOM1, resetCheckpoint: true },
+                [DizzolGame.ROOM3]: { edge: 100, nextRoom: DizzolGame.ROOM2 },
+                [DizzolGame.ROOM4]: { edge: 5, nextRoom: DizzolGame.ROOM3, resetCheckpoint: true }
+            };
+
+
     constructor(canvas){
         this.canvas = canvas;
         let roomReg = new RoomRegistry();
@@ -113,67 +128,61 @@ class DizzolGame{
     checkLeftExit(){
         const direction = Direction.LEFT;
         const room = this.getCurrentRoom();
-        if (null == room.leftExit){
+        const exit = room.leftExit;
+        const roomTransitions = DizzolGame.roomTransitionsLeft;
+
+        if (exit == null) {
             console.log("No exit on " + direction);
             return;
         }
 
-        if (room.leftExit.contains(this.player)){
+        if (exit.contains(this.player)) {
             console.log("Player is exiting " + direction);
 
-            if (this.currentRoomId == DizzolGame.ROOM1){
-                this.player.x = 500;
-                this.currentRoomId = DizzolGame.ROOM2;
-            }
+            const transition = roomTransitions[this.currentRoomId];
+            if (transition) {
+                if (transition.resetCheckpoint) {
+                    room.checkpoint.reset();
+                }
 
-            else if (this.currentRoomId == DizzolGame.ROOM2){
-                room.checkpoint.reset();
-                this.player.x = 500;
-                this.currentRoomId = DizzolGame.ROOM3;
+                this.player.x = transition.edge;
+                this.currentRoomId = transition.nextRoom;
+                console.log('Moved to room ' + this.currentRoomId);
             }
-
-            else if (this.currentRoomId == DizzolGame.ROOM3){
-                room.checkpoint.reset();
-                this.player.x = 500;
-                this.currentRoomId = DizzolGame.ROOM4;
-            }
-        }
-        else if (room.checkpoint.contains(this.player)){
+        } else if (room.checkpoint.contains(this.player)) {
             room.checkpoint.action();
         }
     }
 
-    checkRightExit(){
+    checkRightExit() {
         const direction = Direction.RIGHT;
         const room = this.getCurrentRoom();
-        if (null == room.rightExit){
+        const exit = room.rightExit;
+        const roomTransitions = DizzolGame.roomTransitionsRight;
+
+        if (exit == null) {
             console.log("No exit on " + direction);
             return;
         }
 
-        if (room.rightExit.contains(this.player)){
+        if (exit.contains(this.player)) {
             console.log("Player is exiting " + direction);
-            if (this.currentRoomId == DizzolGame.ROOM2){
-                room.checkpoint.reset();
-                this.player.x = 5;
-                this.currentRoomId = DizzolGame.ROOM1;
-            }
 
-            else if (this.currentRoomId == DizzolGame.ROOM3){
-                this.player.x = 100;
-                this.currentRoomId = DizzolGame.ROOM2;
-            }
+            const transition = roomTransitions[this.currentRoomId];
+            if (transition) {
+                if (transition.resetCheckpoint) {
+                    room.checkpoint.reset();
+                }
 
-            else if (this.currentRoomId == DizzolGame.ROOM4){
-                this.player.x = 5;
-                this.currentRoomId = DizzolGame.ROOM3;
+                this.player.x = transition.edge;
+                this.currentRoomId = transition.nextRoom;
+                console.log('Moved to room ' + this.currentRoomId);
             }
-            console.log('Moved to room ' + this.currentRoomId);
-        }
-        else if (room.checkpoint.contains(this.player)){
+        } else if (room.checkpoint.contains(this.player)) {
             room.checkpoint.action();
         }
     }
+
 
     getCurrentRoom(){
         return this.rooms.find(room => room.number === this.currentRoomId);
