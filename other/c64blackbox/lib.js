@@ -15,6 +15,7 @@ class Sprite{
     	this.picPath = "";
     	this.picLeftPath = "";
     	this.picRightPath = "";
+    	this.direction = Direction.RIGHT;
     }
 
 	moveRight(){
@@ -76,16 +77,19 @@ class PictureLoader {
     }
 
     draw(x, y) {
+        const { canvas } = this.context;
         const tmpCanvas = document.createElement('canvas');
         const tmpCtx = tmpCanvas.getContext('2d');
 
-        tmpCanvas.width = this.context.canvas.width;
-        tmpCanvas.height = this.context.canvas.height;
+        tmpCanvas.width = canvas.width;
+        tmpCanvas.height = canvas.height;
 
-        tmpCtx.drawImage(this.context.canvas, 0, 0);
-        tmpCtx.drawImage(this.texture.image, x, y);
+        tmpCtx.drawImage(canvas, 0, 0);
+        if (this.texture) {
+            tmpCtx.drawImage(this.texture.image, x, y);
+        }
 
-        this.context.clearRect(0, 0, this.context.canvas.width, this.context.canvas.height);
+        this.context.clearRect(0, 0, canvas.width, canvas.height);
         this.context.drawImage(tmpCanvas, 0, 0);
     }
 }
