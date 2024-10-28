@@ -73,7 +73,7 @@ class DizzolGame{
 
     reset(){
         this.active = false;
-        this.currentRoomId = 1; //starting room
+        this.currentRoomId = DizzolGame.ROOM1;
     }
 
 	activate(){
@@ -191,9 +191,6 @@ class RoomRegistry{
             { range: [441, Infinity], level: 409 }
         ];
 
-        const room1Sfx = new SfxEvent("dizzol/huu.mp3");
-        const room1Checkpoint = new Checkpoint(310, 411, room1Sfx);
-
 		const room2floorLevels = [
             { range: [0, 120], level: 420 },
             { range: [121, 200], level: 420 },
@@ -201,6 +198,15 @@ class RoomRegistry{
             { range: [281, 314], level: 410 },
             { range: [311, 379], level: 412 },
             { range: [308, Infinity], level: 415 }
+        ];
+
+		const room3floorLevels = [
+            { range: [0, 120], level: 355 },
+            { range: [121, 200], level: 365 },
+            { range: [200, 280], level: 380 },
+            { range: [281, 314], level: 390 },
+            { range: [311, 379], level: 400 },
+            { range: [308, Infinity], level: 420 }
         ];
 
         const room4floorLevels = [
@@ -214,19 +220,17 @@ class RoomRegistry{
             { range: [491, Infinity], level: 355 }
         ];
 
+        const room1Sfx = new SfxEvent("dizzol/huu.mp3");
+        const room1Checkpoint = new Checkpoint(310, 411, room1Sfx);
         const room2Sfx = new SfxEvent("dizzol/totem.mp3");
         const room2Checkpoint = new Checkpoint(315, 411, room2Sfx);
 
-		const room3floorLevels = [
-            { range: [0, 120], level: 420 },
-            { range: [121, Infinity], level: 415 }
-        ];
         const emptyCheckpoint = new Checkpoint(0, 0, null);
 
         const room1 = new Room(1, canvas, "dizzol/1.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), null, room1floorLevels, room1Checkpoint);
         const room2 = new Room(2, canvas, "dizzol/2.png", new RoomExit(100, 20.5 * C64Blackbox.rowHeight), new RoomExit(510, 20.5 * C64Blackbox.rowHeight), room2floorLevels, room2Checkpoint);
-        const room3 = new Room(3, canvas, "dizzol/3.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), new RoomExit(530, 20.5 * C64Blackbox.rowHeight), room2floorLevels, emptyCheckpoint);
-        const room4 = new Room(4, canvas, "dizzol/4.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), new RoomExit(530, 20.5 * C64Blackbox.rowHeight), room4floorLevels, emptyCheckpoint);
+        const room3 = new Room(3, canvas, "dizzol/3.png", new RoomExit(-5, 350), new RoomExit(530, 20.5 * C64Blackbox.rowHeight), room3floorLevels, emptyCheckpoint);
+        const room4 = new Room(4, canvas, "dizzol/4.png", null, new RoomExit(530, 350), room4floorLevels, emptyCheckpoint);
 
         const allRooms = [room1, room2, room3, room4];
         allRooms.forEach(room => room.read());//read = load background without displaying it
