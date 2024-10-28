@@ -12,12 +12,13 @@ class Dizzy extends Sprite{
 
 class Room{
 
-    constructor(number, canvas, picPath, leftExit, rightExit){
+    constructor(number, canvas, picPath, leftExit, rightExit, floorLevels){
         this.number = number;
         this.picPath = picPath;
         this.checkpoints = [];
         this.leftExit = leftExit;
         this.rightExit = rightExit;
+		this.floorLevels = floorLevels;
 
         let context = canvas.getContext('2d');
         this.loader = new PictureLoader(context);
@@ -43,6 +44,16 @@ class Room{
 
     addCheckpoint(x, y){
         this.checkpoints.push([x, y]);
+    }
+	
+	getFloorLevel(x) {
+        for (let { range, level } of this.floorLevels) {
+            if (x >= range[0] && x <= range[1]) {
+                return level;
+            }
+        }
+        // Optional: Return null or an error if x is out of the defined ranges
+        return null;
     }
 }
 
@@ -83,6 +94,8 @@ class DizzolGame{
     moveFighterLeft(fighter){//fighter only for backward compatibility
         console.log('Dizzy left');
         this.player.moveLeft();
+        const currentRoom = this.getCurrentRoom();
+        this.player.y = currentRoom.getFloorLevel(this.player.x);
         this.draw();
         this.checkLeftExit();
     }
@@ -90,6 +103,8 @@ class DizzolGame{
     moveFighterRight(fighter){//fighter only for backward compatibility
         console.log('Dizzy right');
         this.player.moveRight();
+        const currentRoom = this.getCurrentRoom();
+        this.player.y = currentRoom.getFloorLevel(this.player.x);
         this.draw();
         this.checkRightExit();
     }
@@ -136,10 +151,28 @@ class DizzolGame{
 class RoomRegistry{
 
     createRoomSet(canvas){
-        const room1 = new Room(1, canvas, "dizzol/1.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), null);
+		const room1floorLevels = [
+            { range: [0, 120], level: 419 },
+            { range: [121, 152], level: 415 },
+            { range: [152, 200], level: 411 },
+            { range: [201, 250], level: 405 },
+            { range: [251, 310], level: 410 },
+            { range: [311, 440], level: 402 },
+            { range: [441, Infinity], level: 409 }
+        ];
+
+		const room2floorLevels = [
+            { range: [0, 120], level: 419 },
+            { range: [121, 280], level: 405 },
+            { range: [281, 310], level: 410 },
+            { range: [311, 379], level: 412 },
+            { range: [308, Infinity], level: 415 }
+        ];
+		
+        const room1 = new Room(1, canvas, "dizzol/1.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), null, room1floorLevels);
         room1.addCheckpoint(10, 300);
         room1.read();
-        const room2 = new Room(2, canvas, "dizzol/2.png", new RoomExit(100, 20.5 * C64Blackbox.rowHeight), new RoomExit(500, 20.5 * C64Blackbox.rowHeight));
+        const room2 = new Room(2, canvas, "dizzol/2.png", new RoomExit(100, 20.5 * C64Blackbox.rowHeight), new RoomExit(500, 20.5 * C64Blackbox.rowHeight), room2floorLevels);
         room2.read();
 
         return [room1, room2];
