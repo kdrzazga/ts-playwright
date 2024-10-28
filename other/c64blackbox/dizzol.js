@@ -111,14 +111,15 @@ class DizzolGame{
     }
 
     checkLeftExit(){
+        const direction = Direction.LEFT;
         const room = this.getCurrentRoom();
         if (null == room.leftExit){
-            console.log("No left exit");
+            console.log("No exit on " + direction);
             return;
         }
 
         if (room.leftExit.contains(this.player)){
-            console.log("Player is exiting LEFT.");
+            console.log("Player is exiting " + direction);
 
             if (this.currentRoomId == DizzolGame.ROOM1){
                 this.player.x = 500;
@@ -143,14 +144,15 @@ class DizzolGame{
     }
 
     checkRightExit(){
+        const direction = Direction.RIGHT;
         const room = this.getCurrentRoom();
         if (null == room.rightExit){
-            console.log("No right exit");
+            console.log("No exit on " + direction);
             return;
         }
 
         if (room.rightExit.contains(this.player)){
-            console.log("Player is exiting RIGHT.");
+            console.log("Player is exiting " + direction);
             if (this.currentRoomId == DizzolGame.ROOM2){
                 room.checkpoint.reset();
                 this.player.x = 5;
@@ -227,10 +229,10 @@ class RoomRegistry{
 
         const emptyCheckpoint = new Checkpoint(0, 0, null);
 
-        const room1 = new Room(1, canvas, "dizzol/1.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), null, room1floorLevels, room1Checkpoint);
-        const room2 = new Room(2, canvas, "dizzol/2.png", new RoomExit(100, 20.5 * C64Blackbox.rowHeight), new RoomExit(510, 20.5 * C64Blackbox.rowHeight), room2floorLevels, room2Checkpoint);
-        const room3 = new Room(3, canvas, "dizzol/3.png", new RoomExit(-5, 350), new RoomExit(530, 20.5 * C64Blackbox.rowHeight), room3floorLevels, emptyCheckpoint);
-        const room4 = new Room(4, canvas, "dizzol/4.png", null, new RoomExit(530, 350), room4floorLevels, emptyCheckpoint);
+        const room1 = new Room(DizzolGame.ROOM1, canvas, "dizzol/1.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), null, room1floorLevels, room1Checkpoint);
+        const room2 = new Room(DizzolGame.ROOM2, canvas, "dizzol/2.png", new RoomExit(100, 20.5 * C64Blackbox.rowHeight), new RoomExit(510, 20.5 * C64Blackbox.rowHeight), room2floorLevels, room2Checkpoint);
+        const room3 = new Room(DizzolGame.ROOM3, canvas, "dizzol/3.png", new RoomExit(-5, 350), new RoomExit(530, 20.5 * C64Blackbox.rowHeight), room3floorLevels, emptyCheckpoint);
+        const room4 = new Room(DizzolGame.ROOM4, canvas, "dizzol/4.png", null, new RoomExit(530, 350), room4floorLevels, emptyCheckpoint);
 
         const allRooms = [room1, room2, room3, room4];
         allRooms.forEach(room => room.read());//read = load background without displaying it
