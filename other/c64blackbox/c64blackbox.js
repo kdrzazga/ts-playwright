@@ -173,8 +173,6 @@ class C64Blackbox {
 			C64Blackbox.backgroundColor = Globals.colors[C64Blackbox.currentColorIndex];
 			this.backgroundColor = C64Blackbox.backgroundColor;
 			C64Blackbox.currentColorIndex = (C64Blackbox.currentColorIndex + 1) % 	Globals.colors.length;
-
-			console.log(C64Blackbox.currentColorIndex);
 			this.clearOutput();
 		}, 1000);
     }
@@ -256,11 +254,11 @@ class C64Blackbox {
 				console.log('DOWN key was pressed.');
 				break;
 			case Direction.LEFT:
-				console.log('LEFT key was pressed.');
+				//console.log('LEFT key was pressed.');
 				game.moveFighterLeft(game.player);
 				break;
 			case Direction.RIGHT:
-				console.log('RIGHT key was pressed.');
+				//console.log('RIGHT key was pressed.');
 				game.moveFighterRight(game.player);
 				break;
 		}
