@@ -208,15 +208,14 @@ class RoomRegistry{
         const emptyCheckpoint = new Checkpoint(0, 0, null);
 
         const room1 = new Room(1, canvas, "dizzol/1.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), null, room1floorLevels, room1Checkpoint);
-        room1.read();//read = load background without displaying it
         const room2 = new Room(2, canvas, "dizzol/2.png", new RoomExit(100, 20.5 * C64Blackbox.rowHeight), new RoomExit(510, 20.5 * C64Blackbox.rowHeight), room2floorLevels, room2Checkpoint);
-        room2.read();
         const room3 = new Room(3, canvas, "dizzol/3.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), new RoomExit(530, 20.5 * C64Blackbox.rowHeight), room2floorLevels, emptyCheckpoint);
-        room3.read();
         const room4 = new Room(4, canvas, "dizzol/4.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), new RoomExit(530, 20.5 * C64Blackbox.rowHeight), room2floorLevels, emptyCheckpoint);
-        room4.read();
 
-        return [room1, room2, room3, room4];
+        const allRooms = [room1, room2, room3, room4];
+        allRooms.forEach(room => room.read());//read = load background without displaying it
+
+        return allRooms;
     }
 }
 
