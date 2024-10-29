@@ -15,7 +15,6 @@ class Room{
     constructor(number, canvas, picPath, leftExit, rightExit, floorLevels, checkpoint){
         this.number = number;
         this.picPath = picPath;
-        this.checkpoints = [];
         this.leftExit = leftExit;
         this.rightExit = rightExit;
 		this.floorLevels = floorLevels;
@@ -61,17 +60,17 @@ class DizzolGame{
     static ROOM4 = 4;
 
     static roomTransitionsLeft = {
-                [DizzolGame.ROOM1]: { edge: 500, nextRoom: DizzolGame.ROOM2 },
-                [DizzolGame.ROOM2]: { edge: 500, nextRoom: DizzolGame.ROOM3, resetCheckpoint: true },
-                [DizzolGame.ROOM3]: { edge: 500, nextRoom: DizzolGame.ROOM4, resetCheckpoint: false },
-                [DizzolGame.ROOM4]: { edge: 500, nextRoom: null, resetCheckpoint: false }
+                [DizzolGame.ROOM1]: {nextRoom: DizzolGame.ROOM2, nextRoomPlayerPos: 500},
+                [DizzolGame.ROOM2]: {nextRoom: DizzolGame.ROOM3, resetCheckpoint: true, nextRoomPlayerPos: 500},
+                [DizzolGame.ROOM3]: {nextRoom: DizzolGame.ROOM4, resetCheckpoint: false, nextRoomPlayerPos: 500},
+                [DizzolGame.ROOM4]: {nextRoom: null, resetCheckpoint: false, nextRoomPlayerPos: 500}
             };
 
     static roomTransitionsRight = {
-                [DizzolGame.ROOM1]: { edge: 5, nextRoom: null },
-                [DizzolGame.ROOM2]: { edge: 5, nextRoom: DizzolGame.ROOM1, resetCheckpoint: true },
-                [DizzolGame.ROOM3]: { edge: 100, nextRoom: DizzolGame.ROOM2 },
-                [DizzolGame.ROOM4]: { edge: 5, nextRoom: DizzolGame.ROOM3, resetCheckpoint: true }
+                [DizzolGame.ROOM1]: {nextRoom: null, nextRoomPlayerPos: 5},
+                [DizzolGame.ROOM2]: {nextRoom: DizzolGame.ROOM1, resetCheckpoint: true, nextRoomPlayerPos: 5},
+                [DizzolGame.ROOM3]: {nextRoom: DizzolGame.ROOM2, nextRoomPlayerPos: 1},
+                [DizzolGame.ROOM4]: {nextRoom: DizzolGame.ROOM3, resetCheckpoint: true, nextRoomPlayerPos: 5}
             };
 
 
@@ -144,7 +143,7 @@ class DizzolGame{
                     room.checkpoint.reset();
                 }
 
-                this.player.x = transition.edge; // Update player position
+                this.player.x = transition.nextRoomPlayerPos; // Update player position
                 this.currentRoomId = transition.nextRoom; // Transition to the next room
                 console.log('Moved to room ' + this.currentRoomId);
             }
