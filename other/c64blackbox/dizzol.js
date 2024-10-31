@@ -18,14 +18,14 @@ class Bat extends Sprite{
     	this.picLeftPath = "dizzol/bat.png";
     	this.picRightPath = "dizzol/bat.png";
     	this.x = 100;
-    	this.y = 220;
-    	this.dx = 1;
+    	this.y = 260;
+    	this.speed = 1;
     }
 
     move() {
-        this.x += this.dx;
-        if (this.x > 500 || this.x < 7) {
-            this.dx = -this.dx;
+        this.x += this.speed;
+        if (this.x > 330 || this.x < 70) {
+            this.speed = -this.speed;
         }
     }
 }
@@ -42,6 +42,7 @@ class Room{
 
         let context = canvas.getContext('2d');
         this.loader = new PictureLoader(context);
+        this.enemyLoader = new PictureLoader(context);
         this.bat = null;
 
         if (batsCount == 1){
@@ -62,6 +63,15 @@ class Room{
         }).catch(error => {
             console.error('Failed to load picture:', error);
         });
+
+        if (this.bat != null){
+            this.enemyLoader.fileName = this.bat.picPath;
+            this.enemyLoader.read().then(texture => {
+                this.enemyLoader.texture = texture;
+            }).catch(error => {
+                console.error('Failed to load picture:', error);
+            });
+        }
     }
 
     draw(){
@@ -69,15 +79,18 @@ class Room{
     }
 
     drawEnemies(){
-        if (this.bat != null){
-            this.bat.draw();
-        }
+       if (this.bat != null){
+            this.enemyLoader.draw(this.bat.x, this.bat.y);
+       }
     }
 
     animate(){
         if (this.bat != null){
             console.log('animate');
-            this.bat.x++;
+
+            this.bat.move();
+            this.draw();
+            this.drawEnemies();
         }
     }
 
@@ -143,10 +156,13 @@ class DizzolGame{
 
     startAnimationLoop() {
         setInterval(() => {
+            if (!this.active)
+                return;
             const currentRoom = this.getCurrentRoom();
             console.log('anim 1000 ms. Room ' + currentRoom.number);
+            this.player.draw();
             currentRoom.animate();
-        }, 1000);
+        }, 8);
     }
 
     draw(){
