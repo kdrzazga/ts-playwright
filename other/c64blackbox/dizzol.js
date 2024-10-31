@@ -86,8 +86,6 @@ class Room{
 
     animate(){
         if (this.bat != null){
-            console.log('animate');
-
             this.bat.move();
             this.draw();
             this.drawEnemies();
@@ -122,7 +120,7 @@ class DizzolGame{
     static roomTransitionsRight = {
                 [DizzolGame.ROOM1]: {nextRoom: DizzolGame.NO_ROOM, nextRoomPlayerPos: 5},
                 [DizzolGame.ROOM2]: {nextRoom: DizzolGame.ROOM1, resetCheckpoint: true, nextRoomPlayerPos: 5},
-                [DizzolGame.ROOM3]: {nextRoom: DizzolGame.ROOM2, nextRoomPlayerPos: 1},
+                [DizzolGame.ROOM3]: {nextRoom: DizzolGame.ROOM2, nextRoomPlayerPos: 100},
                 [DizzolGame.ROOM4]: {nextRoom: DizzolGame.ROOM3, resetCheckpoint: true, nextRoomPlayerPos: 5}
             };
 
@@ -159,7 +157,6 @@ class DizzolGame{
             if (!this.active)
                 return;
             const currentRoom = this.getCurrentRoom();
-            console.log('anim 1000 ms. Room ' + currentRoom.number);
             this.player.draw();
             currentRoom.animate();
         }, 8);
