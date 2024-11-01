@@ -110,6 +110,8 @@ class DizzolGame{
     static ROOM3 = 3;
     static ROOM4 = 4;
     static ROOM5 = 5;
+    static ROOM6 = 6;
+    static ROOM7 = 7;
     static NO_ROOM = 999999999;
 
     static roomTransitionsLeft = {
@@ -117,7 +119,9 @@ class DizzolGame{
                 [DizzolGame.ROOM2]: {nextRoom: DizzolGame.ROOM3, resetCheckpoint: true, nextRoomPlayerPos: 500},
                 [DizzolGame.ROOM3]: {nextRoom: DizzolGame.ROOM4, resetCheckpoint: false, nextRoomPlayerPos: 500},
                 [DizzolGame.ROOM4]: {nextRoom: DizzolGame.ROOM5, resetCheckpoint: false, nextRoomPlayerPos: 500},
-                [DizzolGame.ROOM5]: {nextRoom: DizzolGame.NO_ROOM, resetCheckpoint: false, nextRoomPlayerPos: 500}
+                [DizzolGame.ROOM5]: {nextRoom: DizzolGame.ROOM6, resetCheckpoint: false, nextRoomPlayerPos: 500},
+                [DizzolGame.ROOM6]: {nextRoom: DizzolGame.ROOM7, resetCheckpoint: false, nextRoomPlayerPos: 500},
+                [DizzolGame.ROOM7]: {nextRoom: DizzolGame.ROOM1, resetCheckpoint: false, nextRoomPlayerPos: 500}
             };
 
     static roomTransitionsRight = {
@@ -125,7 +129,9 @@ class DizzolGame{
                 [DizzolGame.ROOM2]: {nextRoom: DizzolGame.ROOM1, resetCheckpoint: true, nextRoomPlayerPos: 5},
                 [DizzolGame.ROOM3]: {nextRoom: DizzolGame.ROOM2, nextRoomPlayerPos: 100},
                 [DizzolGame.ROOM4]: {nextRoom: DizzolGame.ROOM3, resetCheckpoint: true, nextRoomPlayerPos: 5},
-                [DizzolGame.ROOM5]: {nextRoom: DizzolGame.ROOM4, resetCheckpoint: true, nextRoomPlayerPos: 5}
+                [DizzolGame.ROOM5]: {nextRoom: DizzolGame.ROOM4, resetCheckpoint: true, nextRoomPlayerPos: 5},
+                [DizzolGame.ROOM6]: {nextRoom: DizzolGame.ROOM5, resetCheckpoint: true, nextRoomPlayerPos: 5},
+                [DizzolGame.ROOM7]: {nextRoom: DizzolGame.ROOM6, resetCheckpoint: true, nextRoomPlayerPos: 5}
             };
 
 
@@ -143,7 +149,7 @@ class DizzolGame{
 
     reset(){
         this.active = false;
-        this.currentRoomId = DizzolGame.ROOM1;
+        this.currentRoomId = DizzolGame.ROOM5; //TODO
     }
 
 	activate(){
@@ -266,6 +272,15 @@ class RoomRegistry{
             { range: [491, Infinity], level: 355 }
         ];
 
+        const room67floorLevels = [
+            { range: [-Infinity, 120], level: 431 },
+            { range: [121, 150], level: 439 },
+            { range: [151, 270], level: 446 },
+            { range: [238, Infinity], level: 425 }
+        ];
+        const exit67Left = new RoomExit(-5, 431);
+        const exit67Right = new RoomExit(530, 425);
+
         const room1Sfx = new SfxEvent("dizzol/huu.mp3");
         const room1Checkpoint = new Checkpoint(310, 411, room1Sfx);
         const room2Sfx = new SfxEvent("dizzol/totem.mp3");
@@ -277,9 +292,12 @@ class RoomRegistry{
         const room2 = new Room(DizzolGame.ROOM2, canvas, "dizzol/2.png", new RoomExit(100, 428), new RoomExit(510, 20.5 * C64Blackbox.rowHeight), room2floorLevels, room2Checkpoint, 0);
         const room3 = new Room(DizzolGame.ROOM3, canvas, "dizzol/3.png", new RoomExit(-5, 350), new RoomExit(530, 20.5 * C64Blackbox.rowHeight), room3floorLevels, emptyCheckpoint, 1);
         const room4 = new Room(DizzolGame.ROOM4, canvas, "dizzol/4.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), new RoomExit(530, 350), room4floorLevels, emptyCheckpoint, 0);
-        const room5 = new Room(DizzolGame.ROOM5, canvas, "dizzol/5.png", null, new RoomExit(510, 20.5 * C64Blackbox.rowHeight), room1floorLevels, emptyCheckpoint, 3);
+        const room5 = new Room(DizzolGame.ROOM5, canvas, "dizzol/5.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), new RoomExit(510, 20.5 * C64Blackbox.rowHeight), room1floorLevels, emptyCheckpoint, 3);
+        const room6 = new Room(DizzolGame.ROOM6, canvas, "dizzol/6.png", exit67Left, exit67Right, room67floorLevels, emptyCheckpoint, 1);
+        const room7 = new Room(DizzolGame.ROOM7, canvas, "dizzol/6.png", exit67Left, exit67Right, room67floorLevels, room2Checkpoint, 0);
+        room6.bats[0].y += 80;
 
-        const allRooms = [room1, room2, room3, room4, room5];
+        const allRooms = [room1, room2, room3, room4, room5, room6, room7];
         allRooms.forEach(room => room.read());//read = load background without displaying it
 
         return allRooms;
