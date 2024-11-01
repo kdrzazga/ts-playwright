@@ -112,6 +112,8 @@ class DizzolGame{
     static ROOM5 = 5;
     static ROOM6 = 6;
     static ROOM7 = 7;
+    static ROOM8 = 8;
+    static ROOM9 = 9;
     static NO_ROOM = 999999999;
 
     static roomTransitionsLeft = {
@@ -121,7 +123,9 @@ class DizzolGame{
                 [DizzolGame.ROOM4]: {nextRoom: DizzolGame.ROOM5, resetCheckpoint: false, nextRoomPlayerPos: 500},
                 [DizzolGame.ROOM5]: {nextRoom: DizzolGame.ROOM6, resetCheckpoint: false, nextRoomPlayerPos: 500},
                 [DizzolGame.ROOM6]: {nextRoom: DizzolGame.ROOM7, resetCheckpoint: false, nextRoomPlayerPos: 500},
-                [DizzolGame.ROOM7]: {nextRoom: DizzolGame.ROOM1, resetCheckpoint: false, nextRoomPlayerPos: 500}
+                [DizzolGame.ROOM7]: {nextRoom: DizzolGame.ROOM8, resetCheckpoint: false, nextRoomPlayerPos: 500},
+                [DizzolGame.ROOM8]: {nextRoom: DizzolGame.ROOM9, resetCheckpoint: false, nextRoomPlayerPos: 500},
+                [DizzolGame.ROOM9]: {nextRoom: DizzolGame.ROOM1, resetCheckpoint: false, nextRoomPlayerPos: 500}
             };
 
     static roomTransitionsRight = {
@@ -131,7 +135,9 @@ class DizzolGame{
                 [DizzolGame.ROOM4]: {nextRoom: DizzolGame.ROOM3, resetCheckpoint: true, nextRoomPlayerPos: 5},
                 [DizzolGame.ROOM5]: {nextRoom: DizzolGame.ROOM4, resetCheckpoint: true, nextRoomPlayerPos: 5},
                 [DizzolGame.ROOM6]: {nextRoom: DizzolGame.ROOM5, resetCheckpoint: true, nextRoomPlayerPos: 5},
-                [DizzolGame.ROOM7]: {nextRoom: DizzolGame.ROOM6, resetCheckpoint: true, nextRoomPlayerPos: 5}
+                [DizzolGame.ROOM7]: {nextRoom: DizzolGame.ROOM6, resetCheckpoint: true, nextRoomPlayerPos: 5},
+                [DizzolGame.ROOM8]: {nextRoom: DizzolGame.ROOM7, resetCheckpoint: true, nextRoomPlayerPos: 5},
+                [DizzolGame.ROOM9]: {nextRoom: DizzolGame.ROOM8, resetCheckpoint: true, nextRoomPlayerPos: 5}
             };
 
 
@@ -295,9 +301,11 @@ class RoomRegistry{
         const room5 = new Room(DizzolGame.ROOM5, canvas, "dizzol/5.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), new RoomExit(510, 20.5 * C64Blackbox.rowHeight), room1floorLevels, emptyCheckpoint, 3);
         const room6 = new Room(DizzolGame.ROOM6, canvas, "dizzol/6.png", exit67Left, exit67Right, room67floorLevels, emptyCheckpoint, 1);
         const room7 = new Room(DizzolGame.ROOM7, canvas, "dizzol/6.png", exit67Left, exit67Right, room67floorLevels, room2Checkpoint, 0);
+        const room8 = new Room(DizzolGame.ROOM8, canvas, "dizzol/6.png", exit67Left, exit67Right, room67floorLevels, emptyCheckpoint, 0);
+        const room9 = new Room(DizzolGame.ROOM9, canvas, "dizzol/6.png", exit67Left, exit67Right, room67floorLevels, emptyCheckpoint, 0);
         room6.bats[0].y += 80;
 
-        const allRooms = [room1, room2, room3, room4, room5, room6, room7];
+        const allRooms = [room1, room2, room3, room4, room5, room6, room7, room8, room9];
         allRooms.forEach(room => room.read());//read = load background without displaying it
 
         return allRooms;
