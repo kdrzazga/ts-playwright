@@ -2,9 +2,9 @@ class Dizzy extends Sprite{
 
     constructor(canvas){
         super(canvas);
-    	this.picPath = "dizzol/jajo.png";
-    	this.picLeftPath = "dizzol/jajo.png";
-    	this.picRightPath = "dizzol/jajo.png";
+    	this.picPath = "dizzol/jajoL.png";
+    	this.picLeftPath = "dizzol/jajoL.png";
+    	this.picRightPath = "dizzol/jajoR.png";
     	this.x = 450;
     	this.y = 409;
     }
@@ -170,7 +170,7 @@ class DizzolGame{
         const currentRoom = this.getCurrentRoom();
         currentRoom.draw();
         currentRoom.drawEnemies();
-        this.dizzyPicLoader.draw(this.player.x , this.player.y);
+        this.player.draw();
     }
 
     moveFighterLeft(fighter){//fighter only for backward compatibility
