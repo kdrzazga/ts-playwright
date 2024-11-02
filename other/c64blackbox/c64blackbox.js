@@ -230,7 +230,6 @@ class C64Blackbox {
 		    setTimeout(() => {
 		                this.dizzolGame.activate();
 		                this.dizzolGame.draw();
-            		    //location.reload();
                     }, 1500);
         }, 6000);
 	}

@@ -2,9 +2,9 @@ class Dizzy extends Sprite{
 
     constructor(canvas){
         super(canvas);
-    	this.picPath = "dizzol/jajo.png";
-    	this.picLeftPath = "dizzol/jajo.png";
-    	this.picRightPath = "dizzol/jajo.png";
+    	this.picPath = "dizzol/jajoL.png";
+    	this.picLeftPath = "dizzol/jajoL.png";
+    	this.picRightPath = "dizzol/jajoR.png";
     	this.x = 450;
     	this.y = 409;
     }
@@ -12,14 +12,14 @@ class Dizzy extends Sprite{
 
 class Bat extends Sprite{
 
-    constructor(canvas){
+    constructor(canvas, y, speed){
         super(canvas);
     	this.picPath = "dizzol/bat.png";
     	this.picLeftPath = "dizzol/bat.png";
     	this.picRightPath = "dizzol/bat.png";
     	this.x = 100;
-    	this.y = 260;
-    	this.speed = 1;
+    	this.y = y;
+    	this.speed = speed;
     }
 
     move() {
@@ -43,10 +43,12 @@ class Room{
         let context = canvas.getContext('2d');
         this.loader = new PictureLoader(context);
         this.enemyLoader = new PictureLoader(context);
-        this.bat = null;
+        this.bats = [];
 
-        if (batsCount == 1){
-            this.bat = new Bat(canvas);
+        for(let i = 0; i < batsCount; i++){
+            const bat = new Bat(canvas, 260 + 39*i, 2 + i);
+            this.bats.push(bat);
+            this.bats[0].x = 326;
             console.log('Created a bat in Room ' + this.number);
         }
     }
@@ -64,8 +66,8 @@ class Room{
             console.error('Failed to load picture:', error);
         });
 
-        if (this.bat != null){
-            this.enemyLoader.fileName = this.bat.picPath;
+        if (this.bats.length > 0 ){
+            this.enemyLoader.fileName = this.bats[0].picPath;
             this.enemyLoader.read().then(texture => {
                 this.enemyLoader.texture = texture;
             }).catch(error => {
@@ -79,14 +81,13 @@ class Room{
     }
 
     drawEnemies(){
-       if (this.bat != null){
-            this.enemyLoader.draw(this.bat.x, this.bat.y);
-       }
+       this.bats.forEach(bat => this.enemyLoader.draw(bat.x, bat.y));
     }
 
     animate(){
-        if (this.bat != null){
-            this.bat.move();
+        if (this.bats.length > 0){
+
+            this.bats.forEach(b => b.move());
             this.draw();
             this.drawEnemies();
         }
@@ -108,20 +109,35 @@ class DizzolGame{
     static ROOM2 = 2;
     static ROOM3 = 3;
     static ROOM4 = 4;
+    static ROOM5 = 5;
+    static ROOM6 = 6;
+    static ROOM7 = 7;
+    static ROOM8 = 8;
+    static ROOM9 = 9;
     static NO_ROOM = 999999999;
 
     static roomTransitionsLeft = {
                 [DizzolGame.ROOM1]: {nextRoom: DizzolGame.ROOM2, nextRoomPlayerPos: 500},
                 [DizzolGame.ROOM2]: {nextRoom: DizzolGame.ROOM3, resetCheckpoint: true, nextRoomPlayerPos: 500},
                 [DizzolGame.ROOM3]: {nextRoom: DizzolGame.ROOM4, resetCheckpoint: false, nextRoomPlayerPos: 500},
-                [DizzolGame.ROOM4]: {nextRoom: DizzolGame.NO_ROOM, resetCheckpoint: false, nextRoomPlayerPos: 500}
+                [DizzolGame.ROOM4]: {nextRoom: DizzolGame.ROOM5, resetCheckpoint: false, nextRoomPlayerPos: 500},
+                [DizzolGame.ROOM5]: {nextRoom: DizzolGame.ROOM6, resetCheckpoint: false, nextRoomPlayerPos: 500},
+                [DizzolGame.ROOM6]: {nextRoom: DizzolGame.ROOM7, resetCheckpoint: false, nextRoomPlayerPos: 500},
+                [DizzolGame.ROOM7]: {nextRoom: DizzolGame.ROOM8, resetCheckpoint: false, nextRoomPlayerPos: 500},
+                [DizzolGame.ROOM8]: {nextRoom: DizzolGame.ROOM9, resetCheckpoint: false, nextRoomPlayerPos: 500},
+                [DizzolGame.ROOM9]: {nextRoom: DizzolGame.ROOM1, resetCheckpoint: false, nextRoomPlayerPos: 500}
             };
 
     static roomTransitionsRight = {
                 [DizzolGame.ROOM1]: {nextRoom: DizzolGame.NO_ROOM, nextRoomPlayerPos: 5},
                 [DizzolGame.ROOM2]: {nextRoom: DizzolGame.ROOM1, resetCheckpoint: true, nextRoomPlayerPos: 5},
                 [DizzolGame.ROOM3]: {nextRoom: DizzolGame.ROOM2, nextRoomPlayerPos: 100},
-                [DizzolGame.ROOM4]: {nextRoom: DizzolGame.ROOM3, resetCheckpoint: true, nextRoomPlayerPos: 5}
+                [DizzolGame.ROOM4]: {nextRoom: DizzolGame.ROOM3, resetCheckpoint: true, nextRoomPlayerPos: 5},
+                [DizzolGame.ROOM5]: {nextRoom: DizzolGame.ROOM4, resetCheckpoint: true, nextRoomPlayerPos: 5},
+                [DizzolGame.ROOM6]: {nextRoom: DizzolGame.ROOM5, resetCheckpoint: true, nextRoomPlayerPos: 5},
+                [DizzolGame.ROOM7]: {nextRoom: DizzolGame.ROOM6, resetCheckpoint: true, nextRoomPlayerPos: 5},
+                [DizzolGame.ROOM8]: {nextRoom: DizzolGame.ROOM7, resetCheckpoint: true, nextRoomPlayerPos: 5},
+                [DizzolGame.ROOM9]: {nextRoom: DizzolGame.ROOM8, resetCheckpoint: true, nextRoomPlayerPos: 5}
             };
 
 
@@ -159,14 +175,14 @@ class DizzolGame{
             const currentRoom = this.getCurrentRoom();
             this.player.draw();
             currentRoom.animate();
-        }, 8);
+        }, 16);
     }
 
     draw(){
         const currentRoom = this.getCurrentRoom();
         currentRoom.draw();
         currentRoom.drawEnemies();
-        this.dizzyPicLoader.draw(this.player.x , this.player.y);
+        this.player.draw();
     }
 
     moveFighterLeft(fighter){//fighter only for backward compatibility
@@ -233,25 +249,26 @@ class RoomRegistry{
         ];
 
 		const room2floorLevels = [
-            { range: [0, 120], level: 420 },
-            { range: [121, 200], level: 420 },
-            { range: [200, 280], level: 405 },
-            { range: [281, 314], level: 410 },
+            { range: [0, 128], level: 425 },
+            { range: [129, 200], level: 428 },
+            { range: [201, 260], level: 418 },
+            { range: [261, 314], level: 410 },
             { range: [311, 379], level: 412 },
             { range: [308, Infinity], level: 415 }
         ];
 
 		const room3floorLevels = [
-            { range: [0, 120], level: 355 },
-            { range: [121, 200], level: 365 },
-            { range: [200, 280], level: 380 },
-            { range: [281, 314], level: 390 },
-            { range: [311, 379], level: 400 },
+            { range: [0, 145], level: 362 },
+            { range: [146, 175], level: 368 },
+            { range: [176, 190], level: 375 },
+            { range: [191, 260], level: 380 },
+            { range: [261, 290], level: 390 },
+            { range: [291, 379], level: 400 },
             { range: [308, Infinity], level: 420 }
         ];
 
         const room4floorLevels = [
-            { range: [0, 120], level: 420 },
+            { range: [-Infinity, 120], level: 420 },
             { range: [121, 200], level: 410 },
             { range: [200, 270], level: 400 },
             { range: [271, 300], level: 390 },
@@ -261,6 +278,15 @@ class RoomRegistry{
             { range: [491, Infinity], level: 355 }
         ];
 
+        const room67floorLevels = [
+            { range: [-Infinity, 120], level: 431 },
+            { range: [121, 150], level: 439 },
+            { range: [151, 270], level: 446 },
+            { range: [238, Infinity], level: 425 }
+        ];
+        const exit67Left = new RoomExit(-5, 431);
+        const exit67Right = new RoomExit(530, 425);
+
         const room1Sfx = new SfxEvent("dizzol/huu.mp3");
         const room1Checkpoint = new Checkpoint(310, 411, room1Sfx);
         const room2Sfx = new SfxEvent("dizzol/totem.mp3");
@@ -269,11 +295,17 @@ class RoomRegistry{
         const emptyCheckpoint = new Checkpoint(0, 0, null);
 
         const room1 = new Room(DizzolGame.ROOM1, canvas, "dizzol/1.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), null, room1floorLevels, room1Checkpoint, 0);
-        const room2 = new Room(DizzolGame.ROOM2, canvas, "dizzol/2.png", new RoomExit(100, 20.5 * C64Blackbox.rowHeight), new RoomExit(510, 20.5 * C64Blackbox.rowHeight), room2floorLevels, room2Checkpoint, 0);
+        const room2 = new Room(DizzolGame.ROOM2, canvas, "dizzol/2.png", new RoomExit(100, 428), new RoomExit(510, 20.5 * C64Blackbox.rowHeight), room2floorLevels, room2Checkpoint, 0);
         const room3 = new Room(DizzolGame.ROOM3, canvas, "dizzol/3.png", new RoomExit(-5, 350), new RoomExit(530, 20.5 * C64Blackbox.rowHeight), room3floorLevels, emptyCheckpoint, 1);
-        const room4 = new Room(DizzolGame.ROOM4, canvas, "dizzol/4.png", null, new RoomExit(530, 350), room4floorLevels, emptyCheckpoint, 0);
+        const room4 = new Room(DizzolGame.ROOM4, canvas, "dizzol/4.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), new RoomExit(530, 350), room4floorLevels, emptyCheckpoint, 0);
+        const room5 = new Room(DizzolGame.ROOM5, canvas, "dizzol/5.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), new RoomExit(510, 20.5 * C64Blackbox.rowHeight), room1floorLevels, emptyCheckpoint, 3);
+        const room6 = new Room(DizzolGame.ROOM6, canvas, "dizzol/6.png", exit67Left, exit67Right, room67floorLevels, emptyCheckpoint, 1);
+        const room7 = new Room(DizzolGame.ROOM7, canvas, "dizzol/7.png", exit67Left, exit67Right, room67floorLevels, room2Checkpoint, 0);
+        const room8 = new Room(DizzolGame.ROOM8, canvas, "dizzol/8.png", exit67Left, exit67Right, room67floorLevels, emptyCheckpoint, 0);
+        const room9 = new Room(DizzolGame.ROOM9, canvas, "dizzol/8.png", exit67Left, exit67Right, room67floorLevels, emptyCheckpoint, 0);
+        room6.bats[0].y += 80;
 
-        const allRooms = [room1, room2, room3, room4];
+        const allRooms = [room1, room2, room3, room4, room5, room6, room7, room8, room9];
         allRooms.forEach(room => room.read());//read = load background without displaying it
 
         return allRooms;
