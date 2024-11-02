@@ -155,7 +155,7 @@ class DizzolGame{
 
     reset(){
         this.active = false;
-        this.currentRoomId = DizzolGame.ROOM5; //TODO
+        this.currentRoomId = DizzolGame.ROOM1;
     }
 
 	activate(){
@@ -300,9 +300,9 @@ class RoomRegistry{
         const room4 = new Room(DizzolGame.ROOM4, canvas, "dizzol/4.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), new RoomExit(530, 350), room4floorLevels, emptyCheckpoint, 0);
         const room5 = new Room(DizzolGame.ROOM5, canvas, "dizzol/5.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), new RoomExit(510, 20.5 * C64Blackbox.rowHeight), room1floorLevels, emptyCheckpoint, 3);
         const room6 = new Room(DizzolGame.ROOM6, canvas, "dizzol/6.png", exit67Left, exit67Right, room67floorLevels, emptyCheckpoint, 1);
-        const room7 = new Room(DizzolGame.ROOM7, canvas, "dizzol/6.png", exit67Left, exit67Right, room67floorLevels, room2Checkpoint, 0);
-        const room8 = new Room(DizzolGame.ROOM8, canvas, "dizzol/6.png", exit67Left, exit67Right, room67floorLevels, emptyCheckpoint, 0);
-        const room9 = new Room(DizzolGame.ROOM9, canvas, "dizzol/6.png", exit67Left, exit67Right, room67floorLevels, emptyCheckpoint, 0);
+        const room7 = new Room(DizzolGame.ROOM7, canvas, "dizzol/7.png", exit67Left, exit67Right, room67floorLevels, room2Checkpoint, 0);
+        const room8 = new Room(DizzolGame.ROOM8, canvas, "dizzol/8.png", exit67Left, exit67Right, room67floorLevels, emptyCheckpoint, 0);
+        const room9 = new Room(DizzolGame.ROOM9, canvas, "dizzol/8.png", exit67Left, exit67Right, room67floorLevels, emptyCheckpoint, 0);
         room6.bats[0].y += 80;
 
         const allRooms = [room1, room2, room3, room4, room5, room6, room7, room8, room9];
