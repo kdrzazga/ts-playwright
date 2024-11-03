@@ -1,29 +1,49 @@
 class CylinderScene {
     constructor() {
+        this.initializeScene();
+        this.createCylinder();
+        this.createPlane();
+        this.setupEventListeners();
+        this.animate();
+    }
+
+    initializeScene() {
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        this.camera.position.z = 15;
+        this.camera.position.z = 20;
 
         this.renderer = new THREE.WebGLRenderer();
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(this.renderer.domElement);
+    }
 
-        const radiusTop = 3;
-        const radiusBottom = 3;
-        const height = 13;
+    createCylinder() {
+        const radius = 9;
+        const height = 23;
         const radialSegments = 128;
-        this.cylinderGeometry = new THREE.CylinderGeometry(radiusTop, radiusBottom, height, radialSegments);
+        const cylinderGeometry = new THREE.CylinderGeometry(radius, radius, height, radialSegments);
+
         this.textureLoader = new THREE.TextureLoader();
-        this.texture = this.textureLoader.load('pic.jpg');
 
-        this.cylinderMaterial = new THREE.MeshBasicMaterial({ map: this.texture });
-        this.cylinder = new THREE.Mesh(this.cylinderGeometry, this.cylinderMaterial);
-        this.scene.add(this.cylinder);
+        this.textureLoader.load('cylinderPic.jpg', (texture) => {
+            const cylinderMaterial = new THREE.MeshBasicMaterial({ map: texture });
+            this.cylinder = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
+            this.scene.add(this.cylinder);
+        });
+    }
 
-        this.rotationSpeed = 0.05;
+    createPlane() {
+        const planeMaterial = new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('pic.png'), side: THREE.DoubleSide });
+        const planeGeometry = new THREE.PlaneGeometry(1, 1);
+        const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+
+        plane.position.z = 15.001;
+        this.scene.add(plane);
+    }
+
+    setupEventListeners() {
         window.addEventListener('keydown', (event) => this.handleKeyDown(event));
         window.addEventListener('resize', () => this.onWindowResize());
-        this.animate();
     }
 
     animate() {
@@ -32,10 +52,27 @@ class CylinderScene {
     }
 
     handleKeyDown(event) {
-        if (event.key === 'ArrowLeft') {
-            this.cylinder.rotation.y += this.rotationSpeed;
-        } else if (event.key === 'ArrowRight') {
-            this.cylinder.rotation.y -= this.rotationSpeed;
+        const movementSpeed = 0.05;
+
+        switch (event.key) {
+            case 'ArrowLeft':
+                this.cylinder.rotation.y += movementSpeed;
+                break;
+            case 'ArrowRight':
+                this.cylinder.rotation.y -= movementSpeed;
+                break;
+            case 'ArrowUp':
+                this.cylinder.position.y -= movementSpeed;
+                break;
+            case 'ArrowDown':
+                this.cylinder.position.y += movementSpeed;
+                break;
+            case '+':
+                this.camera.position.z -= movementSpeed;
+                break;
+            case '-':
+                this.camera.position.z += movementSpeed;
+                break;
         }
     }
 
