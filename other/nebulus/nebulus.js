@@ -9,6 +9,8 @@ class CylinderScene {
 
     initializeScene() {
         this.scene = new THREE.Scene();
+
+        this.textureLoader = new THREE.TextureLoader();
         this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         this.camera.position.z = 20;
 
@@ -22,8 +24,6 @@ class CylinderScene {
         const height = 23;
         const radialSegments = 128;
         const cylinderGeometry = new THREE.CylinderGeometry(radius, radius, height, radialSegments);
-
-        this.textureLoader = new THREE.TextureLoader();
 
         this.textureLoader.load('cylinderPic.jpg', (texture) => {
             const cylinderMaterial = new THREE.MeshBasicMaterial({ map: texture });
@@ -56,16 +56,16 @@ class CylinderScene {
 
         switch (event.key) {
             case 'ArrowLeft':
-                this.cylinder.rotation.y += movementSpeed;
+                this.cylinder.rotation.y += movementSpeed/5;
                 break;
             case 'ArrowRight':
-                this.cylinder.rotation.y -= movementSpeed;
+                this.cylinder.rotation.y -= movementSpeed/5;
                 break;
             case 'ArrowUp':
-                this.cylinder.position.y -= movementSpeed;
+                this.cylinder.position.y -= movementSpeed*5;
                 break;
             case 'ArrowDown':
-                this.cylinder.position.y += movementSpeed;
+                this.cylinder.position.y += movementSpeed*5;
                 break;
             case '+':
                 this.camera.position.z -= movementSpeed;
