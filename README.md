@@ -17,7 +17,7 @@ https://kdrzazga.github.io/ts-playwright/other/c64blackbox/index.html&key=F9
 
 https://kdrzazga.github.io/ts-playwright/other/c64blackbox/index.html&key=F7
 
-Cebulus: https://kdrzazga.github.io/ts-playwright/other/c64blackbox/index.html&key=F8
+https://kdrzazga.github.io/ts-playwright/other/c64blackbox/cebulus.html
 
 K&A+: https://kdrzazga.github.io/ts-playwright/other/c64blackbox/index.html&key=F6
 
