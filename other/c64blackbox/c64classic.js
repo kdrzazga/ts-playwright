@@ -19,9 +19,18 @@ class ClassicC64 extends C64Blackbox{
 		];
     }
 
-     handleF2() {
+    setupHelpContent(){
+        super.setupHelpContent();
+        this.helpTexts[6] = ['', 0];
+    }
+
+    handleF2() {
          console.log('2 or F2 was pressed');
          this.softReset(Globals.colors[6]);
+     }
+
+     handleF7(){
+        console.log('F7 pressed. However BRUCE game looks bad on blue screen. Not running it.');
      }
 }
 

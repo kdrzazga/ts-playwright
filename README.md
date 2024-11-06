@@ -12,15 +12,21 @@ Webapps:
 C64 Blackbox:
 ---
 https://kdrzazga.github.io/ts-playwright/other/c64blackbox/
+
 https://kdrzazga.github.io/ts-playwright/other/c64blackbox/index.html&key=F9
+
 https://kdrzazga.github.io/ts-playwright/other/c64blackbox/index.html&key=F7
+
 Cebulus: https://kdrzazga.github.io/ts-playwright/other/c64blackbox/index.html&key=F8
+
+K&A+: https://kdrzazga.github.io/ts-playwright/other/c64blackbox/index.html&key=F6
 
 
 C64 Classic:
 ---
 https://kdrzazga.github.io/ts-playwright/other/c64blackbox/classicC64.html
-https://kdrzazga.github.io/ts-playwright/other/c64blackbox/classicC64.html&key=F6
+
+K&A+: https://kdrzazga.github.io/ts-playwright/other/c64blackbox/classicC64.html&key=F6
 
 6:
 ---
