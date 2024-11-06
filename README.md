@@ -25,6 +25,8 @@ C64 Classic:
 ---
 https://kdrzazga.github.io/ts-playwright/other/c64blackbox/classicC64.html
 
+K&A+: https://kdrzazga.github.io/ts-playwright/other/c64blackbox/directF6ClassicC64.html
+
 6:
 ---
 https://kdrzazga.github.io/ts-playwright/other/6/6.html
