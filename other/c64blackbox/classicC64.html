@@ -28,8 +28,9 @@
     <script src="c64classic.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            sessionStorage.setItem('key', 'F2');
             c64classic.init();
+            sessionStorage.setItem('key', 'F2');
+            window.location.href = 'mainClassicC64.html';
         });
     </script>
 </body>
