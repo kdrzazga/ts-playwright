@@ -32,6 +32,7 @@ class C64Blackbox {
 		this.backgroundColor = Globals.lightgrayColor;
 		this.defaultColor = 'black';
 		this.classRef = C64Blackbox;
+		this.param = '';
 	}
 
     init() {
@@ -53,6 +54,47 @@ class C64Blackbox {
 
         window.addEventListener('keydown', this.handleKeyDown.bind(this));
         this.animationFrameId = requestAnimationFrame(() => this.animate());
+        this.readParam();
+        this.executeParamAction();
+    }
+
+    readParam(){
+        const currentUrlText = window.location.href;
+        const currentUrl = new URL(currentUrlText);
+        const params = currentUrl.searchParams;
+
+        const keyParam = params.get('key');
+        if (keyParam != null){
+            this.param = keyParam;
+        }
+    }
+
+    executeParamAction(){
+        console.log(this.param);
+        switch(this.param){
+            case 'F1':
+                this.handleHelp();
+                break;
+            case 'F2':
+                this.handleF2();
+                break;
+            case 'F3':
+                this.handleF3();
+                break;
+            case 'F6':
+                this.handleF6();
+                break;
+            case 'F7':
+                this.handleF7();
+                break;
+            case 'F8':
+                this.handleF8();
+                break;
+            case 'F9':
+                this.handleF9();
+                break;
+
+        }
     }
 
     setupHeaderContent(){
