@@ -60,11 +60,7 @@ class C64Blackbox {
     }
 
     readParam(){
-        const currentUrlText = window.location.href;
-        const currentUrl = new URL(currentUrlText);
-        const params = currentUrl.searchParams;
-
-        const keyParam = params.get('key');
+        const keyParam = sessionStorage.getItem('key');
         if (keyParam != null){
             this.param = keyParam;
         }

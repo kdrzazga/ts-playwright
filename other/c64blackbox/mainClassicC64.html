@@ -7,7 +7,7 @@
     <style>
         body { margin: 0; }
         canvas { display: block; }
-
+		
     @font-face {
       font-family: 'c64mono';
       src: url('C64_Pro_Mono-STYLE.ttf') format('truetype');
@@ -16,20 +16,21 @@
       font-family: 'c64mono';
       color: #6c5eb5;
     }
-    </style>
+  </style>
 </head>
+
 <body style="bgcolor='#000000'">
-<script src="three.min.js"></script>
-<script src="lib.js"></script>
-<script src="minigame.js"></script>
-<script src="dizzol.js"></script>
-<script src="c64blackbox.js"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        c64.init();
-        sessionStorage.setItem('key', 'F2');
-        window.location.href = 'main.html';
-    });
-</script>
+    <script src="three.min.js"></script>
+    <script src="lib.js"></script>
+    <script src="minigame.js"></script>
+    <script src="dizzol.js"></script>
+    <script src="c64blackbox.js"></script>
+    <script src="c64classic.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            c64classic.init();
+            sessionStorage.setItem('key', 'F2');
+        });
+    </script>
 </body>
 </html>
