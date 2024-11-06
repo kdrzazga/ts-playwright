@@ -41,9 +41,9 @@ var Commodore64 = /** @class */ (function () {
         this.canvas.height = 16;
         this.ctx = this.canvas.getContext('2d');
         this.commandoImages = new CircularList([
-            'resources/LU.png',
-            'resources/U.png',
-            'resources/RU.png'
+            'resources/lu.png',
+            'resources/u.png',
+            'resources/ru.png'
         ]);
         this.currentCommandoImg = this.commandoImages.next();
     }
@@ -129,7 +129,7 @@ var Commodore64 = /** @class */ (function () {
         this.commandoTimeoutCounter = Commodore64.commandoTimeoutCounterMax;
         var board = document.getElementById('commodore64');
         if (board) {
-            board.innerHTML = "\n            <img src='resources/board.png' style='width: 150%; height: 150%;'></img>\n            <img id='commando' src='resources/U.PNG' style='position: absolute; top: 54%; left: 47%; z-index: 1;'></img>\n            <img id='grenade' src='resources/bottle.PNG' style='position: absolute; top: 24%; left: 25%; z-index: 1; width: calc(10% * 0.3); height: calc(30% * 0.3);'></img>\n            ";
+            board.innerHTML = "\n            <img src='resources/board.png' style='width: 150%; height: 150%;'></img>\n            <img id='commando' src='resources/u.png' style='position: absolute; top: 54%; left: 47%; z-index: 1;'></img>\n            <img id='grenade' src='resources/bottle.png' style='position: absolute; top: 24%; left: 25%; z-index: 1; width: calc(10% * 0.3); height: calc(30% * 0.3);'></img>\n            ";
             var grenade = document.getElementById('grenade');
             this.grenadeX = grenade.offsetTop; // offsetTop is read-only
             this.commandoImgChangeCounter = grenade.offsetLeft;

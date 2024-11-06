@@ -32,11 +32,13 @@ class C64Blackbox {
 		this.backgroundColor = Globals.lightgrayColor;
 		this.defaultColor = 'black';
 		this.classRef = C64Blackbox;
+		this.param = '';
 	}
 
     init() {
         this.setupRenderer();
 		this.setupHeaderContent();
+		this.setupHelpContent();
 		
         this.functionKeysActivated = true;
         const canvas = document.createElement('canvas');
@@ -53,6 +55,47 @@ class C64Blackbox {
 
         window.addEventListener('keydown', this.handleKeyDown.bind(this));
         this.animationFrameId = requestAnimationFrame(() => this.animate());
+        this.readParam();
+        this.executeParamAction();
+    }
+
+    readParam(){
+        const currentUrlText = window.location.href;
+        const currentUrl = new URL(currentUrlText);
+        const params = currentUrl.searchParams;
+
+        const keyParam = params.get('key');
+        if (keyParam != null){
+            this.param = keyParam;
+        }
+    }
+
+    executeParamAction(){
+        console.log(this.param);
+        switch(this.param){
+            case 'F1':
+                this.handleHelp();
+                break;
+            case 'F2':
+                this.handleF2();
+                break;
+            case 'F3':
+                this.handleF3();
+                break;
+            case 'F6':
+                this.handleF6();
+                break;
+            case 'F7':
+                this.handleF7();
+                break;
+            case 'F8':
+                this.handleF8();
+                break;
+            case 'F9':
+                this.handleF9();
+                break;
+
+        }
     }
 
     setupHeaderContent(){
@@ -61,6 +104,21 @@ class C64Blackbox {
 			{ text: '64K RAM SYSTEM   38911  BASIC BYTES FREE', color: Globals.lightgrayColor },
 			{ text: 'READY.', color: 'black' }
 		];
+    }
+
+    setupHelpContent(){
+    	this.helpTexts = [
+    		[String.fromCharCode(0xe05f) + 'HELP', 2],
+    		['F1, 1, Q - ' + String.fromCharCode(0xe05f) + 'HELP, DISPLAY THIS HELP', 1],
+    		['F2, 2, U, J - SOFT RESET', 1],
+    		['F3, 3, I, K - CHANGE BACKGROUND COLOR', 1],
+    		['F5 - HARD RESET/RELOAD', 1],
+    		['F6, 6, 0, =, O, L - ' + String.fromCharCode(0xe05f) + 'K&A+ LOGO', 1],
+    		['F7, 7, -, P, ; - ' + String.fromCharCode(0xe05f) + 'BRUCE LEE SIMPLE GAME', 1],
+    		['F8, 8 - ' + String.fromCharCode(0xe05f) + 'CEBULUS SIMPLE GAME', 1],
+    		['F9, 9 - ' + String.fromCharCode(0xe05f) + 'DIZZOL SIMPLE GAME', 2],
+    		['READY.', 1]
+    	];
     }
 	
     setupRenderer() {
@@ -121,21 +179,8 @@ class C64Blackbox {
 		
 		const context = C64Blackbox.texture.image.getContext('2d');
 		context.fillStyle = this.defaultColor;
-	
-		const helpTexts = [
-			[String.fromCharCode(0xe05f) + 'HELP', 2],
-			['F1, 1, Q - ' + String.fromCharCode(0xe05f) + 'HELP, DISPLAY THIS HELP', 1],
-			['F2, 2, U, J - SOFT RESET', 1],
-			['F3, 3, I, K - CHANGE BACKGROUND COLOR', 1],
-			['F5 - HARD RESET/RELOAD', 1],
-			['F6, 6, 0, =, O, L - ' + String.fromCharCode(0xe05f) + 'K&A+ LOGO', 1],
-			['F7, 7, -, P, ; - ' + String.fromCharCode(0xe05f) + 'BRUCE LEE SIMPLE GAME', 1],
-			['F8, 8 - ' + String.fromCharCode(0xe05f) + 'CEBULUS SIMPLE GAME', 1],
-			['F9, 9 - ' + String.fromCharCode(0xe05f) + 'DIZZOL SIMPLE GAME', 2],
-			['READY.', 1]
-		];
-	
-		for (const [text, movement] of helpTexts) {
+
+		for (const [text, movement] of this.helpTexts) {
 			context.fillText(text, 0, this.cursor.position.y + Math.floor(this.cursor.size / 2));
 			this.cursor.position.y += (this.cursor.size + 2) * movement;
 		}
