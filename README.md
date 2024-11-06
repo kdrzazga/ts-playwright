@@ -13,20 +13,17 @@ C64 Blackbox:
 ---
 https://kdrzazga.github.io/ts-playwright/other/c64blackbox/
 
-https://kdrzazga.github.io/ts-playwright/other/c64blackbox/index.html&key=F9
+https://kdrzazga.github.io/ts-playwright/other/c64blackbox/directF9.html
 
-https://kdrzazga.github.io/ts-playwright/other/c64blackbox/index.html&key=F7
+https://kdrzazga.github.io/ts-playwright/other/c64blackbox/directF7.html
 
 https://kdrzazga.github.io/ts-playwright/other/c64blackbox/cebulus.html
 
-K&A+: https://kdrzazga.github.io/ts-playwright/other/c64blackbox/index.html&key=F6
-
+K&A+: https://kdrzazga.github.io/ts-playwright/other/c64blackbox/directF6.html
 
 C64 Classic:
 ---
 https://kdrzazga.github.io/ts-playwright/other/c64blackbox/classicC64.html
-
-K&A+: https://kdrzazga.github.io/ts-playwright/other/c64blackbox/classicC64.html&key=F6
 
 6:
 ---
