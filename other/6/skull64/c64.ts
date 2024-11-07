@@ -96,7 +96,7 @@ class Commodore64 {
 		this.lastRenderTime = currentTime;
 	}
 	
-	console.log("blink = " + this.blink); 
+	//console.log("blink = " + this.blink);
   }
   
   private blinkEye(){

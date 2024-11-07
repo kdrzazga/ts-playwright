@@ -4,13 +4,13 @@ const counterMax = 3;
 function moveBruceLee(){
 	const bruce = document.getElementById('bruce');
 	bruce.style.left = (parseInt(bruce.style.left) - 40) + 'px';
-	console.log("Bruce Lee position = ", bruce.style.left);
+	//console.log("Bruce Lee position = ", bruce.style.left);
 }
 
 function moveScroll(){
 	const scroll = document.getElementById('scroll');
 	scroll.style.left = (parseInt(scroll.style.left) - 5) + 'px';
-	console.log("Scroll position = ", scroll.style.left);
+	//console.log("Scroll position = ", scroll.style.left);
 }
 
 function conditionalBruceReset(){
@@ -29,7 +29,7 @@ function conditionalScrollReset(){
 
 function timeLoop() {
 	var lastRenderTime = 0;
-	console.log("time loop");
+	//console.log("time loop");
 	const currentTime = performance.now();
 	const timeSinceLastRender = currentTime - lastRenderTime;
 	

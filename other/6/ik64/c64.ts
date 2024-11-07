@@ -99,11 +99,11 @@ class Commodore64 {
 		if (this.stepCounter > this.stepMax){
 			this.changeDirection();
 			this.stepMax = 12 +  Math.floor(Math.random() * 38);
-			console.log("Frames before another direction change: " + this.stepMax);
+			//console.log("Frames before another direction change: " + this.stepMax);
 		}
 	}
 	
-	console.log("frame number = " + this.frameIndex);
+	//console.log("frame number = " + this.frameIndex);
     requestAnimationFrame(() => this.anim());
   }
   
