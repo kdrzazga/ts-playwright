@@ -61,8 +61,11 @@ class Animal extends Plant{
             this.dz = -this.speed;
         }
 
-        if(this.mesh.position.x < -6 || this.mesh.position.x >= 6){
-            this.dx = - this.speed;
+        if(this.mesh.position.x < -40){
+            this.dx = this.speed;
+        }
+        else if(this.mesh.position.x >= 40){
+            this.dx = -this.speed
         }
     }
 }
@@ -94,13 +97,15 @@ class ObjectGenerator{
                     , [-1.1, -19.5], [3, -15.5], [4.9, -14.5], [-4.9, 14.5]]; //+ z=-60
         let trees = [];
 
-        treePositions.forEach(point =>{
-            let t = null;
-            for (let shift = -120; shift < 120; shift +=26){
-                t = new Tree(point[0], point[1] - shift * Math.random());
-                trees.push(t);
-            }
-        });
+        for (let shift2 = -30; shift2 < 30; shift2 += 12.3){
+            treePositions.forEach(point =>{
+                let t = null;
+                for (let shift = -120; shift < 120; shift +=26){
+                    t = new Tree(point[0] + shift2, point[1] - shift * Math.random());
+                    trees.push(t);
+                }
+            });
+        }
 
         return trees;
     }
@@ -109,13 +114,15 @@ class ObjectGenerator{
         const mushroomPositions = [[1.5, -13], [2, 11], [-4, 5], [5.2, 3.5], [-3.9, 14.35]];
         let mushrooms = [];
 
-        mushroomPositions.forEach(point =>{
-            let m = null;
-            for (let shift = -120; shift < 50; shift +=35){
-                m = new Mushroom(point[0]+ shift/25, point[1] - shift + 3 * Math.random());
-                this.mushrooms.push(m);
-            }
-        });
+        for (let shift2 = -30; shift2 < -20; shift2 += 4){
+            mushroomPositions.forEach(point =>{
+                let m = null;
+                for (let shift = -120; shift < 50; shift +=35){
+                    m = new Mushroom(shift2 + point[0] + shift/25, point[1] - shift + 3 * Math.random());
+                    mushrooms.push(m);
+                }
+            });
+        }
 
         return mushrooms;
     }
@@ -126,7 +133,7 @@ class ObjectGenerator{
 
         foxPositions.forEach(point =>{
             let fox = new Fox(point[0], point[1]);
-            this.animals.push(fox);
+            animals.push(fox);
         });
         return animals;
     }
@@ -148,7 +155,7 @@ class Board extends MovableObject{
         this.mesh = new THREE.Mesh(this.geometry, this.material);
         this.mesh.rotation.x = -Math.PI / 2;
 
-        const objectGenerator = ObjectGenerator();
+        const objectGenerator = new ObjectGenerator();
 
         this.trees = objectGenerator.createTrees();
         this.mushrooms = objectGenerator.createMushrooms();
