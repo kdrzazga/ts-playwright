@@ -1,8 +1,8 @@
-const WORLD_WIDTH = 12;
-const WORLD_DEPTH = 42;
+const WORLD_WIDTH = 18;
+const WORLD_DEPTH = 300;
 
 class MovableObject {
-    static SPEED = 0.02;
+    static SPEED = 0.4;
 
     constructor(){
         this.width = 1;
@@ -110,20 +110,26 @@ class Board extends MovableObject{
         this.animals = [];
 
         const treePositions = [[1, 0], [-3, 3], [4.2, 7.5], [-1.9, 7.5], [3.1, 5.5], [-2.9, -1.5], [-1.1, -.5]
-            , [-1.1, -19.5], [3, -15.5], [4.9, -14.5], [-4.9, 14.5]];
+            , [-1.1, -19.5], [3, -15.5], [4.9, -14.5], [-4.9, 14.5]]; //+ z=-60
 
         const mushroomPositions = [[1.5, -13], [2, 11], [-4, 5], [5.2, 3.5], [-3.9, 14.35]];
 
         const foxPositions = [[-2, 2], [ 2, 3]];
 
         treePositions.forEach(point =>{
-            let t = new Tree(point[0], point[1]);
-            this.trees.push(t);
+            let t = null;
+            for (let shift = -120; shift < 120; shift +=20){
+                t = new Tree(point[0], point[1] - shift);
+                this.trees.push(t);
+            }
         });
 
         mushroomPositions.forEach(point =>{
-            let m = new Mushroom(point[0], point[1]);
-            this.mushrooms.push(m);
+            let m = null;
+            for (let shift = -120; shift < 50; shift +=30){
+                m = new Mushroom(point[0]+ shift/25, point[1] - shift);
+                this.mushrooms.push(m);
+            }
         });
 
         foxPositions.forEach(point =>{
