@@ -1,4 +1,4 @@
-const WORLD_WIDTH = 18;
+const WORLD_WIDTH = 100;
 const WORLD_DEPTH = 300;
 
 class MovableObject {
@@ -45,26 +45,21 @@ class Plant extends MovableObject{
 class Animal extends Plant{
     constructor(x, z, filename, height) {
         super(x, z, filename, height);
-        this.speed = 0.07;
-        this.dx = this.speed;
-        this.dz = this.speed;
+        this.speed = 0.01;
+        this.dx = this.speed - Math.random()/10;
+        this.dz = this.speed + Math.random()/15;
     }
 
     update(){
         this.mesh.position.x += this.dx;
         this.mesh.position.z += this.dz;
 
-        if(this.mesh.position.x < -5 * 0.8 - 2.5){
-            this.mesh.position.x = -5 * 0.8 - 2.5;
-            this.dx *= -1;
-        }
-        else if(this.mesh.position.x > 0.8 *5 - 2.5){
-            this.mesh.position.x = 0.8 * 5 - 2.5;
-            this.dx *= -1;
+        if(this.mesh.position.z < -20 || this.mesh.position.z >= 0.8 * WORLD_DEPTH / 2){
+            this.dz = -this.speed;
         }
 
-        if(this.mesh.position.z < -20 || this.mesh.position.z >= 0.8 * WORLD_DEPTH / 2){
-            this.dz *= -1;
+        if(this.mesh.position.x < -6 || this.mesh.position.x >= 6){
+            this.dx = - this.speed;
         }
     }
 }
@@ -83,9 +78,9 @@ class Mushroom extends Plant{
 
 class Fox extends Animal{
     constructor(x, z){
-        super(x, z, 'resources/fox.png', 0.5);
+        super(x, z, 'resources/fox.png', 0.75);
         this.width = 2;
-        this.createMesh(x, z, 'resources/fox.png', 0.5);
+        this.createMesh(x, z, 'resources/fox.png', 0.75);
     }
 }
 
@@ -114,20 +109,20 @@ class Board extends MovableObject{
 
         const mushroomPositions = [[1.5, -13], [2, 11], [-4, 5], [5.2, 3.5], [-3.9, 14.35]];
 
-        const foxPositions = [[-2, 2], [ 2, 3]];
+        const foxPositions = [[-2, 12], [5, 3]];
 
         treePositions.forEach(point =>{
             let t = null;
-            for (let shift = -120; shift < 120; shift +=20){
-                t = new Tree(point[0], point[1] - shift);
+            for (let shift = -120; shift < 120; shift +=26){
+                t = new Tree(point[0], point[1] - shift * Math.random());
                 this.trees.push(t);
             }
         });
 
         mushroomPositions.forEach(point =>{
             let m = null;
-            for (let shift = -120; shift < 50; shift +=30){
-                m = new Mushroom(point[0]+ shift/25, point[1] - shift);
+            for (let shift = -120; shift < 50; shift +=35){
+                m = new Mushroom(point[0]+ shift/25, point[1] - shift + 3 * Math.random());
                 this.mushrooms.push(m);
             }
         });

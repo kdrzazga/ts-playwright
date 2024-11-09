@@ -64,8 +64,10 @@ class Game {
             + `Animals Position: <br>`;
 
         this.board.animals.forEach(animal =>{
-            caption += `[${animal.mesh.position.x.toFixed(2)}, ${animal.mesh.position.y.toFixed(2)}`
-            + `, ${animal.mesh.position.z.toFixed(2)}]<br>`;
+            let xA = boardPos.x - animal.mesh.position.x;
+            let yA = animal.mesh.position.y;
+            let zA = boardPos.z - animal.mesh.position.z;
+            caption += `[${xA.toFixed(2)}, ${yA.toFixed(2)}, ${zA.toFixed(2)}]<br>`;
         });
 
         this.infoFrame.innerHTML = caption;
