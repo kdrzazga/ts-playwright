@@ -7,9 +7,22 @@
     <style>
         body { margin: 0; }
         canvas { display: block; }
+        #infoFrame {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            color: black;
+            z-index: 1000; /* Ensure it's above your 3D scene */
+        }
     </style>
 </head>
     <body>
+    <div id="infoFrame"></div>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
         <script src="player.js"></script>
         <script src="board.js"></script>

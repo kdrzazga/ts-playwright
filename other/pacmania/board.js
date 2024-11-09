@@ -54,10 +54,16 @@ class Animal extends Plant{
         this.mesh.position.x += this.dx;
         this.mesh.position.z += this.dz;
 
-        if(this.mesh.position.x < 0 || this.mesh.position.x >= 0.8 * WORLD_WIDTH / 2){
+        if(this.mesh.position.x < -5 * 0.8 - 2.5){
+            this.mesh.position.x = -5 * 0.8 - 2.5;
             this.dx *= -1;
         }
-        if(this.mesh.position.z < 0 || this.mesh.position.z >= 0.8 * WORLD_DEPTH / 2){
+        else if(this.mesh.position.x > 0.8 *5 - 2.5){
+            this.mesh.position.x = 0.8 * 5 - 2.5;
+            this.dx *= -1;
+        }
+
+        if(this.mesh.position.z < -20 || this.mesh.position.z >= 0.8 * WORLD_DEPTH / 2){
             this.dz *= -1;
         }
     }
@@ -185,7 +191,4 @@ class Board extends MovableObject{
         this.mushrooms.forEach(m => m.move(deltaX, deltaZ));
         this.animals.forEach(m => m.move(deltaX, deltaZ));
     }
-
-
-
 }
