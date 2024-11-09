@@ -1,5 +1,12 @@
+const WORLD_WIDTH = 12;
+const WORLD_DEPTH = 42;
+
 class MovableObject {
     static SPEED = 0.02;
+
+    constructor(){
+        this.width = 1;
+    }
 
     move(deltaX, deltaZ) {
         if (deltaX == 0 && deltaZ== 0)
@@ -18,11 +25,13 @@ class MovableObject {
 class Plant extends MovableObject{
     constructor(x, z, filename, height) {
         super();
+        this.createMesh(x, z, filename, height);
+    }
 
-        const width = 1;
+    createMesh(x, z, filename, height){
         const depth = 0.03;
 
-        const geometry = new THREE.BoxGeometry(width, height, depth);
+        const geometry = new THREE.BoxGeometry(this.width, height, depth);
 
         const textureLoader = new THREE.TextureLoader();
         const texture = textureLoader.load(filename);
@@ -30,6 +39,27 @@ class Plant extends MovableObject{
 
         this.mesh = new THREE.Mesh(geometry, material);
         this.mesh.position.set(x, height / 2, z);
+    }
+}
+
+class Animal extends Plant{
+    constructor(x, z, filename, height) {
+        super(x, z, filename, height);
+        this.speed = 0.07;
+        this.dx = this.speed;
+        this.dz = this.speed;
+    }
+
+    update(){
+        this.mesh.position.x += this.dx;
+        this.mesh.position.z += this.dz;
+
+        if(this.mesh.position.x < 0 || this.mesh.position.x >= 0.8 * WORLD_WIDTH / 2){
+            this.dx *= -1;
+        }
+        if(this.mesh.position.z < 0 || this.mesh.position.z >= 0.8 * WORLD_DEPTH / 2){
+            this.dz *= -1;
+        }
     }
 }
 
@@ -45,10 +75,18 @@ class Mushroom extends Plant{
     }
 }
 
+class Fox extends Animal{
+    constructor(x, z){
+        super(x, z, 'resources/fox.png', 0.5);
+        this.width = 2;
+        this.createMesh(x, z, 'resources/fox.png', 0.5);
+    }
+}
+
 class Board extends MovableObject{
     constructor(scene) {
         super();
-        this.geometry = new THREE.PlaneGeometry(12, 40);
+        this.geometry = new THREE.PlaneGeometry(WORLD_WIDTH, WORLD_DEPTH);
         this.material = new THREE.MeshBasicMaterial({
             color: 0x00aa00,
             side: THREE.DoubleSide,
@@ -63,11 +101,14 @@ class Board extends MovableObject{
 
         this.trees = [];
         this.mushrooms = [];
+        this.animals = [];
 
         const treePositions = [[1, 0], [-3, 3], [4.2, 7.5], [-1.9, 7.5], [3.1, 5.5], [-2.9, -1.5], [-1.1, -.5]
             , [-1.1, -19.5], [3, -15.5], [4.9, -14.5], [-4.9, 14.5]];
 
         const mushroomPositions = [[1.5, -13], [2, 11], [-4, 5], [5.2, 3.5], [-3.9, 14.35]];
+
+        const foxPositions = [[-2, 2], [ 2, 3]];
 
         treePositions.forEach(point =>{
             let t = new Tree(point[0], point[1]);
@@ -79,10 +120,16 @@ class Board extends MovableObject{
             this.mushrooms.push(m);
         });
 
+        foxPositions.forEach(point =>{
+            let fox = new Fox(point[0], point[1]);
+            this.animals.push(fox);
+        });
+
         scene.add(this.mesh);
 
         this.trees.forEach(t => scene.add(t.mesh));
         this.mushrooms.forEach(m => scene.add(m.mesh));
+        this.animals.forEach(a => scene.add(a.mesh));
     }
 
     createGridTexture() {
@@ -127,11 +174,18 @@ class Board extends MovableObject{
         return canvas;
     }
 
+    update(){
+        this.animals.forEach(animal => animal.update());
+    }
+
     //@Override
     move(deltaX, deltaZ) {
         super.move(deltaX, deltaZ);
         this.trees.forEach(t => t.move(deltaX, deltaZ));
         this.mushrooms.forEach(m => m.move(deltaX, deltaZ));
+        this.animals.forEach(m => m.move(deltaX, deltaZ));
     }
+
+
 
 }

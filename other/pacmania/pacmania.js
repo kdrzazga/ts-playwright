@@ -56,6 +56,7 @@ class Game {
         requestAnimationFrame(() => this.animate());
         this.update();
         this.player.update();
+        this.board.update();
         this.renderer.render(this.scene, this.camera);
     }
 }
