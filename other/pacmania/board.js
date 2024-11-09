@@ -3,9 +3,12 @@ const WORLD_DEPTH = 300;
 
 class MovableObject {
     static SPEED = 0.4;
+    static currentId = 1;
 
     constructor(){
         this.width = 1;
+        this.id = MovableObject.currentId;
+        MovableObject.currentId++;
     }
 
     move(deltaX, deltaZ) {

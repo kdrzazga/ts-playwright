@@ -1,4 +1,5 @@
 class Game {
+
     constructor() {
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -56,34 +57,41 @@ class Game {
         this.updateInfoFrame();
     }
 
-    getPlayerPosition(){
+    getPlayerIdPosition(){
         const boardPos = this.board.mesh.position;
         const playerPos = this.player.mesh.position;
+        const pId = this.player.id;
 
-        return [boardPos.x, playerPos.y, boardPos.z];
+        return {[pId] : [boardPos.x, playerPos.y, boardPos.z]};
     }
 
-    getAnimalPositions(){
+    getAnimalIdPositions(){
         const boardPos = this.board.mesh.position;
-        let positions = [];
+        let idPositions = [];
         this.board.animals.forEach(animal =>{
                     let xA = boardPos.x - animal.mesh.position.x;
                     let yA = animal.mesh.position.y;
                     let zA = boardPos.z - animal.mesh.position.z;
-                    positions.push([xA, yA, zA]);
+                    const json = {[animal.id] : [xA, yA, zA]};
+                    idPositions.push(json);
                 });
-        return positions;
+        return idPositions;
     }
 
     updateInfoFrame() {
-        const animalPos = this.getAnimalPositions();
-        const playerPos = this.getPlayerPosition();
+        const animalIdPos = this.getAnimalIdPositions();
+        const playerIdPos = this.getPlayerIdPosition();
+
+        const playerId = Object.keys(playerIdPos)[0];
         let caption = `Player Position: <br>`
-            + `[${playerPos[0].toFixed(2)}, ${playerPos[1].toFixed(2)}, ${playerPos[2].toFixed(2)}]<br>`
+            + `${playerId}: [${playerIdPos[playerId][0].toFixed(2)}, ${playerIdPos[playerId][1].toFixed(2)}, ${playerIdPos[playerId][2].toFixed(2)}]<br>`
             + `Animals Position: <br>`;
 
-        animalPos.forEach(pos =>{
-            caption += `[${pos[0].toFixed(2)}, ${pos[1].toFixed(2)}, ${pos[2].toFixed(2)}]<br>`;
+        animalIdPos.forEach(animal =>{
+            const animalId = Object.keys(animal)[0];
+            const positions = animal[animalId];
+            caption += `${[animalId]}: [${positions[0].toFixed(2)}, ${positions[1].toFixed(2)}`
+            + `, ${positions[2].toFixed(2)}]<br>`;
         });
         this.infoFrame.innerHTML = caption;
     }
