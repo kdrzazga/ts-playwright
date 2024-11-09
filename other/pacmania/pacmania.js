@@ -56,20 +56,35 @@ class Game {
         this.updateInfoFrame();
     }
 
-    updateInfoFrame() {
+    getPlayerPosition(){
         const boardPos = this.board.mesh.position;
         const playerPos = this.player.mesh.position;
+
+        return [boardPos.x, playerPos.y, boardPos.z];
+    }
+
+    getAnimalPositions(){
+        const boardPos = this.board.mesh.position;
+        let positions = [];
+        this.board.animals.forEach(animal =>{
+                    let xA = boardPos.x - animal.mesh.position.x;
+                    let yA = animal.mesh.position.y;
+                    let zA = boardPos.z - animal.mesh.position.z;
+                    positions.push([xA, yA, zA]);
+                });
+        return positions;
+    }
+
+    updateInfoFrame() {
+        const animalPos = this.getAnimalPositions();
+        const playerPos = this.getPlayerPosition();
         let caption = `Player Position: <br>`
-            + `[${boardPos.x.toFixed(2)}, ${playerPos.y.toFixed(2)}, ${boardPos.z.toFixed(2)}]<br>`
+            + `[${playerPos[0].toFixed(2)}, ${playerPos[1].toFixed(2)}, ${playerPos[2].toFixed(2)}]<br>`
             + `Animals Position: <br>`;
 
-        this.board.animals.forEach(animal =>{
-            let xA = boardPos.x - animal.mesh.position.x;
-            let yA = animal.mesh.position.y;
-            let zA = boardPos.z - animal.mesh.position.z;
-            caption += `[${xA.toFixed(2)}, ${yA.toFixed(2)}, ${zA.toFixed(2)}]<br>`;
+        animalPos.forEach(pos =>{
+            caption += `[${pos[0].toFixed(2)}, ${pos[1].toFixed(2)}, ${pos[2].toFixed(2)}]<br>`;
         });
-
         this.infoFrame.innerHTML = caption;
     }
 
