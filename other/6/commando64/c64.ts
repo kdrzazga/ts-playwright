@@ -184,7 +184,7 @@ class Commodore64 {
             console.log(this.commandoReloadCounter);
 
             if (this.commandoReloadCounter < 0) {
-                console.log("----------------------------------RELOADING COMMANDO----------------------------------");
+                console.log("%c ----------------------------------RELOADING COMMANDO----------------------------------", "color: blue; font-weight: bold;");
                 location.reload();
             }
         }

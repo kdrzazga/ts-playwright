@@ -31,6 +31,10 @@ K&A+: https://kdrzazga.github.io/ts-playwright/other/c64blackbox/directF6Classic
 ---
 https://kdrzazga.github.io/ts-playwright/other/6/6.html
 
+Pacman w lesie:
+---
+https://kdrzazga.github.io/ts-playwright/other/pacmania
+
 Cube animation:
 --
 https://kdrzazga.github.io/ts-playwright/other/cube

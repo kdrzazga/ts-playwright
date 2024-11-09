@@ -58,11 +58,11 @@ changeColorButton.addEventListener('click', () => {
 
 
 zoomInButton.addEventListener('click', () => {
-    camera.position.z -= 0.5; // Zoom in
+    camera.position.z -= 0.5;
 });
 
 zoomOutButton.addEventListener('click', () => {
-    camera.position.z += 0.5; // Zoom out
+    camera.position.z += 0.5;
 });
 
 window.addEventListener('resize', () => {

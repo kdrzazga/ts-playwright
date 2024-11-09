@@ -65,7 +65,7 @@ var Commodore64 = /** @class */ (function () {
     };
     Commodore64.prototype.timeLoop = function () {
         var _this = this;
-        console.group("PACMAN");
+        console.group("%c PACMAN", "color: orange; font-weight: bold;");
         var currentTime = performance.now();
         var timeSinceLastRender = currentTime - this.lastRenderTime;
         this.blinkCursor(currentTime, timeSinceLastRender);

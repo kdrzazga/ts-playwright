@@ -86,7 +86,7 @@ class Commodore64 {
   }
   
   timeLoop() {
-	console.group("PACMAN");
+	console.group("%c PACMAN", "color: orange; font-weight: bold;");
 	const currentTime = performance.now();
 	const timeSinceLastRender = currentTime - this.lastRenderTime;
 	

@@ -137,7 +137,7 @@ var Commodore64 = /** @class */ (function () {
             this.commandoReloadCounter--;
             console.log(this.commandoReloadCounter);
             if (this.commandoReloadCounter < 0) {
-                console.log("----------------------------------RELOADING COMMANDO----------------------------------");
+                console.log("%c ----------------------------------RELOADING COMMANDO----------------------------------", "color: blue; font-weight: bold;");
                 location.reload();
             }
         }
