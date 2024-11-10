@@ -48,7 +48,7 @@ class Plant extends MovableObject{
 class Animal extends Plant{
     constructor(x, z, filename, height) {
         super(x, z, filename, height);
-        this.speed = 0.01; //0.01
+        this.speed = 0.01;
         this.dx = this.speed - Math.random()/10;
         this.dz = this.speed + Math.random()/15;
     }
