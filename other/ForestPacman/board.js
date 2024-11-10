@@ -46,16 +46,23 @@ class Plant extends MovableObject{
 }
 
 class Animal extends Plant{
-    constructor(x, z, filename, height) {
+    constructor(x, z, filename, height, walkRadius) {
         super(x, z, filename, height);
-        this.speed = 0.01;
+        this.speed = 0.31;
         this.dx = this.speed - Math.random()/10;
         this.dz = this.speed + Math.random()/15;
+
+        const objectGenerator = new ObjectGenerator();
+        this.path = objectGenerator.createAnimalPath(walkRadius);
     }
 
     update(){
-        this.mesh.position.x += this.dx;
-        this.mesh.position.z += this.dz;
+        if (this.speed < Math.random())
+            return;
+
+        const point = this.path.next();
+        this.mesh.position.x = point[0];
+        this.mesh.position.z = point[1];
     }
 }
 
@@ -72,8 +79,8 @@ class Mushroom extends Plant{
 }
 
 class Fox extends Animal{
-    constructor(x, z){
-        super(x, z, 'resources/fox.png', 0.75);
+    constructor(x, z, pathRadius){
+        super(x, z, 'resources/fox.png', 0.75, pathRadius);
         this.width = 2;
         this.createMesh(x, z, 'resources/fox.png', 0.75);
     }
@@ -81,10 +88,18 @@ class Fox extends Animal{
 
 class ObjectGenerator{
 
-    createAnimalPath(centerPoint, radius){
-        for (let alpha = 0; alpha < 2*Math.PI; alpha+= 0.01){
-            const x = radius * sin(alpha);
+    createAnimalPath(radius){
+        const increment = Math.PI / (radius * 5);
+        let pathPoints = [];
+        for (let alpha = 0; alpha <= 2*Math.PI; alpha+= increment){
+            const x = radius * Math.sin(alpha);
+            const y = radius * Math.cos(alpha);
+
+            pathPoints.push([x, y]);
         }
+
+        const path = new CircularList(pathPoints);
+        return path;
     }
 
     createTrees(){
@@ -127,7 +142,7 @@ class ObjectGenerator{
         let animals = [];
 
         foxPositions.forEach(point =>{
-            let fox = new Fox(point[0], point[1]);
+            let fox = new Fox(point[0], point[1], 11 + point[1] + 5*Math.random());
             animals.push(fox);
         });
         return animals;
@@ -206,21 +221,9 @@ class Board extends MovableObject{
 
     update(){
         this.animals.forEach(animal => {
-
             animal.update();
-
-            if (animal.mesh.position.x > WORLD_WIDTH/2){
-                animal.dx = -animal.speed;
-                console.log('animal.x = ' + animal.mesh.position.x);
-            }
-            else if (animal.mesh.position.x < -WORLD_WIDTH/2){
-                animal.dx = animal.speed;
-                console.log('animal.x = ' + animal.mesh.position.x);
-            }
         });
-        let positions = this.getAnimalIdPositions();
-
-
+        //let positions = this.getAnimalIdPositions();
     }
 
     //@Override
@@ -228,7 +231,7 @@ class Board extends MovableObject{
         super.move(deltaX, deltaZ);
         this.trees.forEach(t => t.move(deltaX, deltaZ));
         this.mushrooms.forEach(m => m.move(deltaX, deltaZ));
-        this.animals.forEach(m => m.move(deltaX, deltaZ));
+        this.animals.forEach(a => a.move(deltaX, deltaZ));
     }
 
     getAnimalIdPositions(){
