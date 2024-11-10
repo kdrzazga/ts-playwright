@@ -48,7 +48,7 @@ class Plant extends MovableObject{
 class Animal extends Plant{
     constructor(x, z, filename, height, walkRadius) {
         super(x, z, filename, height);
-        this.speed = 0.31;
+        this.speed = 0.07;
         this.dx = this.speed - Math.random()/10;
         this.dz = this.speed + Math.random()/15;
 
@@ -57,9 +57,6 @@ class Animal extends Plant{
     }
 
     update(){
-        if (this.speed < Math.random())
-            return;
-
         const point = this.path.next();
         this.mesh.position.x = point[0];
         this.mesh.position.z = point[1];
@@ -89,7 +86,7 @@ class Fox extends Animal{
 class ObjectGenerator{
 
     createAnimalPath(radius){
-        const increment = Math.PI / (radius * 5);
+        const increment = Math.PI / (radius * 50);
         let pathPoints = [];
         for (let alpha = 0; alpha <= 2*Math.PI; alpha+= increment){
             const x = radius * Math.sin(alpha);
