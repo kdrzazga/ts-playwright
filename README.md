@@ -33,7 +33,7 @@ https://kdrzazga.github.io/ts-playwright/other/6/6.html
 
 Pacman w lesie:
 ---
-https://kdrzazga.github.io/ts-playwright/other/pacmania
+https://kdrzazga.github.io/ts-playwright/other/ForestPacman
 
 Cube animation:
 --
