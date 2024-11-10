@@ -65,9 +65,10 @@ class Game {
     }
 
     getPlayerIdPosition() {
+        const boardPos = this.board.mesh.position;
         const playerId = this.player.id;
         const playerPos = this.player.mesh.position;
-        return { [playerId]: [playerPos.x, playerPos.y, playerPos.z] };
+        return { [playerId]: [boardPos.x, playerPos.y, boardPos.z] };
     }
 
     updateInfoFrame() {

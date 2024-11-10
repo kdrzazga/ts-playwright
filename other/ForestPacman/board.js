@@ -81,6 +81,12 @@ class Fox extends Animal{
 
 class ObjectGenerator{
 
+    createAnimalPath(centerPoint, radius){
+        for (let alpha = 0; alpha < 2*Math.PI; alpha+= 0.01){
+            const x = radius * sin(alpha);
+        }
+    }
+
     createTrees(){
         const treePositions = [[1, 0], [-3, 3], [4.2, 7.5], [-1.9, 7.5], [3.1, 5.5], [-2.9, -1.5], [-1.1, -.5]
                     , [-1.1, -19.5], [3, -15.5], [4.9, -14.5], [-4.9, 14.5]]; //+ z=-60
