@@ -48,7 +48,7 @@ class Plant extends MovableObject{
 class Animal extends Plant{
     constructor(x, z, filename, height) {
         super(x, z, filename, height);
-        this.speed = 0.01;
+        this.speed = 0.11; //0.01
         this.dx = this.speed - Math.random()/10;
         this.dz = this.speed + Math.random()/15;
     }
@@ -56,7 +56,7 @@ class Animal extends Plant{
     update(){
         this.mesh.position.x += this.dx;
         this.mesh.position.z += this.dz;
-
+/*
         if(this.mesh.position.z < -20 || this.mesh.position.z >= 0.8 * WORLD_DEPTH / 2){
             this.dz = -this.speed;
         }
@@ -66,7 +66,7 @@ class Animal extends Plant{
         }
         else if(this.mesh.position.x >= 40){
             this.dx = -this.speed
-        }
+        }*/
     }
 }
 
@@ -210,7 +210,22 @@ class Board extends MovableObject{
     }
 
     update(){
-        this.animals.forEach(animal => animal.update());
+        this.animals.forEach(animal => {
+
+            animal.update();
+
+            if (animal.mesh.position.x > WORLD_WIDTH/2){
+                animal.dx = -animal.speed;
+                console.log('animal.x = ' + animal.mesh.position.x);
+            }
+            else if (animal.mesh.position.x < -WORLD_WIDTH/2){
+                animal.dx = animal.speed;
+                console.log('animal.x = ' + animal.mesh.position.x);
+            }
+        });
+        let positions = this.getAnimalIdPositions();
+
+
     }
 
     //@Override
@@ -219,5 +234,18 @@ class Board extends MovableObject{
         this.trees.forEach(t => t.move(deltaX, deltaZ));
         this.mushrooms.forEach(m => m.move(deltaX, deltaZ));
         this.animals.forEach(m => m.move(deltaX, deltaZ));
+    }
+
+    getAnimalIdPositions(){
+        const boardPos = this.mesh.position;
+        let idPositions = [];
+        this.animals.forEach(animal =>{
+               let xA = boardPos.x - animal.mesh.position.x;
+               let yA = animal.mesh.position.y;
+               let zA = boardPos.z - animal.mesh.position.z;
+               const json = {[animal.id] : [xA, yA, zA]};
+               idPositions.push(json);
+        });
+        return idPositions;
     }
 }

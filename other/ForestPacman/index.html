@@ -7,9 +7,9 @@
     <style>
         body { margin: 0; }
         canvas { display: block; }
-        #infoFrame {
+
+        .panel {
             position: absolute;
-            top: 10px;
             left: 10px;
             background-color: rgba(255, 255, 255, 0.8);
             padding: 10px;
@@ -17,15 +17,29 @@
             font-family: Arial, sans-serif;
             font-size: 14px;
             color: black;
-            z-index: 1000; /* Ensure it's above your 3D scene */
+            z-index: 1000;
+        }
+
+        #controls {
+            top: 10px;
+        }
+
+        #infoFrame {
+            top: calc(10px + 60px);
         }
     </style>
 </head>
     <body>
-    <div id="infoFrame"></div>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-        <script src="player.js"></script>
-        <script src="board.js"></script>
-        <script src="forestpacman.js"></script>
+    <div id="controls" class="panel">
+        <button id="u">U</button>
+        <button id="d">D</button>
+        <button id="l">L</button>
+        <button id="r">R</button>
+    </div>
+    <div id="infoFrame" class="panel"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="player.js"></script>
+    <script src="board.js"></script>
+    <script src="forestpacman.js"></script>
     </body>
 </html>
