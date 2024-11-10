@@ -1,5 +1,4 @@
 class Game {
-
     constructor() {
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -15,16 +14,20 @@ class Game {
 
         this.infoFrame = document.getElementById('infoFrame');
 
-        window.addEventListener('resize', () => {
-            this.camera.aspect = window.innerWidth / window.innerHeight;
-            this.camera.updateProjectionMatrix();
-            this.renderer.setSize(window.innerWidth, window.innerHeight);
-        });
+        this.keyboardHandler = new KeyboardHandler(this.handleKeyDown.bind(this), this.handleKeyUp.bind(this));
+        this.keyboardHandler.initializeControls();
 
-        window.addEventListener('keyup', (event) => this.handleKeyUp(event));
+        window.addEventListener('resize', () => this.onWindowResize());
         window.addEventListener('keydown', (event) => this.handleKeyDown(event));
+        window.addEventListener('keyup', (event) => this.handleKeyUp(event));
 
         this.animate();
+    }
+
+    onWindowResize() {
+        this.camera.aspect = window.innerWidth / window.innerHeight;
+        this.camera.updateProjectionMatrix();
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
     }
 
     handleKeyDown(event) {
@@ -35,51 +38,52 @@ class Game {
         this.keyState[event.key] = false;
     }
 
-    update(){
+    update() {
+        const movementKeys = {
+            'w': { deltaX: 0, deltaZ: 1 },
+            's': { deltaX: 0, deltaZ: -1 },
+            'a': { deltaX: 1, deltaZ: 0 },
+            'd': { deltaX: -1, deltaZ: 0 },
+            'ArrowUp': { deltaX: 0, deltaZ: 1 },
+            'ArrowDown': { deltaX: 0, deltaZ: -1 },
+            'ArrowLeft': { deltaX: 1, deltaZ: 0 },
+            'ArrowRight': { deltaX: -1, deltaZ: 0 }
+        };
+
         let deltaX = 0;
         let deltaZ = 0;
 
-        if (this.keyState['w'] || this.keyState['ArrowUp']) {
-            deltaZ = 1;
-        }
-        if (this.keyState['s'] || this.keyState['ArrowDown']) {
-            deltaZ = -1;
-        }
-        if (this.keyState['a'] || this.keyState['ArrowLeft']) {
-            deltaX = 1;
-        }
-        if (this.keyState['d'] || this.keyState['ArrowRight']) {
-            deltaX = -1;
+        for (const key in movementKeys) {
+            if (this.keyState[key]) {
+                deltaX += movementKeys[key].deltaX;
+                deltaZ += movementKeys[key].deltaZ;
+            }
         }
 
         this.board.move(deltaX, deltaZ);
-
         this.updateInfoFrame();
     }
 
-    getPlayerIdPosition(){
-        const boardPos = this.board.mesh.position;
+    getPlayerIdPosition() {
+        const playerId = this.player.id;
         const playerPos = this.player.mesh.position;
-        const pId = this.player.id;
-
-        return {[pId] : [boardPos.x, playerPos.y, boardPos.z]};
+        return { [playerId]: [playerPos.x, playerPos.y, playerPos.z] };
     }
 
     updateInfoFrame() {
-        const animalIdPos = this.board.getAnimalIdPositions();
+        const animalIdPositions = this.board.getAnimalIdPositions();
         const playerIdPos = this.getPlayerIdPosition();
 
         const playerId = Object.keys(playerIdPos)[0];
-        let caption = `Player Position: <br>`
-            + `${playerId}: [${playerIdPos[playerId][0].toFixed(2)}, ${playerIdPos[playerId][1].toFixed(2)},`
-            + `${playerIdPos[playerId][2].toFixed(2)}]<br>Animals Position: <br>`;
+        const playerPosition = playerIdPos[playerId].map(pos => pos.toFixed(2)).join(", ");
+        let caption = `Player Position: <br>${playerId}: [${playerPosition}]<br>Animals Position: <br>`;
 
-        animalIdPos.forEach(animal =>{
+        animalIdPositions.forEach(animal => {
             const animalId = Object.keys(animal)[0];
-            const positions = animal[animalId];
-            caption += `${[animalId]}: [${positions[0].toFixed(2)}, ${positions[1].toFixed(2)}`
-                + `, ${positions[2].toFixed(2)}]<br>`;
+            const positions = animal[animalId].map(pos => pos.toFixed(2)).join(", ");
+            caption += `${animalId}: [${positions}]<br>`;
         });
+
         this.infoFrame.innerHTML = caption;
     }
 
@@ -92,4 +96,54 @@ class Game {
     }
 }
 
-new Game();
+class KeyboardHandler {
+    constructor(onKeyDown, onKeyUp) {
+        this.onKeyDown = onKeyDown;
+        this.onKeyUp = onKeyUp;
+    }
+
+    simulateKeyPress(key) {
+        const event = this.createSyntheticEvent(key);
+        this.onKeyDown(event);
+    }
+
+    simulateKeyRelease(key) {
+        const event = this.createSyntheticEvent(key);
+        this.onKeyUp(event);
+    }
+
+    createSyntheticEvent(key) {
+        return {
+            target: document.body,
+            key: key,
+            charCode: 0,
+            keyCode: this.getKeyCode(key),
+            preventDefault: () => {},
+            stopPropagation: () => {},
+        };
+    }
+
+    getKeyCode(key) {
+        const keyCodes = {
+            "ArrowUp": 38,
+            "ArrowDown": 40,
+            "ArrowLeft": 37,
+            "ArrowRight": 39
+        };
+        return keyCodes[key] || 0;
+    }
+
+    initializeControls() {
+        const buttons = document.querySelectorAll('#controls button');
+
+        buttons.forEach(button => {
+            const key = button.getAttribute('data-key');
+            button.addEventListener('mousedown', () => this.simulateKeyPress(key));
+            button.addEventListener('touchstart', () => this.simulateKeyPress(key));
+            button.addEventListener('mouseup', () => this.simulateKeyRelease(key));
+            button.addEventListener('touchend', () => this.simulateKeyRelease(key));
+        });
+    }
+}
+
+const game = new Game();
