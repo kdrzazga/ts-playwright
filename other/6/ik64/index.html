@@ -10,6 +10,12 @@
       font-family: 'c64mono';
       color: #6c5eb5;
     }
+    td.narrow{
+        width=10%
+    }
+    td.wide{
+        width=80%
+    }
   </style>
   	<meta name="viewport" content="width=device-width, initial-scale=0.6">
 	<script>
@@ -20,15 +26,15 @@
     </script>
 </head>
 
-<body bgcolor="#6c5eb5" onload='setZoom(0.65)'>
+<body bgcolor="#6c5eb5" onload='setZoom(0.65)' onclick="hide(); play()">
     <div id="top-border"></div>
 	<table bgcolor="#6c5eb5" width="100%">
         <tr>
-            <td width="10%">&nbsp</td>
-            <td width="80%" class="inter-frame">
+            <td class="narrow">&nbsp</td>
+            <td class="wide inter-frame">
 			<center><div id="commodore64"></div></center>
 			</td>
-            <td width="10%">&nbsp</td>
+            <td class="narrow">&nbsp</td>
         </tr>
         <tr>
             <td>&nbsp</td>

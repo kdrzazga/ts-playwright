@@ -56,14 +56,6 @@ class Animal extends Plant{
     update(){
         this.mesh.position.x += this.dx;
         this.mesh.position.z += this.dz;
-
-        if(this.mesh.position.z < -20 || this.mesh.position.z >= 0.8 * WORLD_DEPTH / 2){
-            this.dz = -this.speed;
-        }
-
-        if(this.mesh.position.x < -6 || this.mesh.position.x >= 6){
-            this.dx = - this.speed;
-        }
     }
 }
 
@@ -87,6 +79,55 @@ class Fox extends Animal{
     }
 }
 
+class ObjectGenerator{
+
+    createTrees(){
+        const treePositions = [[1, 0], [-3, 3], [4.2, 7.5], [-1.9, 7.5], [3.1, 5.5], [-2.9, -1.5], [-1.1, -.5]
+                    , [-1.1, -19.5], [3, -15.5], [4.9, -14.5], [-4.9, 14.5]]; //+ z=-60
+        let trees = [];
+
+        for (let shift2 = -30; shift2 < 30; shift2 += 12.3){
+            treePositions.forEach(point =>{
+                let t = null;
+                for (let shift = -120; shift < 120; shift +=26){
+                    t = new Tree(point[0] + shift2, point[1] - shift * Math.random());
+                    trees.push(t);
+                }
+            });
+        }
+
+        return trees;
+    }
+
+    createMushrooms(){
+        const mushroomPositions = [[1.5, -13], [2, 11], [-4, 5], [5.2, 3.5], [-3.9, 14.35]];
+        let mushrooms = [];
+
+        for (let shift2 = -30; shift2 < -20; shift2 += 4){
+            mushroomPositions.forEach(point =>{
+                let m = null;
+                for (let shift = -120; shift < 50; shift +=35){
+                    m = new Mushroom(shift2 + point[0] + shift/25, point[1] - shift + 3 * Math.random());
+                    mushrooms.push(m);
+                }
+            });
+        }
+
+        return mushrooms;
+    }
+
+    createAnimals(){
+        const foxPositions = [[-2, 12], [5, 3]];
+        let animals = [];
+
+        foxPositions.forEach(point =>{
+            let fox = new Fox(point[0], point[1]);
+            animals.push(fox);
+        });
+        return animals;
+    }
+}
+
 class Board extends MovableObject{
     constructor(scene) {
         super();
@@ -103,38 +144,11 @@ class Board extends MovableObject{
         this.mesh = new THREE.Mesh(this.geometry, this.material);
         this.mesh.rotation.x = -Math.PI / 2;
 
-        this.trees = [];
-        this.mushrooms = [];
-        this.animals = [];
+        const objectGenerator = new ObjectGenerator();
 
-        const treePositions = [[1, 0], [-3, 3], [4.2, 7.5], [-1.9, 7.5], [3.1, 5.5], [-2.9, -1.5], [-1.1, -.5]
-            , [-1.1, -19.5], [3, -15.5], [4.9, -14.5], [-4.9, 14.5]]; //+ z=-60
-
-        const mushroomPositions = [[1.5, -13], [2, 11], [-4, 5], [5.2, 3.5], [-3.9, 14.35]];
-
-        const foxPositions = [[-2, 12], [5, 3]];
-
-        treePositions.forEach(point =>{
-            let t = null;
-            for (let shift = -120; shift < 120; shift +=26){
-                t = new Tree(point[0], point[1] - shift * Math.random());
-                this.trees.push(t);
-            }
-        });
-
-        mushroomPositions.forEach(point =>{
-            let m = null;
-            for (let shift = -120; shift < 50; shift +=35){
-                m = new Mushroom(point[0]+ shift/25, point[1] - shift + 3 * Math.random());
-                this.mushrooms.push(m);
-            }
-        });
-
-        foxPositions.forEach(point =>{
-            let fox = new Fox(point[0], point[1]);
-            this.animals.push(fox);
-        });
-
+        this.trees = objectGenerator.createTrees();
+        this.mushrooms = objectGenerator.createMushrooms();
+        this.animals = objectGenerator.createAnimals();
         scene.add(this.mesh);
 
         this.trees.forEach(t => scene.add(t.mesh));
@@ -185,7 +199,22 @@ class Board extends MovableObject{
     }
 
     update(){
-        this.animals.forEach(animal => animal.update());
+        this.animals.forEach(animal => {
+
+            animal.update();
+
+            if (animal.mesh.position.x > WORLD_WIDTH/2){
+                animal.dx = -animal.speed;
+                console.log('animal.x = ' + animal.mesh.position.x);
+            }
+            else if (animal.mesh.position.x < -WORLD_WIDTH/2){
+                animal.dx = animal.speed;
+                console.log('animal.x = ' + animal.mesh.position.x);
+            }
+        });
+        let positions = this.getAnimalIdPositions();
+
+
     }
 
     //@Override
@@ -194,5 +223,18 @@ class Board extends MovableObject{
         this.trees.forEach(t => t.move(deltaX, deltaZ));
         this.mushrooms.forEach(m => m.move(deltaX, deltaZ));
         this.animals.forEach(m => m.move(deltaX, deltaZ));
+    }
+
+    getAnimalIdPositions(){
+        const boardPos = this.mesh.position;
+        let idPositions = [];
+        this.animals.forEach(animal =>{
+               let xA = boardPos.x - animal.mesh.position.x;
+               let yA = animal.mesh.position.y;
+               let zA = boardPos.z - animal.mesh.position.z;
+               const json = {[animal.id] : [xA, yA, zA]};
+               idPositions.push(json);
+        });
+        return idPositions;
     }
 }

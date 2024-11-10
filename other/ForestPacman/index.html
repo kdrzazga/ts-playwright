@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forest Pacman</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+
+        .panel {
+            position: absolute;
+            left: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            color: black;
+            z-index: 1000;
+        }
+
+        #controls {
+            top: 10px;
+        }
+
+        #infoFrame {
+            top: calc(10px + 60px);
+        }
+    </style>
+</head>
+    <body>
+    <div id="controls" class="panel">
+        <button data-key="ArrowUp" id="u">U</button>
+        <button data-key="ArrowDown" id="d">D</button>
+        <button data-key="ArrowLeft" id="l">L</button>
+        <button data-key="ArrowRight" id="r">R</button>
+    </div>
+    <div id="infoFrame" class="panel"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="player.js"></script>
+    <script src="board.js"></script>
+    <script src="forestpacman.js"></script>
+    </body>
+</html>
