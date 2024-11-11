@@ -3,22 +3,30 @@ class Bubble{
     static currentIndex = 0;
 
     constructor(){
-        this.bottom = 0;
-        this.left = 10;
-        this.maxLeft = this.left + 90 * Math.random();
-        this.speed = 0.5;
+        this.index = Bubble.currentIndex;
+        Bubble.currentIndex++;
+
+        this.reset();
+        this.maxLeft = Math.abs(this.left + 90 * Math.random() - 50);
+        const speed = 0.2 + this.index/15;
+        this.speed = speed;
+        this.speedVertical = speed;
 
         this.imgPath = "files/bubble.png";
-        this.active = false;
 
         this.imageElement = document.createElement('img');
         this.imageElement.src = this.imgPath;
         this.imageElement.style.width = '50px';
         this.imageElement.style.position = 'absolute';
         this.imageElement.style.display = 'none';
+        this.imageElement.zIndex = '-1';
         document.body.appendChild(this.imageElement);
-        this.index = Bubble.currentIndex;
-        Bubble.currentIndex++;
+    }
+
+    reset(){
+        this.active = false;
+        this.bottom = 0;
+        this.left = 5;
     }
 
     move(){
@@ -47,21 +55,44 @@ class Bubble{
     }
 
     moveVertically(){
-        this.bottom += this.speed;
+        this.bottom += this.speedVertical;
 
         if (this.bottom > 111){
-            this.active = false;
+            this.reset();
         }
     }
 }
 
+class RightBubble extends Bubble{
+    constructor(){
+        super();
+        this.speed *= -1;
+        this.maxRight = 5 + 88 * Math.random();
+    }
+
+    reset(){
+        super.reset();
+        this.left = 95;
+    }
+
+    move(){
+        if (!this.active)
+            return;
+
+        if(this.left >= this.maxRight)
+            this.moveHorizontally();
+        else
+            this.moveVertically();
+    }
+}
+
 class Animation{
-    static releaseCounterMax = 200;
+    static releaseCounterMax = 111;
 
     constructor(){
         this.bubbles = [];
         for (let i = 0; i < 12; i++){
-            const b = new Bubble();
+            const b = new RightBubble();
             this.bubbles.push(b);
         }
         this.animate();
