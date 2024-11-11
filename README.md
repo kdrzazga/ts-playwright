@@ -7,7 +7,7 @@ Browse to http://localhost:3000
 
 ------------------------------------------
 
-Webapps:
+Webapps: https://kdrzazga.github.io/ts-playwright
 
 C64 Blackbox:
 ---
