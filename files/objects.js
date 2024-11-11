@@ -1,3 +1,37 @@
+function findStarElement(id){
+    const numberIdMap = {
+        1 : 'star1',
+        2 : 'star2',
+        3 : 'star3',
+        4 : 'star4',
+        5 : 'star5',
+        6 : 'star6',
+        7 : 'star7'
+    };
+
+    let elementId = numberIdMap[id];
+    let webElement = document.getElementById(elementId);
+    return webElement;
+}
+
+function flashStar(id){
+
+    let webElement = findStarElement(id);
+    if (webElement != null){
+        webElement.src = 'files/bigStar.gif';
+    }
+    else{
+        console.error('Star not found');
+    }
+}
+
+function restoreStar(id){
+    let webElement = findStarElement(id);
+    if (webElement != null){
+        webElement.src = 'files/star.gif';
+    }
+}
+
 class Bubble{
 
     static currentIndex = 0;
@@ -19,7 +53,8 @@ class Bubble{
         this.imageElement.style.width = '50px';
         this.imageElement.style.position = 'absolute';
         this.imageElement.style.display = 'none';
-        this.imageElement.zIndex = '-1';
+        this.imageElement.style.zIndex = '-1';
+        this.imageElement.id = `bubble_${this.index}`;
         document.body.appendChild(this.imageElement);
     }
 
@@ -103,7 +138,7 @@ class Animation{
     }
 
     animate(){
-        console.log(this.releaseCounter);
+        //console.log(this.releaseCounter);
         this.moveActiveBubbles();
         this.manageReleasingBubbles();
         this.animationFrameID = requestAnimationFrame(() => this.animate());
@@ -126,7 +161,7 @@ class Animation{
         this.bubbles.filter(b => b.active).forEach(b => {
             b.move();
             b.draw();
-            console.log(`[${b.left}, ${b.bottom}]`);
+            //console.log(`[${b.left}, ${b.bottom}]`);
         });
     }
 }
