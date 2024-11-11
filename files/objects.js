@@ -91,9 +91,11 @@ class Animation{
 
     constructor(){
         this.bubbles = [];
-        for (let i = 0; i < 12; i++){
-            const b = new RightBubble();
+        for (let i = 0; i < 22; i++){
+            const b = new Bubble();
+            const rb = new RightBubble();
             this.bubbles.push(b);
+            this.bubbles.push(rb);
         }
         this.animate();
 
