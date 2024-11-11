@@ -7,7 +7,7 @@ Browse to http://localhost:3000
 
 ------------------------------------------
 
-Webapps:
+Webapps: https://kdrzazga.github.io/ts-playwright
 
 C64 Blackbox:
 ---
@@ -33,7 +33,7 @@ https://kdrzazga.github.io/ts-playwright/other/6/6.html
 
 Pacman w lesie:
 ---
-https://kdrzazga.github.io/ts-playwright/other/pacmania
+https://kdrzazga.github.io/ts-playwright/other/ForestPacman
 
 Cube animation:
 --
