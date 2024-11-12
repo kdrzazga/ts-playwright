@@ -6,23 +6,28 @@
   </head>
   <body>
     <div id="infoPanel">
-      <a href = 'https://kdrzazga.github.io/ts-playwright/other/ForestPacman' target="_blank">Forest Pacman</a><br/>
+      <img src="files/blee.png" alt="logo">&nbsp
+      <a href="https://www.github.com/kdrzazga" target="_blank"><!-- rel="noopener noreferrer">-->
+        <img src="files/gh.png" alt="https://www.github.com/kdrzazga">
+      </a>
+      <br><hr>
+      <a href = 'https://kdrzazga.github.io/ts-playwright/other/ForestPacman' target="_blank">Forest Pacman</a>&nbsp;|
       <a href = 'https://kdrzazga.github.io/ts-playwright/other/6/6.html' target="_blank">SIX</a><br/>
-      <a href = 'http://kdrzazga.github.io/ts-playwright/other/c64blackbox/index.html' target="_blank">C64 BlackBox</a>
+      <a href = 'http://kdrzazga.github.io/ts-playwright/other/c64blackbox/index.html' target="_blank">C64 BlackBox</a>&nbsp;|
       <a href = 'https://kdrzazga.github.io/ts-playwright/other/c64blackbox/directF9.html' target="_blank">Dizzy</a><br/>
-      <a href = 'https://kdrzazga.github.io/ts-playwright/other/c64blackbox/classicC64.html' target="_blank">C64 Classic</a>
+      <a href = 'https://kdrzazga.github.io/ts-playwright/other/c64blackbox/classicC64.html' target="_blank">C64 Classic</a>&nbsp;|
       <a href = 'https://kdrzazga.github.io/ts-playwright/other/c64blackbox/directF6ClassicC64.html' target="_blank">K&A+</a><br/>
     </div>
 
-    <img src="files/bub.png" style="position: absolute; left:2%; bottom: 0;" alt="">
-    <img src="files/star.gif" style="position: absolute; left:12%; top: 12%;" alt="">
-    <img src="files/star.gif" style="position: absolute; left:42%; top: 22%;" alt="">
-    <img src="files/star.gif" style="position: absolute; left:22%; top: 42%;" alt="">
-    <img src="files/star.gif" style="position: absolute; left:92%; top: 52%;" alt="">
-    <img src="files/star.gif" style="position: absolute; left:82%; top: 32%;" alt="">
-    <img src="files/star.gif" style="position: absolute; left:62%; top: 12%;" alt="">
-    <img src="files/star.gif" style="position: absolute; left:50%; bottom: 12%;" alt="">
-    <img src="files/bob.png" style="position: absolute; left:90%; bottom: 0;" alt="">
+    <img src="files/bub.png" style="position: absolute; left:2%; bottom: 0; z-Index: 2;" alt="">
+    <img src="files/star.gif" id ='star1' style="position: absolute; left:12%; top: 12%; z-Index: -2;" alt="" onmouseover="flashStar(1)" onmouseleave="restoreStar(1)">
+    <img src="files/star.gif" id ='star2' style="position: absolute; left:42%; top: 22%; z-Index: -2;" alt="" onmouseover="flashStar(2)" onmouseleave="restoreStar(2)">
+    <img src="files/star.gif" id ='star3' style="position: absolute; left:22%; top: 42%; z-Index: -2;" alt="" onmouseover="flashStar(3)" onmouseleave="restoreStar(3)">
+    <img src="files/star.gif" id ='star4' style="position: absolute; left:92%; top: 52%; z-Index: -2;" alt="" onmouseover="flashStar(4)" onmouseleave="restoreStar(4)">
+    <img src="files/star.gif" id ='star5' style="position: absolute; left:82%; top: 32%; z-Index: -2;" alt="" onmouseover="flashStar(5)" onmouseleave="restoreStar(5)">
+    <img src="files/star.gif" id ='star6' style="position: absolute; left:62%; top: 12%; z-Index: -2;" alt="" onmouseover="flashStar(6)" onmouseleave="restoreStar(6)">
+    <img src="files/star.gif" id ='star7' style="position: absolute; left:50%; bottom: 12%; z-Index: -2;" alt="" onmouseover="flashStar(7)" onmouseleave="restoreStar(7)">
+    <img src="files/bob.png" style="position: absolute; left:90%; bottom: 0; z-Index: 2;" alt="">
     <script>let animation = new Animation();</script>
   </body>
   
