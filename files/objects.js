@@ -53,7 +53,7 @@ class Bubble{
         this.imageElement.style.width = '50px';
         this.imageElement.style.position = 'absolute';
         this.imageElement.style.display = 'none';
-        this.imageElement.style.zIndex = '-1';
+        this.imageElement.style.zIndex = '6';
         this.imageElement.id = `bubble_${this.index}`;
         document.body.appendChild(this.imageElement);
     }
@@ -138,7 +138,6 @@ class Animation{
     }
 
     animate(){
-        //console.log(this.releaseCounter);
         this.moveActiveBubbles();
         this.manageReleasingBubbles();
         this.animationFrameID = requestAnimationFrame(() => this.animate());
@@ -161,7 +160,6 @@ class Animation{
         this.bubbles.filter(b => b.active).forEach(b => {
             b.move();
             b.draw();
-            //console.log(`[${b.left}, ${b.bottom}]`);
         });
     }
 }
