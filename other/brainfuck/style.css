@@ -1,0 +1,8 @@
+body{
+    background-color: black;
+    color: white;
+}
+textarea {
+    width: 80%;
+    height: 25%;
+}

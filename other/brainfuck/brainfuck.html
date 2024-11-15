@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Brainfuck</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="debugger.js"></script>
+</head>
+<body>
+    <div id = "memory watch"></div>
+    <select id = "predefined-program">
+        <option>Hello Brainfuck</option>
+    </select><br>
+    <p>
+        <textarea id = "program">++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.
+>+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.
+>++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.
+>++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.
+>+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.</textarea>
+    </p>
+    <button id = "go" onclick="readProgram();">GO !</button>
+    <p>
+        <textarea id = "output"></textarea>
+    </p>
+    <p>
+        Memory (0-50):<br>
+        <table id = "memory">
+            <tr>
+            </tr>
+        </table>
+    </p>
+</body>
+</html>
