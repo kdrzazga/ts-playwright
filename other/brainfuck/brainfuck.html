@@ -18,8 +18,8 @@
             >+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.</textarea>
     </p>
     <button id = "go" onclick="bfDebugger = readProgram(); updateLabels();">GO !</button>
-    <button id = "step" onclick="bfDebugger.step(); updateLabels();">Step</button>
-    <label id = "pointer">Pointer:</label>
+    <button id = "step" onclick="bfDebugger.step(); updateLabels(); updateMemoryTable();">Step</button>
+    <label id = "instruction-pointer">Instruction Pointer:</label>
     <label id = "command">Command:</label>
     <p>
         <textarea id = "output"></textarea>
@@ -27,7 +27,9 @@
     <p>
         Memory (0-50):<br>
         <table id = "memory">
-            <tr>
+            <tr id = 'cell-number'>
+            </tr>
+            <tr id = 'cell-value'>
             </tr>
         </table>
     </p>

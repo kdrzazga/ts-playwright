@@ -2,9 +2,10 @@ class BrainfuckDebugger{
 
     constructor(program){
         this.program = program;
+        this.instructionPointer = 0;
+
         this.memory = [0];
         this.memoryPointer = 0;
-
     }
 
     validateCode(){
@@ -20,12 +21,12 @@ class BrainfuckDebugger{
     }
 
     step(){
-        if (this.memoryPointer >= this.program.length){
+        if (this.instructionPointer >= this.program.length){
             window.alert('End of program.');
             return;
         }
 
-        this.memoryPointer++;
+        this.instructionPointer++;
         const command = this.getCurrentCommand(); ;
         if ('' === command)
             return;
@@ -50,9 +51,11 @@ class BrainfuckDebugger{
         else if('>' === command){
             const initialValue = 0;
 
-            if (this.memoryPointer >= this.memory.length) {
+            if (this.memoryPointer >= this.memory.length - 1) {
                 this.memory.push(initialValue);
             }
+
+            this.memoryPointer++;
         }
 
         else if('.' === command){
@@ -64,8 +67,8 @@ class BrainfuckDebugger{
     }
 
     getCurrentCommand(){
-        if(this.memoryPointer < this.program.length){
-            return this.program.charAt(this.memoryPointer);
+        if(this.instructionPointer < this.program.length){
+            return this.program.charAt(this.instructionPointer);
         }
         else{
             console.warn("End of program.");
@@ -91,11 +94,37 @@ function updateLabels(){
     if (null == bfDebugger)
         return;
 
-    const pointerLabel = document.getElementById('pointer');
+    const pointerLabel = document.getElementById('instruction-pointer');
     const commandLabel = document.getElementById('command');
 
-    pointerLabel.innerText = "Pointer: " + bfDebugger.memoryPointer;
+    pointerLabel.innerText = "Instruction Pointer: " + bfDebugger.instructionPointer;
     commandLabel.innerText = "Command: " + bfDebugger.getCurrentCommand();
+}
+
+function updateMemoryTable(){
+    if (null == bfDebugger)
+        return;
+
+    let memoryTableHeader = document.getElementById('cell-number');
+    let memoryTableValues = document.getElementById('cell-value');
+    while (memoryTableHeader.cells.length > 0) {
+        memoryTableHeader.deleteCell(0);
+    }
+
+    while (memoryTableValues.cells.length > 0) {
+        memoryTableValues.deleteCell(0);
+    }
+
+    const mem = bfDebugger.getMemory();
+
+    for (var i = 0; i < mem.length; i++){
+        let headerCell = memoryTableHeader.insertCell();
+        headerCell.textContent = i;
+
+        let valueCell = memoryTableValues.insertCell();
+        valueCell.textContent = mem[i];
+    }
+
 }
 
 document.addEventListener('DOMContentLoaded', (event) => {
