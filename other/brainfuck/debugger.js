@@ -11,7 +11,7 @@ class BrainfuckDebugger{
     validateCode(){
         let program = this.program;
         const brainfuckKeywords = ['+', '-', '>', '<', '.'];
-        brainfuckKeywords.forEach(keyword => program.replace('\\' + keyword + '/g', ''));
+        brainfuckKeywords.forEach(keyword => program.replaceAll('\\' + keyword, ''));
         if (program.length < 0){
             const message = 'Error. Invalid keywords.';
             console.error(message);
