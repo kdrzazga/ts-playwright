@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Brainfuck</title>
     <link rel="stylesheet" href="style.css">
-    <script src="debugger.js"></script>
 </head>
 <body>
     <div id = "memory watch"></div>
@@ -13,12 +12,15 @@
     </select><br>
     <p>
         <textarea id = "program">++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.
->+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.
->++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.
->++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.
->+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.</textarea>
+            >+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.
+            >++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.
+            >++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.
+            >+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.</textarea>
     </p>
-    <button id = "go" onclick="readProgram();">GO !</button>
+    <button id = "go" onclick="bfDebugger = readProgram();">GO !</button>
+    <button id = "step" onclick="bfDebugger.step(); updateLabels();">Step</button>
+    <label id = "pointer">Pointer:</label>
+    <label id = "command">Command:</label>
     <p>
         <textarea id = "output"></textarea>
     </p>
@@ -29,5 +31,7 @@
             </tr>
         </table>
     </p>
+
+    <script src="debugger.js"></script>
 </body>
 </html>

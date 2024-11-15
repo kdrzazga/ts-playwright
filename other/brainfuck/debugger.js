@@ -7,8 +7,21 @@ class BrainfuckDebugger{
 
     }
 
+    validateCode(){
+        let program = this.program;
+        const brainfuckKeywords = ['+', '-', '>', '<', '.'];
+        brainfuckKeywords.forEach(keyword => program.replace('\\' + keyword + '/g', ''));
+        if (program.length < 0){
+            const message = 'Error. Invalid keywords.';
+            console.error(message);
+            window.alert(message);
+        }
+        return program.length < 0;
+    }
+
     step(){
         const command = this.getCurrentCommand();
+        this.memoryPointer++;
         if ('' === command)
             return;
 
@@ -28,11 +41,26 @@ class BrainfuckDebugger{
                 console.warn('Cannot go lower than Memory Cell 0');
             }
         }
+
+        else if('>' === command){
+            const initialValue = 0;
+
+            if (this.memoryPointer >= this.memory.length) {
+                this.memory.push(initialValue);
+            }
+        }
+
+        else if('.' === command){
+            const outputTextarea = document.getElementById('output');
+            this.memory.forEach(cell =>{
+                outputTextarea.value += String.fromChar(cell);
+            });
+        }
     }
 
     getCurrentCommand(){
         if(this.memoryPointer < this.program.length){
-            return program.charAt(this.memoryPointer);
+            return this.program.charAt(this.memoryPointer);
         }
         else{
             console.warn("End of program.");
@@ -47,8 +75,21 @@ class BrainfuckDebugger{
 
 function readProgram(){
     const programTextArea = document.getElementById('program');
-    let code = programTextArea.innerText;
+    let programTextAreaCode = programTextArea.value;
+    let code = programTextAreaCode.replace(/\s+/g, '');
     const bfDebugger = new BrainfuckDebugger(code);
     bfDebugger.getCurrentCommand();
+    return bfDebugger;
 }
 
+function updateLabels(){
+    const pointerLabel = document.getElementById('pointer');
+    const commandLabel = document.getElementById('command');
+
+    pointerLabel.innerText = "Pointer: " + bfDebugger.memoryPointer;
+    commandLabel.innerText = "Command: " + bfDebugger.getCurrentCommand();
+}
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    let bfDebugger = null;
+});
