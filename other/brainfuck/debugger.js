@@ -60,8 +60,11 @@ class BrainfuckDebugger{
 
         else if('.' === command){
             const outputTextarea = document.getElementById('output');
+            let oldValue = outputTextarea.value;
+            outputTextarea.value = '';
             this.memory.forEach(cell =>{
-                outputTextarea.value += String.fromChar(cell);
+                let newValue = oldValue + String.fromCharCode(cell);
+                outputTextarea.value = newValue;
             });
         }
     }
