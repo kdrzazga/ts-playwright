@@ -17,7 +17,7 @@
             >++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.
             >+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.</textarea>
     </p>
-    <button id = "go" onclick="bfDebugger = readProgram(); updateLabels();">GO !</button>
+    <button id = "go" onclick="bfDebugger = readProgram(); bfDebugger.validateCode(); updateLabels();">GO !</button>
     <button id = "step" onclick="bfDebugger.step(); updateLabels(); updateMemoryTable();">Step</button>
     <label id = "instruction-pointer">Instruction Pointer:</label>
     <label id = "command">Command:</label>
