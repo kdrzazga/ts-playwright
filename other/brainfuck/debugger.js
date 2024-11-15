@@ -20,8 +20,13 @@ class BrainfuckDebugger{
     }
 
     step(){
-        const command = this.getCurrentCommand();
+        if (this.memoryPointer >= this.program.length){
+            window.alert('End of program.');
+            return;
+        }
+
         this.memoryPointer++;
+        const command = this.getCurrentCommand(); ;
         if ('' === command)
             return;
 
@@ -83,6 +88,9 @@ function readProgram(){
 }
 
 function updateLabels(){
+    if (null == bfDebugger)
+        return;
+
     const pointerLabel = document.getElementById('pointer');
     const commandLabel = document.getElementById('command');
 
