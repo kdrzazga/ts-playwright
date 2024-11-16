@@ -16,7 +16,11 @@ class ProgramObjectPool{
         '2':{
             'description': '123',
             'code': '+>++>+++>'
-            }
+            },
+        '3':{
+            'description': '3 inputs',
+            'code': '>,.>,.>,.'
+        }
       }
     }
 
