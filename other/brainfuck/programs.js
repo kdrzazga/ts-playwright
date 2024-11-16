@@ -11,12 +11,16 @@ class ProgramObjectPool{
             },
         '1':{
             'description': '0 255 254 253 252',
-            'code': '>->-->--->---->-----'
+            'code': '>>->-->--->---->-----'
             },
         '2':{
             'description': '123',
-            'code': '+>++>+++>'
-            }
+            'code': '>+>++>+++>'
+            },
+        '3':{
+            'description': '3 inputs',
+            'code': '>,.>,.>,.'
+        }
       }
     }
 
@@ -53,6 +57,8 @@ function loadPredefinedProgram(){
     const pool = new ProgramObjectPool();
     const programTextArea = document.getElementById('program');
     programTextArea.value = '';
+    const outputTextArea = document.getElementById('output');
+    outputTextArea.value = '';
     programTextArea.value = pool.programs[programToBeLoadedIndex].code;
 }
 

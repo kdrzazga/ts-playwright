@@ -12,7 +12,7 @@ body {
 #infoPanel {
     position: absolute;
     left: 45%;
-    top: 50%;
+    top: 40%;
     background-color: rgba(255, 255, 255, 0.8);
     padding: 10px;
     border-radius: 5px;
@@ -20,4 +20,9 @@ body {
     font-size: 14px;
     color: black;
     z-index: 1000;
+}
+
+.center{
+    text-align: center;
+    font-size: 14px;
 }

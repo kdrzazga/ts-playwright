@@ -1,0 +1,28 @@
+@font-face {
+    font-family: 'tetris';
+    src: url('tetri.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.tetris-font {
+    font-family: 'tetris', sans-serif;
+    font-size: 56px;
+    text-align: center;
+    margin: 0 auto;
+}
+
+arkanoid-div{
+    background-color: orange;
+    width: 96%;
+    height: 80%;
+    margin:2%;
+    border: 2px solid black;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+body{
+    background-color: yellow;
+    color: black;
+}
