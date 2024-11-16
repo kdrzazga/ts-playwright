@@ -8,16 +8,18 @@ class BrainfuckDebugger{
         this.memoryPointer = 0;
     }
 
-    validateCode(){
-        let program = this.program;
-        const brainfuckKeywords = ['+', '-', '>', '<', '.'];
-        brainfuckKeywords.forEach(keyword => program.replaceAll('\\' + keyword, ''));
-        if (program.length < 0){
-            const message = 'Error. Invalid keywords.';
-            console.error(message);
-            window.alert(message);
+    validateCode() {
+        const program = this.program;
+        const brainfuckKeywords = ['+', '-', '>', '<', '.', ',', '[', ']'];
+
+        for (let i = 0; i < program.length; i++) {
+            if (!brainfuckKeywords.includes(program[i])) {
+                console.warn('?SYNTAX ERROR')
+                return false;
+            }
         }
-        return program.length < 0;
+
+        return true;
     }
 
     step(){
@@ -34,16 +36,14 @@ class BrainfuckDebugger{
         else if('+' === command){
             let value = this.memory[this.memoryPointer];
             value++;
-            if (value>255)
-                value = 256 - value;
+
             this.memory[this.memoryPointer] = value;
         }
 
         else if('-' === command){
             let value = this.memory[this.memoryPointer];
             value--;
-            if(value < 0)
-                value = 256 + value;
+            value = truncToByte(value);
 
             this.memory[this.memoryPointer] = value;
         }
@@ -75,6 +75,17 @@ class BrainfuckDebugger{
                 let newValue = oldValue + String.fromCharCode(cell);
                 outputTextarea.value = newValue;
             });
+        }
+
+        else if(',' === command){
+            let value = '';
+
+            while (!isStringANumber(value)){
+                value = prompt("Enter value for cell[" + this.pointer + "]");
+            }
+
+            value = truncToByte(value);
+            this.memory[this.memoryPointer] = value;
         }
     }
 
