@@ -87,6 +87,14 @@ class BrainfuckDebugger{
             value = truncToByte(value);
             this.memory[this.memoryPointer] = value;
         }
+
+        else if('[' === command){
+            //TODO
+        }
+
+        else if(']' === command){
+            //TODO
+        }
     }
 
     getCurrentCommand(){
