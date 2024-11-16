@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Brainfuck</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id = "memory watch"></div>
+    <select id = "predefined-programs" onchange="loadPredefinedProgram();">
+    </select><br>
+    <p>
+        <textarea id = "program">+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.
+            >+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.
+            >++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.
+            >++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.
+            >+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.</textarea>
+    </p>
+    <button id = "go" onclick="bfDebugger = readProgram(); bfDebugger.validateCode(); updateLabels();">GO !</button>
+    <button id = "step" onclick="bfDebugger.step(); updateLabels(); updateMemoryTable();">Step</button>
+    <label id = "instruction-pointer">Instruction Pointer:</label>
+    <label id = "command">Command:</label>
+    <p>
+        <textarea id = "output"></textarea>
+    </p>
+    <div>
+        Memory (0-50):<br>
+        <table id = "memory">
+            <tr id = 'cell-number'>
+            </tr>
+            <tr id = 'cell-value'>
+            </tr>
+        </table>
+    </div>
+
+    <script src="programs.js"></script>
+    <script src="debugger.js"></script>
+</body>
+</html>
