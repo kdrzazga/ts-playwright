@@ -2,19 +2,20 @@ class ProgramObjectPool{
 
     constructor(){
       this.programs = {
-        '1':{
-            'description': 'HELLO',
+        '0':{
+            'description': 'Hello Brainfuck',
             'code': '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.>+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.'
                  + '>++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.'
                  + '>++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.'
                  + '>+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.'
             },
+        '1':{
+            'description': '0 255 254 253 252',
+            'code': '>->-->--->---->-----'
+            },
         '2':{
-            'description': 'HELLO2',
-            'code': '-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.>+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.'
-                 + '>++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.'
-                 + '>++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.'
-                 + '>+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.'
+            'description': '123',
+            'code': '+>++>+++>'
             }
       }
     }
@@ -40,6 +41,19 @@ function populatePredefinedProgramsSelect(){
         option.textContent = pool.programs[k].description;
         predefinedProgramsSelect.appendChild(option);
     });
+}
+
+function loadPredefinedProgram(){
+    const predefinedProgramsSelect = document.getElementById('predefined-programs');
+    let programToBeLoadedIndex = predefinedProgramsSelect.selectedIndex;
+    let programToBeLoaded = predefinedProgramsSelect.selectedOptions[0].text;
+
+    console.log(`Loading ${programToBeLoadedIndex}. ${programToBeLoaded}`);
+
+    const pool = new ProgramObjectPool();
+    const programTextArea = document.getElementById('program');
+    programTextArea.value = '';
+    programTextArea.value = pool.programs[programToBeLoadedIndex].code;
 }
 
 document.addEventListener('DOMContentLoaded', (event) => {
