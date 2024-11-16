@@ -32,11 +32,20 @@ class BrainfuckDebugger{
             return;
 
         else if('+' === command){
-            this.memory[this.memoryPointer]++;
+            let value = this.memory[this.memoryPointer];
+            value++;
+            if (value>255)
+                value = 256 - value;
+            this.memory[this.memoryPointer] = value;
         }
 
         else if('-' === command){
-            this.memory[this.memoryPointer]--;
+            let value = this.memory[this.memoryPointer];
+            value--;
+            if(value < 0)
+                value = 256 + value;
+
+            this.memory[this.memoryPointer] = value;
         }
 
         else if('<' === command){
