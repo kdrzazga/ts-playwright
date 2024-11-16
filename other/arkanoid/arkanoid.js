@@ -8,25 +8,21 @@ class Velocity {
     deflectOnLeft() {
         this.currentIndex = (this.currentIndex + 1) % 4;
         this.angle = this.directions[this.currentIndex];
-        return this;
     }
 
     deflectOnRight() {
         this.currentIndex = (this.currentIndex + 3) % 4; // Equivalent to -1 index rotation
         this.angle = this.directions[this.currentIndex];
-        return this;
     }
 
     deflectOnTop() {
         this.currentIndex = 0;
         this.angle = this.directions[this.currentIndex];
-        return this;
     }
 
     deflectOnBottom() {
         this.currentIndex = 2;
         this.angle = this.directions[this.currentIndex];
-        return this;
     }
 
     getVelocityVector() {
