@@ -6,6 +6,7 @@ class BrainfuckDebugger{
 
         this.memory = [0];
         this.memoryPointer = 0;
+        this.loopStack = [];
     }
 
     validateCode() {
@@ -93,6 +94,12 @@ class BrainfuckDebugger{
         }
 
         else if(']' === command){
+            if (this.memory[this.memoryPointer] !== 0) {
+                if (this.loopStack.length === 0) {
+                    console.warn('Unmatched `]` found.');
+                    return;
+                }
+            }
             //TODO
         }
     }
