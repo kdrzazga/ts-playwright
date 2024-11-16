@@ -110,13 +110,14 @@ function updateMemoryTable(){
 
     let memoryTableHeader = document.getElementById('cell-number');
     let memoryTableValues = document.getElementById('cell-value');
-    while (memoryTableHeader.cells.length > 0) {
-        memoryTableHeader.deleteCell(0);
-    }
 
-    while (memoryTableValues.cells.length > 0) {
-        memoryTableValues.deleteCell(0);
-    }
+    const rows = [memoryTableHeader, memoryTableValues];
+
+    rows.forEach(row =>{
+         while (row.cells.length > 0){
+            row.deleteCell(0);
+         }
+    });
 
     const mem = bfDebugger.getMemory();
 
@@ -127,7 +128,6 @@ function updateMemoryTable(){
         let valueCell = memoryTableValues.insertCell();
         valueCell.textContent = mem[i];
     }
-
 }
 
 document.addEventListener('DOMContentLoaded', (event) => {
