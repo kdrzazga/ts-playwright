@@ -1,0 +1,16 @@
+body{
+    background-color: black;
+    color: white;
+}
+
+.panel {
+    position: absolute;
+    left: 10px;
+    background-color: rgba(99, 255, 99, 0.8);
+    padding: 10px;
+    border-radius: 5px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: black;
+    z-index: 1000;
+}
