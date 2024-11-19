@@ -1,3 +1,17 @@
+class Garlic extends Sprite{
+    static PATH = "dizzol/garlic.png";
+
+    constructor(canvas,x, y){
+        super(canvas);
+        this.name = 'garlic';
+        this.picPath = Garlic.PATH;
+        this.picLeftPath = Garlic.PATH;
+        this.picRightPath = Garlic.PATH;
+        this.x = x;
+        this.y = y;
+    }
+}
+
 class Dizzy extends Sprite{
 
     constructor(canvas){
@@ -7,6 +21,7 @@ class Dizzy extends Sprite{
     	this.picRightPath = "dizzol/jajoR.png";
     	this.x = 450;
     	this.y = 409;
+    	this.inventory = [];
     }
 }
 
@@ -43,7 +58,9 @@ class Room{
         let context = canvas.getContext('2d');
         this.loader = new PictureLoader(context);
         this.enemyLoader = new PictureLoader(context);
+        this.garlicLoader = new PictureLoader(context);
         this.bats = [];
+        this.items = [];
 
         for(let i = 0; i < batsCount; i++){
             const bat = new Bat(canvas, 260 + 39*i, 2 + i);
@@ -71,9 +88,16 @@ class Room{
             this.enemyLoader.read().then(texture => {
                 this.enemyLoader.texture = texture;
             }).catch(error => {
-                console.error('Failed to load picture:', error);
+                console.error('Failed to load bat picture:', error);
             });
         }
+
+        this.garlicLoader.fileName = Garlic.PATH;
+        this.garlicLoader.read().then(texture => {
+            this.garlicLoader.texture = texture;
+        }).catch(error => {
+            console.error('Failed to load garlic picture:', error);
+        });
     }
 
     draw(){
@@ -82,6 +106,11 @@ class Room{
 
     drawEnemies(){
        this.bats.forEach(bat => this.enemyLoader.draw(bat.x, bat.y));
+    }
+
+    drawItems(){
+        let garlics = this.items.filter(i => 'garlic' === i.name);
+        garlics.forEach(item => this.garlicLoader.draw(item.x, item.y));
     }
 
     animate(){
@@ -100,6 +129,12 @@ class Room{
             }
         }
         return null;
+    }
+
+    addItemOnFloor(item){
+        let x = item.x;
+        item.y = this.getFloorLevel(x) + this.garlicLoader.context.height;
+        this.items.push(item);
     }
 }
 
@@ -183,6 +218,7 @@ class DizzolGame{
         currentRoom.draw();
         currentRoom.drawEnemies();
         this.player.draw();
+        currentRoom.drawItems();
     }
 
     moveFighterLeft(fighter){//fighter only for backward compatibility
@@ -210,7 +246,6 @@ class DizzolGame{
             console.log("No exit on " + direction);
             return;
         }
-
 
         if (exit !=null && exit.contains(this.player)) {
             console.log("Player is exiting " + direction);
@@ -296,7 +331,15 @@ class RoomRegistry{
         const emptyCheckpoint = new Checkpoint(0, 0, null);
 
         const room1 = new Room(DizzolGame.ROOM1, canvas, "dizzol/1.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), null, room1floorLevels, room1Checkpoint, 0);
+        const garlic11 = new Garlic(canvas, 500, 300);
+        const garlic12 = new Garlic(canvas, 400, 300);
+        room1.addItemOnFloor(garlic11);
+        room1.addItemOnFloor(garlic12);
+
         const room2 = new Room(DizzolGame.ROOM2, canvas, "dizzol/2.png", new RoomExit(100, 428), new RoomExit(510, 20.5 * C64Blackbox.rowHeight), room2floorLevels, room2Checkpoint, 0);
+        const garlic21 = new Garlic(canvas, 500, 300);
+        room2.addItemOnFloor(garlic21);
+
         const room3 = new Room(DizzolGame.ROOM3, canvas, "dizzol/3.png", new RoomExit(-5, 350), new RoomExit(530, 20.5 * C64Blackbox.rowHeight), room3floorLevels, emptyCheckpoint, 1);
         const room4 = new Room(DizzolGame.ROOM4, canvas, "dizzol/4.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), new RoomExit(530, 350), room4floorLevels, emptyCheckpoint, 0);
         const room5 = new Room(DizzolGame.ROOM5, canvas, "dizzol/5.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), new RoomExit(510, 20.5 * C64Blackbox.rowHeight), room1floorLevels, emptyCheckpoint, 3);
