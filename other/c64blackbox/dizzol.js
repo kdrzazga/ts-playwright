@@ -277,12 +277,38 @@ class DizzolGame{
         this.checkExit(Direction.RIGHT);
     }
 
-    handleFirePressed(){
-        console.log('FIRE !');
-        this.player.inventory.forEach(item =>{
-            console.log(item.name)
+handleFirePressed() {
+    console.log('FIRE !');
+
+    const currentRoom = this.getCurrentRoom();
+
+    currentRoom.writeUpperInfo("You picked " + this.pickGarlic());
+
+    new Promise((resolve) => {
+        setTimeout(() => {
+            resolve();
+        }, 1000);
+    }).then(() => {
+        let inventoryInfo = "Inventory: ";
+        this.player.inventory.forEach(item => {
+            inventoryInfo += (item.name + " ");
         });
-    }
+        console.log(inventoryInfo);
+        currentRoom.writeUpperInfo(inventoryInfo);
+
+        return new Promise((resolve2) => {
+            setTimeout(() => {
+                resolve2();
+            }, 1000);
+        });
+    }).then(() => {
+        currentRoom.writeRoomInfo();
+    });
+}
+
+pickGarlic(){
+    return (Math.random() < 0.5) ? "garlic" : "nothing";
+}
 
     checkExit(direction) {
         const room = this.getCurrentRoom();
@@ -408,9 +434,9 @@ class RoomRegistry{
 
         const allRooms = [room1, room2, room3, room4, room5, room6, room7, room8, room9];
         allRooms.forEach(room => {
-            room.read();
+            room.read();//read = load background without displaying it
             room.setC64Blackbox(c64Blackbox);
-        });//read = load background without displaying it
+        });
 
         return allRooms;
     }
