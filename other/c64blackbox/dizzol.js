@@ -224,7 +224,7 @@ class DizzolGame{
 		this.active = true;
 		console.log("Dizzol Game started.");
 
-        let currentRoom = this.rooms.find(room => room.number === this.currentRoomId);
+        let currentRoom = this.getCurrentRoom();
         currentRoom.load();
         this.dizzyPicLoader.load(this.player.picPath, this.player.x, this.player.y);
 	}

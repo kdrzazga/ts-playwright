@@ -156,14 +156,14 @@ class C64Blackbox {
         const context = C64Blackbox.texture.image.getContext('2d');
         context.clearRect(0, 0, C64Blackbox.texture.image.width, C64Blackbox.texture.image.height);
         this.drawInitialText(context); 		
-		console.log('Output resetted. C64 screen redrawn.');
+		console.log('Output reset. C64 screen redrawn.');
     }
 	
     clearOutputBottom(thresholdY) {
         const context = C64Blackbox.texture.image.getContext('2d');
 		context.fillStyle = this.backgroundColor;
         context.fillRect(0, thresholdY, C64Blackbox.texture.image.width, C64Blackbox.texture.image.height);
-		console.log('Bottom Output resetted.');
+		console.log('Bottom Output reset.');
     }
 	
 	handleHelp() {
