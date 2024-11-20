@@ -46,7 +46,7 @@ class C64Blackbox {
         canvas.width = Globals.screenWidth;
         canvas.height = Globals.screenHeight;
 		this.bruceGame = new BruceGame(canvas);
-		this.dizzolGame = new DizzolGame(canvas);
+		this.dizzolGame = new DizzolGame(canvas, this);
 
         C64Blackbox.texture = new THREE.CanvasTexture(canvas);
 		this.drawInitialText(this.context);
