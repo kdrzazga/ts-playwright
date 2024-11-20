@@ -128,9 +128,9 @@ class Room{
         const rowHeight = C64Blackbox.rowHeight;
         const cursor = this.c64Blackbox.cursor;
         const y = (2 + 3 * 2) * rowHeight;
-        const x = 7*rowHeight;
+        const x = 2*rowHeight;
         this.context.fillStyle = cursor.backgroundColor;
-        this.context.fillRect(x - 2, y - rowHeight + 2, 29*cursor.size + 4, cursor.size + 8);
+        this.context.fillRect(x - 2, y - rowHeight + 2, 39*cursor.size + 4, cursor.size + 8);
         this.context.fillStyle = cursor.color;
         this.context.fillText(text, x, y);
     }
@@ -307,7 +307,20 @@ handleFirePressed() {
 }
 
 pickGarlic(){
-    return (Math.random() < 0.5) ? "garlic" : "nothing";
+    let result = "nothing";
+    const room = this.getCurrentRoom();
+    const itemsShallowCopy = [...room.items];
+
+    itemsShallowCopy.forEach(item =>{
+        console.log("item at " + item.x + " player at " + this.player.x);
+        if (Math.abs(this.player.x - item.x) < 15){
+            console.log("Grabbing " + item.name);
+            room.items = room.items.filter(i => i !== item);
+            this.player.inventory.push(item);
+            result = 'garlic';
+        }
+    })
+    return result;
 }
 
     checkExit(direction) {
