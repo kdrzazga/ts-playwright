@@ -12,6 +12,20 @@ class Garlic extends Sprite{
     }
 }
 
+class Vodka extends Sprite{
+    static PATH = "dizzol/garlic.png"; //TODO
+
+    constructor(canvas,x, y){
+        super(canvas);
+        this.name = 'vodka';
+        this.picPath = Vodka.PATH;
+        this.picLeftPath = Vodka.PATH;
+        this.picRightPath = Vodka.PATH;
+        this.x = x;
+        this.y = y;
+    }
+}
+
 class Dizzy extends Sprite{
 
     constructor(canvas){
@@ -21,7 +35,7 @@ class Dizzy extends Sprite{
     	this.picRightPath = "dizzol/jajoR.png";
     	this.x = 450;
     	this.y = 409;
-    	this.inventory = [];
+    	this.inventory = [new Vodka()];
     }
 }
 
@@ -261,6 +275,13 @@ class DizzolGame{
         this.player.y = currentRoom.getFloorLevel(this.player.x);
         this.draw();
         this.checkExit(Direction.RIGHT);
+    }
+
+    handleFirePressed(){
+        console.log('FIRE !');
+        this.player.inventory.forEach(item =>{
+            console.log(item.name)
+        });
     }
 
     checkExit(direction) {

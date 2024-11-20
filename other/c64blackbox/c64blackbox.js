@@ -325,6 +325,9 @@ class C64Blackbox {
 			this.clearOutputBottom(Math.floor(5 * Globals.screenHeight / 6));
 			this.bruceGame.punch(this.bruceGame.player);
 		}
+		else if (this.dizzolGame.active){
+			this.dizzolGame.handleFirePressed();
+		}
 	}
 	
 	loadPicture(fileName, x, y) {
