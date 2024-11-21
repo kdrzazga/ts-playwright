@@ -43,9 +43,9 @@ class Sprite{
 	}
 
 	collide(anotherSprite){
-	    const collisionDistance = 10;
-	    return Math.abs(this.x - anotherSprite.x) < collisionDistance && Math.abs(this.y - anotherSprite.y) < collisionDistance;
-
+	    const collisionDistanceVert = 35;
+	    const collisionDistanceHoriz = 14;
+	    return Math.abs(this.x - anotherSprite.x) < collisionDistanceHoriz && Math.abs(this.y - anotherSprite.y) < collisionDistanceVert;
 	}
 
 	revive(timeout){

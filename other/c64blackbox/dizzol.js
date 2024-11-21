@@ -315,7 +315,7 @@ class DizzolGame{
 
         itemsShallowCopy.forEach(item =>{
             console.log("item at " + item.x + " player at " + this.player.x);
-            if (Math.abs(this.player.x - item.x) < 15){
+            if (item.collide(this.player)){
                 console.log("Grabbing " + item.name);
                 room.items = room.items.filter(i => i !== item);
                 this.player.inventory.push(item);
