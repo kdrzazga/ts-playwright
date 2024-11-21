@@ -46,7 +46,7 @@ class C64Blackbox {
         canvas.width = Globals.screenWidth;
         canvas.height = Globals.screenHeight;
 		this.bruceGame = new BruceGame(canvas);
-		this.dizzolGame = new DizzolGame(canvas);
+		this.dizzolGame = new DizzolGame(canvas, this);
 
         C64Blackbox.texture = new THREE.CanvasTexture(canvas);
 		this.drawInitialText(this.context);
@@ -156,14 +156,14 @@ class C64Blackbox {
         const context = C64Blackbox.texture.image.getContext('2d');
         context.clearRect(0, 0, C64Blackbox.texture.image.width, C64Blackbox.texture.image.height);
         this.drawInitialText(context); 		
-		console.log('Output resetted. C64 screen redrawn.');
+		console.log('Output reset. C64 screen redrawn.');
     }
 	
     clearOutputBottom(thresholdY) {
         const context = C64Blackbox.texture.image.getContext('2d');
 		context.fillStyle = this.backgroundColor;
         context.fillRect(0, thresholdY, C64Blackbox.texture.image.width, C64Blackbox.texture.image.height);
-		console.log('Bottom Output resetted.');
+		console.log('Bottom Output reset.');
     }
 	
 	handleHelp() {
@@ -324,6 +324,9 @@ class C64Blackbox {
 			console.log('FIRE key was pressed.');
 			this.clearOutputBottom(Math.floor(5 * Globals.screenHeight / 6));
 			this.bruceGame.punch(this.bruceGame.player);
+		}
+		else if (this.dizzolGame.active){
+			this.dizzolGame.handleFirePressed();
 		}
 	}
 	

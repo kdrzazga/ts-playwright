@@ -1,3 +1,31 @@
+class Garlic extends Sprite{
+    static PATH = "dizzol/garlic.png";
+
+    constructor(canvas,x, y){
+        super(canvas);
+        this.name = 'garlic';
+        this.picPath = Garlic.PATH;
+        this.picLeftPath = Garlic.PATH;
+        this.picRightPath = Garlic.PATH;
+        this.x = x;
+        this.y = y;
+    }
+}
+
+class Vodka extends Sprite{
+    static PATH = "dizzol/vodka.png";
+
+    constructor(canvas,x, y){
+        super(canvas);
+        this.name = 'vodka';
+        this.picPath = Vodka.PATH;
+        this.picLeftPath = Vodka.PATH;
+        this.picRightPath = Vodka.PATH;
+        this.x = x;
+        this.y = y;
+    }
+}
+
 class Dizzy extends Sprite{
 
     constructor(canvas){
@@ -7,6 +35,7 @@ class Dizzy extends Sprite{
     	this.picRightPath = "dizzol/jajoR.png";
     	this.x = 450;
     	this.y = 409;
+    	this.inventory = [new Vodka()];
     }
 }
 
@@ -24,7 +53,11 @@ class Bat extends Sprite{
 
     move() {
         this.x += this.speed;
-        if (this.x > 330 || this.x < 70) {
+        const minX = 70;
+        const maxX = 330;
+        const halfWay = (minX + maxX) /2;
+        this.y += this.x > halfWay ? 1.3 : -1.3;
+        if (this.x > maxX || this.x < minX) {
             this.speed = -this.speed;
         }
     }
@@ -40,13 +73,16 @@ class Room{
 		this.floorLevels = floorLevels;
 		this.checkpoint = checkpoint;
 
-        let context = canvas.getContext('2d');
-        this.loader = new PictureLoader(context);
-        this.enemyLoader = new PictureLoader(context);
+        this.context = canvas.getContext('2d');
+        this.loader = new PictureLoader(this.context);
+        this.enemyLoader = new PictureLoader(this.context);
+        this.garlicLoader = new PictureLoader(this.context);
         this.bats = [];
+        this.items = [];
+        this.info = '';
 
         for(let i = 0; i < batsCount; i++){
-            const bat = new Bat(canvas, 260 + 39*i, 2 + i);
+            const bat = new Bat(canvas, 291 + 39*i, 2 + i);
             this.bats.push(bat);
             this.bats[0].x = 326;
             console.log('Created a bat in Room ' + this.number);
@@ -71,17 +107,45 @@ class Room{
             this.enemyLoader.read().then(texture => {
                 this.enemyLoader.texture = texture;
             }).catch(error => {
-                console.error('Failed to load picture:', error);
+                console.error('Failed to load bat picture:', error);
             });
         }
+
+        this.garlicLoader.fileName = Garlic.PATH;
+        this.garlicLoader.read().then(texture => {
+            this.garlicLoader.texture = texture;
+        }).catch(error => {
+            console.error('Failed to load garlic picture:', error);
+        });
     }
 
     draw(){
         this.loader.draw(0, 9 * C64Blackbox.rowHeight);
+        this.writeRoomInfo();
+    }
+
+    writeRoomInfo(){
+        this.writeUpperInfo(this.info);
+    }
+
+    writeUpperInfo(text){
+        const rowHeight = C64Blackbox.rowHeight;
+        const cursor = this.c64Blackbox.cursor;
+        const y = (2 + 3 * 2) * rowHeight;
+        const x = 2*rowHeight;
+        this.context.fillStyle = cursor.backgroundColor;
+        this.context.fillRect(x - 2, y - rowHeight + 2, 39*cursor.size + 4, cursor.size + 8);
+        this.context.fillStyle = cursor.color;
+        this.context.fillText(text, x, y);
     }
 
     drawEnemies(){
        this.bats.forEach(bat => this.enemyLoader.draw(bat.x, bat.y));
+    }
+
+    drawItems(){
+        let garlics = this.items.filter(i => 'garlic' === i.name);
+        garlics.forEach(item => this.garlicLoader.draw(item.x, item.y));
     }
 
     animate(){
@@ -89,6 +153,7 @@ class Room{
 
             this.bats.forEach(b => b.move());
             this.draw();
+            this.drawItems();
             this.drawEnemies();
         }
     }
@@ -100,6 +165,20 @@ class Room{
             }
         }
         return null;
+    }
+
+    addItemOnFloor(item){
+        let x = item.x;
+        item.y = this.getFloorLevel(x) + 27;
+        this.items.push(item);
+    }
+
+    setInfo(info){
+        this.info = info;
+    }
+
+    setC64Blackbox(c64Blackbox){
+        this.c64Blackbox = c64Blackbox;
     }
 }
 
@@ -141,10 +220,10 @@ class DizzolGame{
             };
 
 
-    constructor(canvas){
+    constructor(canvas, c64Blackbox){
         this.canvas = canvas;
         let roomReg = new RoomRegistry();
-        this.rooms = roomReg.createRoomSet(canvas);
+        this.rooms = roomReg.createRoomSet(canvas, c64Blackbox);
         this.player = new Dizzy(canvas);
 
         let context = canvas.getContext('2d');
@@ -163,7 +242,7 @@ class DizzolGame{
 		this.active = true;
 		console.log("Dizzol Game started.");
 
-        let currentRoom = this.rooms.find(room => room.number === this.currentRoomId);
+        let currentRoom = this.getCurrentRoom();
         currentRoom.load();
         this.dizzyPicLoader.load(this.player.picPath, this.player.x, this.player.y);
 	}
@@ -183,6 +262,7 @@ class DizzolGame{
         currentRoom.draw();
         currentRoom.drawEnemies();
         this.player.draw();
+        currentRoom.drawItems();
     }
 
     moveFighterLeft(fighter){//fighter only for backward compatibility
@@ -201,6 +281,52 @@ class DizzolGame{
         this.checkExit(Direction.RIGHT);
     }
 
+handleFirePressed() {
+    console.log('FIRE !');
+
+    const currentRoom = this.getCurrentRoom();
+
+    currentRoom.writeUpperInfo("You picked " + this.pickGarlic());
+
+    new Promise((resolve) => {
+        setTimeout(() => {
+            resolve();
+        }, 1000);
+    }).then(() => {
+        let inventoryInfo = "Inventory: ";
+        this.player.inventory.forEach(item => {
+            inventoryInfo += (item.name + " ");
+        });
+        console.log(inventoryInfo);
+        currentRoom.writeUpperInfo(inventoryInfo);
+
+        return new Promise((resolve2) => {
+            setTimeout(() => {
+                resolve2();
+            }, 1000);
+        });
+    }).then(() => {
+        currentRoom.writeRoomInfo();
+    });
+}
+
+pickGarlic(){
+    let result = "nothing";
+    const room = this.getCurrentRoom();
+    const itemsShallowCopy = [...room.items];
+
+    itemsShallowCopy.forEach(item =>{
+        console.log("item at " + item.x + " player at " + this.player.x);
+        if (Math.abs(this.player.x - item.x) < 15){
+            console.log("Grabbing " + item.name);
+            room.items = room.items.filter(i => i !== item);
+            this.player.inventory.push(item);
+            result = 'garlic';
+        }
+    })
+    return result;
+}
+
     checkExit(direction) {
         const room = this.getCurrentRoom();
         const exit = direction === Direction.LEFT ? room.leftExit : room.rightExit;
@@ -210,7 +336,6 @@ class DizzolGame{
             console.log("No exit on " + direction);
             return;
         }
-
 
         if (exit !=null && exit.contains(this.player)) {
             console.log("Player is exiting " + direction);
@@ -237,7 +362,7 @@ class DizzolGame{
 
 class RoomRegistry{
 
-    createRoomSet(canvas){
+    createRoomSet(canvas, c64Blackbox){
 		const room1floorLevels = [
             { range: [0, 120], level: 419 },
             { range: [121, 152], level: 415 },
@@ -296,18 +421,39 @@ class RoomRegistry{
         const emptyCheckpoint = new Checkpoint(0, 0, null);
 
         const room1 = new Room(DizzolGame.ROOM1, canvas, "dizzol/1.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), null, room1floorLevels, room1Checkpoint, 0);
+        room1.setInfo("1. SCULPTURE");
+        const garlic11 = new Garlic(canvas, 500, 300);
+        const garlic12 = new Garlic(canvas, 400, 300);
+        room1.addItemOnFloor(garlic11);
+        room1.addItemOnFloor(garlic12);
+
         const room2 = new Room(DizzolGame.ROOM2, canvas, "dizzol/2.png", new RoomExit(100, 428), new RoomExit(510, 20.5 * C64Blackbox.rowHeight), room2floorLevels, room2Checkpoint, 0);
+        room2.setInfo("2. TOTEM");
+        const garlic21 = new Garlic(canvas, 500, 300);
+        room2.addItemOnFloor(garlic21);
+
         const room3 = new Room(DizzolGame.ROOM3, canvas, "dizzol/3.png", new RoomExit(-5, 350), new RoomExit(530, 20.5 * C64Blackbox.rowHeight), room3floorLevels, emptyCheckpoint, 1);
+        room3.setInfo("3. BAT CAVE ENTRANCE");
         const room4 = new Room(DizzolGame.ROOM4, canvas, "dizzol/4.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), new RoomExit(530, 350), room4floorLevels, emptyCheckpoint, 0);
+        room4.setInfo("4. ANCIENT DRAWINGS");
         const room5 = new Room(DizzolGame.ROOM5, canvas, "dizzol/5.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), new RoomExit(510, 20.5 * C64Blackbox.rowHeight), room1floorLevels, emptyCheckpoint, 3);
+        room5.setInfo("5. MAIN BAT LAIR");
         const room6 = new Room(DizzolGame.ROOM6, canvas, "dizzol/6.png", exit6Left, exit67Right, room67floorLevels, emptyCheckpoint, 1);
+        room6.setInfo("6. BAT CAVE EXIT");
         const room7 = new Room(DizzolGame.ROOM7, canvas, "dizzol/7.png", exit67Left, exit67Right, room67floorLevels, room2Checkpoint, 0);
+        room7.setInfo("7. TWO TOTEMS");
         const room8 = new Room(DizzolGame.ROOM8, canvas, "dizzol/8.png", exit67Left, exit67Right, room67floorLevels, emptyCheckpoint, 0);
+        room8.setInfo("8.");
         const room9 = new Room(DizzolGame.ROOM9, canvas, "dizzol/8.png", exit67Left, exit67Right, room67floorLevels, emptyCheckpoint, 0);
+        room9.setInfo("9.");
+
         room6.bats[0].y += 80;
 
         const allRooms = [room1, room2, room3, room4, room5, room6, room7, room8, room9];
-        allRooms.forEach(room => room.read());//read = load background without displaying it
+        allRooms.forEach(room => {
+            room.read();//read = load background without displaying it
+            room.setC64Blackbox(c64Blackbox);
+        });
 
         return allRooms;
     }
