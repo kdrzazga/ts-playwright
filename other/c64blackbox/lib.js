@@ -40,6 +40,19 @@ class Sprite{
 		pictureLoader.load(this.picPath, this.x, this.y);
 		//don't forget to update the texture in derived class
 	}
+
+	revive(timeout){
+	    if (this.hp > 0){
+	        console.warn(`Sprite ${this.name} is alive. No need to revive.`);
+	        return;
+	    }
+
+	    setTimeout(() => {
+	        this.hp = 4;
+	        this.x = 40;
+	        this.y = 40;
+	    }, timeout);
+	}
 }
 
 class PictureLoader {

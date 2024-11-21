@@ -52,6 +52,9 @@ class Bat extends Sprite{
     }
 
     move() {
+        if (this.hp <= 0)
+            return;
+
         this.x += this.speed;
         const minX = 70;
         const maxX = 330;
@@ -143,7 +146,7 @@ class Room{
     }
 
     drawEnemies(){
-       this.bats.forEach(bat => this.enemyLoader.draw(bat.x, bat.y));
+       this.bats.filter(enemy => enemy.hp>0).forEach(bat => this.enemyLoader.draw(bat.x, bat.y));
     }
 
     drawItems(){
