@@ -53,7 +53,11 @@ class Bat extends Sprite{
 
     move() {
         this.x += this.speed;
-        if (this.x > 330 || this.x < 70) {
+        const minX = 70;
+        const maxX = 330;
+        const halfWay = (minX + maxX) /2;
+        this.y += this.x > halfWay ? 1.3 : -1.3;
+        if (this.x > maxX || this.x < minX) {
             this.speed = -this.speed;
         }
     }
@@ -78,7 +82,7 @@ class Room{
         this.info = '';
 
         for(let i = 0; i < batsCount; i++){
-            const bat = new Bat(canvas, 260 + 39*i, 2 + i);
+            const bat = new Bat(canvas, 291 + 39*i, 2 + i);
             this.bats.push(bat);
             this.bats[0].x = 326;
             console.log('Created a bat in Room ' + this.number);
