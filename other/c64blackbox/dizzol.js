@@ -13,7 +13,7 @@ class Garlic extends Sprite{
 }
 
 class Vodka extends Sprite{
-    static PATH = "dizzol/garlic.png"; //TODO
+    static PATH = "dizzol/vodka.png";
 
     constructor(canvas,x, y){
         super(canvas);
