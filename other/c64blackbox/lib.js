@@ -6,10 +6,11 @@ const Direction = Object.freeze({
 });
 
 class Sprite{
-    constructor(canvas){
+    constructor(canvas, x, y){
     	this.speed = 3;
     	this.hp = 4;
-    	this.x = 0;
+    	this.x = x;
+    	this.y = y;
     	this.name = "sprite";
     	this.canvas = canvas;
     	this.picPath = "";
@@ -39,6 +40,12 @@ class Sprite{
 		let pictureLoader = new PictureLoader(context);
 		pictureLoader.load(this.picPath, this.x, this.y);
 		//don't forget to update the texture in derived class
+	}
+
+	collide(anotherSprite){
+	    const collisionDistance = 10;
+	    return Math.abs(this.x - anotherSprite.x) < collisionDistance && Math.abs(this.y - anotherSprite.y) < collisionDistance;
+
 	}
 
 	revive(timeout){

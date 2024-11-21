@@ -2,13 +2,11 @@ class Garlic extends Sprite{
     static PATH = "dizzol/garlic.png";
 
     constructor(canvas,x, y){
-        super(canvas);
+        super(canvas, x, y);
         this.name = 'garlic';
         this.picPath = Garlic.PATH;
         this.picLeftPath = Garlic.PATH;
         this.picRightPath = Garlic.PATH;
-        this.x = x;
-        this.y = y;
     }
 }
 
@@ -16,25 +14,21 @@ class Vodka extends Sprite{
     static PATH = "dizzol/vodka.png";
 
     constructor(canvas,x, y){
-        super(canvas);
+        super(canvas, x, y);
         this.name = 'vodka';
         this.picPath = Vodka.PATH;
         this.picLeftPath = Vodka.PATH;
         this.picRightPath = Vodka.PATH;
-        this.x = x;
-        this.y = y;
     }
 }
 
 class Dizzy extends Sprite{
 
     constructor(canvas){
-        super(canvas);
+        super(canvas, 450, 409);
     	this.picPath = "dizzol/jajoL.png";
     	this.picLeftPath = "dizzol/jajoL.png";
     	this.picRightPath = "dizzol/jajoR.png";
-    	this.x = 450;
-    	this.y = 409;
     	this.inventory = [new Vodka()];
     }
 }
@@ -42,12 +36,10 @@ class Dizzy extends Sprite{
 class Bat extends Sprite{
 
     constructor(canvas, y, speed){
-        super(canvas);
+        super(canvas, 100, y);
     	this.picPath = "dizzol/bat.png";
     	this.picLeftPath = "dizzol/bat.png";
     	this.picRightPath = "dizzol/bat.png";
-    	this.x = 100;
-    	this.y = y;
     	this.speed = speed;
     }
 
@@ -287,51 +279,51 @@ class DizzolGame{
         this.checkExit(Direction.RIGHT);
     }
 
-handleFirePressed() {
-    console.log('FIRE !');
+    handleFirePressed() {
+        console.log('FIRE !');
 
-    const currentRoom = this.getCurrentRoom();
+        const currentRoom = this.getCurrentRoom();
 
-    currentRoom.writeUpperInfo("You picked " + this.pickGarlic());
+        currentRoom.writeUpperInfo("You picked " + this.pickGarlic());
 
-    new Promise((resolve) => {
-        setTimeout(() => {
-            resolve();
-        }, 1000);
-    }).then(() => {
-        let inventoryInfo = "Inventory: ";
-        this.player.inventory.forEach(item => {
-            inventoryInfo += (item.name + " ");
-        });
-        console.log(inventoryInfo);
-        currentRoom.writeUpperInfo(inventoryInfo);
-
-        return new Promise((resolve2) => {
+        new Promise((resolve) => {
             setTimeout(() => {
-                resolve2();
+                resolve();
             }, 1000);
+        }).then(() => {
+            let inventoryInfo = "Inventory: ";
+            this.player.inventory.forEach(item => {
+                inventoryInfo += (item.name + " ");
+            });
+            console.log(inventoryInfo);
+            currentRoom.writeUpperInfo(inventoryInfo);
+
+            return new Promise((resolve2) => {
+                setTimeout(() => {
+                    resolve2();
+                }, 1000);
+            });
+        }).then(() => {
+            currentRoom.writeRoomInfo();
         });
-    }).then(() => {
-        currentRoom.writeRoomInfo();
-    });
-}
+    }
 
-pickGarlic(){
-    let result = "nothing";
-    const room = this.getCurrentRoom();
-    const itemsShallowCopy = [...room.items];
+    pickGarlic(){
+        let result = "nothing";
+        const room = this.getCurrentRoom();
+        const itemsShallowCopy = [...room.items];
 
-    itemsShallowCopy.forEach(item =>{
-        console.log("item at " + item.x + " player at " + this.player.x);
-        if (Math.abs(this.player.x - item.x) < 15){
-            console.log("Grabbing " + item.name);
-            room.items = room.items.filter(i => i !== item);
-            this.player.inventory.push(item);
-            result = 'garlic';
-        }
-    })
-    return result;
-}
+        itemsShallowCopy.forEach(item =>{
+            console.log("item at " + item.x + " player at " + this.player.x);
+            if (Math.abs(this.player.x - item.x) < 15){
+                console.log("Grabbing " + item.name);
+                room.items = room.items.filter(i => i !== item);
+                this.player.inventory.push(item);
+                result = 'garlic';
+            }
+        })
+        return result;
+    }
 
     checkExit(direction) {
         const room = this.getCurrentRoom();
