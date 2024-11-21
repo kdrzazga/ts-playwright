@@ -40,9 +40,11 @@ class Dizzy extends Sprite{
                 bat.hp = 0;
                 console.log("Removed one Garlic instance from inventory to kill/scare off a BAT.");
                 bat.revive(5000);
-                break;
+                return true;
             }
         }
+
+        return false;
     }
 }
 
@@ -271,10 +273,13 @@ class DizzolGame{
 
     checkCollisions(){
         const currentRoom = this.getCurrentRoom();
-        currentRoom.bats.forEach(bat =>{
+        currentRoom.bats.filter(bat => bat.hp > 0).forEach(bat =>{
             if (bat.collide(this.player)){
                 console.log("BAT ATTACK !");
-                this.player.fightBatWithGarlic(bat);
+                if (this.player.fightBatWithGarlic(bat)){
+                    const currentRoom = this.getCurrentRoom();
+                    currentRoom.writeUpperInfo("GARLIC SCARED THE BAT OFF !");
+                }
             }
         });
     }
