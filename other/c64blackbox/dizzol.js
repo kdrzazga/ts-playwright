@@ -57,6 +57,9 @@ class Bat extends Sprite{
         const maxX = 330;
         const halfWay = (minX + maxX) /2;
         this.y += this.x > halfWay ? 1.3 : -1.3;
+        if (this.y <= 9 * C64Blackbox.rowHeight+ this.speed){
+            this.y = 9 * C64Blackbox.rowHeight + 2 * this.speed;
+        }
         if (this.x > maxX || this.x < minX) {
             this.speed = -this.speed;
         }
