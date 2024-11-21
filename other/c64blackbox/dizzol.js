@@ -31,6 +31,19 @@ class Dizzy extends Sprite{
     	this.picRightPath = "dizzol/jajoR.png";
     	this.inventory = [new Vodka()];
     }
+
+    fightBatWithGarlic(bat){
+        for (let i = 0; i < this.inventory.length; i++) {
+            if (this.inventory[i] instanceof Garlic) {
+
+                this.inventory.splice(i, 1);
+                bat.hp = 0;
+                console.log("Removed one Garlic instance from inventory to kill/scare off a BAT.");
+                bat.revive(5000);
+                break;
+            }
+        }
+    }
 }
 
 class Bat extends Sprite{
@@ -252,7 +265,18 @@ class DizzolGame{
             const currentRoom = this.getCurrentRoom();
             this.player.draw();
             currentRoom.animate();
+            this.checkCollisions();
         }, 16);
+    }
+
+    checkCollisions(){
+        const currentRoom = this.getCurrentRoom();
+        currentRoom.bats.forEach(bat =>{
+            if (bat.collide(this.player)){
+                console.log("BAT ATTACK !");
+                this.player.fightBatWithGarlic(bat);
+            }
+        });
     }
 
     draw(){

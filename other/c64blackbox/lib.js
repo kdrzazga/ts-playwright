@@ -43,6 +43,11 @@ class Sprite{
 	}
 
 	collide(anotherSprite){
+	    if (anotherSprite.hp <= 0){
+	        console.warn('No collision with dead enemy');
+	        return;
+	    }
+
 	    const collisionDistanceVert = 35;
 	    const collisionDistanceHoriz = 14;
 	    return Math.abs(this.x - anotherSprite.x) < collisionDistanceHoriz && Math.abs(this.y - anotherSprite.y) < collisionDistanceVert;
@@ -54,10 +59,11 @@ class Sprite{
 	        return;
 	    }
 
+	    this.x = 300;
+	    this.y = 200;
+
 	    setTimeout(() => {
 	        this.hp = 4;
-	        this.x = 40;
-	        this.y = 40;
 	    }, timeout);
 	}
 }
