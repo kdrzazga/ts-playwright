@@ -96,12 +96,18 @@ class Room{
         this.items = [];
         this.info = '';
 
-        for(let i = 0; i < batsCount; i++){
-            const bat = new Bat(canvas, 291 + 39*i, 2 + i);
+        this.initializeBats(batsCount, canvas);
+    }
+
+    initializeBats(batsCount, canvas){
+        for (let i = 0; i < batsCount; i++) {
+            const bat = new Bat(canvas, 291 + 39 * i, 2 + i);
             this.bats.push(bat);
-            this.bats[0].x = 326;
-            console.log('Created a bat in Room ' + this.number);
         }
+        if (this.bats.length > 0) {
+            this.bats[0].x = 326;
+        }
+        console.log('Created bats in Room ' + this.number);
     }
 
     load(){
