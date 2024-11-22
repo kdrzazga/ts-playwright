@@ -1,4 +1,4 @@
-class Fighter extends Sprite{
+class Fighter extends Player{
 	constructor(canvas){
         super(canvas);
 
@@ -44,25 +44,9 @@ class Fighter extends Sprite{
 		}, 500);
 		
 	}
-	
-	checkIfDead(){
-		if (this.hp <= 0){
-			console.log(this.name + " is dead.\n\n\n");
-			
-			let context = this.canvas.getContext('2d');
-			let pictureLoader = new PictureLoader(context);
-			pictureLoader.load('gameover.png', 8 * C64Blackbox.rowHeight, 4.75 * C64Blackbox.rowHeight);
-			C64Blackbox.texture.needsUpdate = true;	
-			
-			setTimeout(() => {
-				location.reload();
-			}, 4000);
-		}
-	}
-	
 }
 
-class Player extends Fighter{
+class Bruce extends Fighter{
 	constructor(canvas){
 		super(canvas);		
 		this.x = Math.floor(Globals.screenWidth / 2);
@@ -182,11 +166,11 @@ class BruceGame{
 	checkHitDistance(attackingFighter, receivingFighter){
 		var distance = Math.abs(attackingFighter.x - receivingFighter.x);
 		
-		if (attackingFighter instanceof Player && receivingFighter instanceof Enemy) {
-			console.log("Attacker = Player. Enemy under attack. Distance =" + distance);
+		if (attackingFighter instanceof Bruce && receivingFighter instanceof Enemy) {
+			console.log("Attacker = Bruce. Enemy under attack. Distance =" + distance);
 		}
 		else{
-			console.log("Attacker = Enemy. Player under attack.. Distance =" + distance);
+			console.log("Attacker = Enemy. Player Bruce under attack.. Distance =" + distance);
 		}
 		
 		return distance < BruceGame.hitDistance;
@@ -194,7 +178,7 @@ class BruceGame{
 	
 	reset(){
 		this.active = false;
-		this.player = new Player(this.canvas);
+		this.player = new Bruce(this.canvas);
 		this.enemy = new Enemy(this.canvas);
 		
 		console.log("Game reset.");

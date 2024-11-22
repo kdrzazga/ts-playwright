@@ -22,7 +22,7 @@ class Vodka extends Sprite{
     }
 }
 
-class Dizzy extends Sprite{
+class Dizzy extends Player{
 
     constructor(canvas){
         super(canvas, 450, 409);
@@ -30,6 +30,7 @@ class Dizzy extends Sprite{
     	this.picLeftPath = "dizzol/jajoL.png";
     	this.picRightPath = "dizzol/jajoR.png";
     	this.inventory = [new Vodka()];
+    	this.hp = 1;
     }
 
     fightBatWithGarlic(bat){
@@ -56,6 +57,7 @@ class Bat extends Sprite{
     	this.picLeftPath = "dizzol/bat.png";
     	this.picRightPath = "dizzol/bat.png";
     	this.speed = speed;
+    	this.hp = 1;
     }
 
     move() {
