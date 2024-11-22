@@ -44,7 +44,7 @@ class Dizzy extends Player{
                 return true;
             }
         }
-
+        console.log("You have no Garlic to fight Bats. Your fate is miserable.")
         return false;
     }
 }
@@ -281,6 +281,11 @@ class DizzolGame{
                 if (this.player.fightBatWithGarlic(bat)){
                     const currentRoom = this.getCurrentRoom();
                     currentRoom.writeUpperInfo("GARLIC SCARED THE BAT OFF !");
+                }
+                else{
+                    console.warn('GAME OVER');
+                    this.player.hp = 0;
+                    this.player.checkIfDead(); //sure he is
                 }
             }
         });
