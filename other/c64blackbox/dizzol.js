@@ -2,13 +2,11 @@ class Garlic extends Sprite{
     static PATH = "dizzol/garlic.png";
 
     constructor(canvas,x, y){
-        super(canvas);
+        super(canvas, x, y);
         this.name = 'garlic';
         this.picPath = Garlic.PATH;
         this.picLeftPath = Garlic.PATH;
         this.picRightPath = Garlic.PATH;
-        this.x = x;
-        this.y = y;
     }
 }
 
@@ -16,47 +14,64 @@ class Vodka extends Sprite{
     static PATH = "dizzol/vodka.png";
 
     constructor(canvas,x, y){
-        super(canvas);
+        super(canvas, x, y);
         this.name = 'vodka';
         this.picPath = Vodka.PATH;
         this.picLeftPath = Vodka.PATH;
         this.picRightPath = Vodka.PATH;
-        this.x = x;
-        this.y = y;
     }
 }
 
-class Dizzy extends Sprite{
+class Dizzy extends Player{
 
     constructor(canvas){
-        super(canvas);
+        super(canvas, 450, 409);
     	this.picPath = "dizzol/jajoL.png";
     	this.picLeftPath = "dizzol/jajoL.png";
     	this.picRightPath = "dizzol/jajoR.png";
-    	this.x = 450;
-    	this.y = 409;
     	this.inventory = [new Vodka()];
+    	this.hp = 1;
+    }
+
+    fightBatWithGarlic(bat){
+        for (let i = 0; i < this.inventory.length; i++) {
+            if (this.inventory[i] instanceof Garlic) {
+
+                this.inventory.splice(i, 1);
+                bat.hp = 0;
+                console.log("Removed one Garlic instance from inventory to kill/scare off a BAT.");
+                bat.revive(5000);
+                return true;
+            }
+        }
+        console.log("You have no Garlic to fight Bats. Your fate is miserable.")
+        return false;
     }
 }
 
 class Bat extends Sprite{
 
     constructor(canvas, y, speed){
-        super(canvas);
+        super(canvas, 100, y);
     	this.picPath = "dizzol/bat.png";
     	this.picLeftPath = "dizzol/bat.png";
     	this.picRightPath = "dizzol/bat.png";
-    	this.x = 100;
-    	this.y = y;
     	this.speed = speed;
+    	this.hp = 1;
     }
 
     move() {
+        if (this.hp <= 0)
+            return;
+
         this.x += this.speed;
         const minX = 70;
         const maxX = 330;
         const halfWay = (minX + maxX) /2;
         this.y += this.x > halfWay ? 1.3 : -1.3;
+        if (this.y <= 9 * C64Blackbox.rowHeight+ this.speed){
+            this.y = 9 * C64Blackbox.rowHeight + 2 * this.speed;
+        }
         if (this.x > maxX || this.x < minX) {
             this.speed = -this.speed;
         }
@@ -140,7 +155,7 @@ class Room{
     }
 
     drawEnemies(){
-       this.bats.forEach(bat => this.enemyLoader.draw(bat.x, bat.y));
+       this.bats.filter(enemy => enemy.hp>0).forEach(bat => this.enemyLoader.draw(bat.x, bat.y));
     }
 
     drawItems(){
@@ -254,7 +269,26 @@ class DizzolGame{
             const currentRoom = this.getCurrentRoom();
             this.player.draw();
             currentRoom.animate();
+            this.checkCollisions();
         }, 16);
+    }
+
+    checkCollisions(){
+        const currentRoom = this.getCurrentRoom();
+        currentRoom.bats.filter(bat => bat.hp > 0).forEach(bat =>{
+            if (bat.collide(this.player)){
+                console.log("BAT ATTACK !");
+                if (this.player.fightBatWithGarlic(bat)){
+                    const currentRoom = this.getCurrentRoom();
+                    currentRoom.writeUpperInfo("GARLIC SCARED THE BAT OFF !");
+                }
+                else{
+                    console.warn('GAME OVER');
+                    this.player.hp = 0;
+                    this.player.checkIfDead(); //sure he is
+                }
+            }
+        });
     }
 
     draw(){
@@ -281,51 +315,51 @@ class DizzolGame{
         this.checkExit(Direction.RIGHT);
     }
 
-handleFirePressed() {
-    console.log('FIRE !');
+    handleFirePressed() {
+        console.log('FIRE !');
 
-    const currentRoom = this.getCurrentRoom();
+        const currentRoom = this.getCurrentRoom();
 
-    currentRoom.writeUpperInfo("You picked " + this.pickGarlic());
+        currentRoom.writeUpperInfo("You picked " + this.pickGarlic());
 
-    new Promise((resolve) => {
-        setTimeout(() => {
-            resolve();
-        }, 1000);
-    }).then(() => {
-        let inventoryInfo = "Inventory: ";
-        this.player.inventory.forEach(item => {
-            inventoryInfo += (item.name + " ");
-        });
-        console.log(inventoryInfo);
-        currentRoom.writeUpperInfo(inventoryInfo);
-
-        return new Promise((resolve2) => {
+        new Promise((resolve) => {
             setTimeout(() => {
-                resolve2();
+                resolve();
             }, 1000);
+        }).then(() => {
+            let inventoryInfo = "Inventory: ";
+            this.player.inventory.forEach(item => {
+                inventoryInfo += (item.name + " ");
+            });
+            console.log(inventoryInfo);
+            currentRoom.writeUpperInfo(inventoryInfo);
+
+            return new Promise((resolve2) => {
+                setTimeout(() => {
+                    resolve2();
+                }, 1000);
+            });
+        }).then(() => {
+            currentRoom.writeRoomInfo();
         });
-    }).then(() => {
-        currentRoom.writeRoomInfo();
-    });
-}
+    }
 
-pickGarlic(){
-    let result = "nothing";
-    const room = this.getCurrentRoom();
-    const itemsShallowCopy = [...room.items];
+    pickGarlic(){
+        let result = "nothing";
+        const room = this.getCurrentRoom();
+        const itemsShallowCopy = [...room.items];
 
-    itemsShallowCopy.forEach(item =>{
-        console.log("item at " + item.x + " player at " + this.player.x);
-        if (Math.abs(this.player.x - item.x) < 15){
-            console.log("Grabbing " + item.name);
-            room.items = room.items.filter(i => i !== item);
-            this.player.inventory.push(item);
-            result = 'garlic';
-        }
-    })
-    return result;
-}
+        itemsShallowCopy.forEach(item =>{
+            console.log("item at " + item.x + " player at " + this.player.x);
+            if (item.collide(this.player)){
+                console.log("Grabbing " + item.name);
+                room.items = room.items.filter(i => i !== item);
+                this.player.inventory.push(item);
+                result = 'garlic';
+            }
+        })
+        return result;
+    }
 
     checkExit(direction) {
         const room = this.getCurrentRoom();

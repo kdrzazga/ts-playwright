@@ -42,3 +42,11 @@ function hide() {
   button.hidden = true;
   console.log('Button hidden.');
 }
+
+function startPlayback(){
+  const alreadyPlaying = sessionStorage.getItem('already-playing');
+  if (alreadyPlaying !== 'true'){
+	  sessionStorage.setItem('already-playing', 'true');	
+	  play();
+  }
+}
