@@ -143,7 +143,7 @@ class Room{
 
     draw(){
         this.loader.draw(0, 9 * C64Blackbox.rowHeight);
-        this.writeRoomInfo();
+        //this.writeRoomInfo();
     }
 
     writeRoomInfo(){
@@ -252,6 +252,7 @@ class DizzolGame{
         this.dizzyPicLoader = new PictureLoader(context);
         this.reset();
         this.startAnimationLoop();
+        this.startRoomInfoDisplayLoop();
     }
 
     reset(){
@@ -267,6 +268,15 @@ class DizzolGame{
         let currentRoom = this.getCurrentRoom();
         currentRoom.load();
         this.dizzyPicLoader.load(this.player.picPath, this.player.x, this.player.y);
+	}
+
+	startRoomInfoDisplayLoop(){
+	    this.roomInfoLoop = setInterval(() => {
+             if (!this.active)
+                 return;
+             const currentRoom = this.getCurrentRoom();
+             currentRoom.writeRoomInfo();
+        }, 1500);
 	}
 
     startAnimationLoop() {
