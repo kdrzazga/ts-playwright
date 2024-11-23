@@ -286,7 +286,7 @@ class DizzolGame{
             if (bat.collide(this.player)){
                 console.log("BAT ATTACK !");
                 if (this.player.fightBatWithGarlic(bat)){
-                    const currentRoom = this.getCurrentRoom();
+                    //const currentRoom = this.getCurrentRoom();
                     currentRoom.writeUpperInfo("GARLIC SCARED THE BAT OFF !");
                 }
                 else{

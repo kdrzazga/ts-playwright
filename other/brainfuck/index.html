@@ -6,9 +6,13 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <select id = "predefined-programs" onchange="loadPredefinedProgram();">
-    </select><br>
+    <p>Predefined program: <select id = "predefined-programs" onchange="loadPredefinedProgram();">
+    </select>
+    </p>
+    <br>
+    <hr>
     <p>
+        <p>CODE:</p>
         <textarea id = "program">+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.
             >+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.
             >++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.
@@ -16,14 +20,17 @@
             >+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.</textarea>
     </p>
     <button id = "go" onclick="bfDebugger = readProgram(); bfDebugger.validateCode(); updateLabels();">GO !</button>
-    <button id = "step" onclick="bfDebugger.step(); updateLabels(); updateMemoryTable();">Step</button>
-    <label id = "instruction-pointer">Instruction Pointer:</label>
-    <label id = "command">Command:</label>
+    <button id = "step" onclick="bfDebugger.step(); updateLabels(); updateMemoryTable();">Step</button><br>
+    <label id = "instruction-pointer">Instruction Pointer:</label><br>
+    <label id = "command">Command:</label><br>
+    <hr>
     <p>
+        <p>OUTPUT:</p>
         <textarea id = "output"></textarea>
     </p>
+    <hr>
     <div>
-        Memory (0-50):<br>
+        MEMORY (0-50):<br>
         <table id = "memory">
             <tr id = 'cell-number'>
             </tr>
