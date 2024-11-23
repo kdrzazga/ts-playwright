@@ -10,15 +10,15 @@ class Garlic extends Sprite{
     }
 }
 
-class Vodka extends Sprite{
-    static PATH = "dizzol/vodka.png";
+class Coin extends Sprite{
+    static PATH = "dizzol/jajoL.png";
 
     constructor(canvas,x, y){
         super(canvas, x, y);
-        this.name = 'vodka';
-        this.picPath = Vodka.PATH;
-        this.picLeftPath = Vodka.PATH;
-        this.picRightPath = Vodka.PATH;
+        this.name = 'coin';
+        this.picPath = Coin.PATH;
+        this.picLeftPath = Coin.PATH;
+        this.picRightPath = Coin.PATH;
     }
 }
 
@@ -29,7 +29,7 @@ class Dizzy extends Player{
     	this.picPath = "dizzol/jajoL.png";
     	this.picLeftPath = "dizzol/jajoL.png";
     	this.picRightPath = "dizzol/jajoR.png";
-    	this.inventory = [new Vodka()];
+    	this.inventory = [new Coin()];
     	this.hp = 1;
     }
 
@@ -80,13 +80,13 @@ class Bat extends Sprite{
 
 class Room{
 
-    constructor(number, canvas, picPath, leftExit, rightExit, floorLevels, checkpoint, batsCount){
+    constructor(number, canvas, picPath, leftExit, rightExit, floorLevels, checkpoints, batsCount){
         this.number = number;
         this.picPath = picPath;
         this.leftExit = leftExit;
         this.rightExit = rightExit;
 		this.floorLevels = floorLevels;
-		this.checkpoint = checkpoint;
+		this.checkpoints = checkpoints;
 
         this.context = canvas.getContext('2d');
         this.loader = new PictureLoader(this.context);
@@ -96,12 +96,18 @@ class Room{
         this.items = [];
         this.info = '';
 
-        for(let i = 0; i < batsCount; i++){
-            const bat = new Bat(canvas, 291 + 39*i, 2 + i);
+        this.initializeBats(batsCount, canvas);
+    }
+
+    initializeBats(batsCount, canvas){
+        for (let i = 0; i < batsCount; i++) {
+            const bat = new Bat(canvas, 291 + 39 * i, 2 + i);
             this.bats.push(bat);
-            this.bats[0].x = 326;
-            console.log('Created a bat in Room ' + this.number);
         }
+        if (this.bats.length > 0) {
+            this.bats[0].x = 326;
+        }
+        console.log('Created bats in Room ' + this.number);
     }
 
     load(){
@@ -109,34 +115,35 @@ class Room{
         this.draw();
     }
 
-    read(){
-        this.loader.fileName = this.picPath;
-        this.loader.read().then(texture => {
-            this.loader.texture = texture;
-        }).catch(error => {
+    read() {
+        this.loadPicture(this.loader, this.picPath).catch(error => {
             console.error('Failed to load picture:', error);
         });
 
-        if (this.bats.length > 0 ){
-            this.enemyLoader.fileName = this.bats[0].picPath;
-            this.enemyLoader.read().then(texture => {
-                this.enemyLoader.texture = texture;
-            }).catch(error => {
+        if (this.bats.length > 0) {
+            this.loadPicture(this.enemyLoader, this.bats[0].picPath).catch(error => {
                 console.error('Failed to load bat picture:', error);
             });
         }
 
-        this.garlicLoader.fileName = Garlic.PATH;
-        this.garlicLoader.read().then(texture => {
-            this.garlicLoader.texture = texture;
-        }).catch(error => {
+        this.loadPicture(this.garlicLoader, Garlic.PATH).catch(error => {
             console.error('Failed to load garlic picture:', error);
         });
     }
 
+    loadPicture(loader, path) {
+        if (path) {
+            loader.fileName = path;
+            return loader.read().then(texture => {
+                loader.texture = texture;
+            });
+        }
+        return Promise.resolve();  // No picture to load
+    }
+
     draw(){
         this.loader.draw(0, 9 * C64Blackbox.rowHeight);
-        this.writeRoomInfo();
+        //this.writeRoomInfo();
     }
 
     writeRoomInfo(){
@@ -217,7 +224,7 @@ class DizzolGame{
                 [DizzolGame.ROOM4]: {nextRoom: DizzolGame.ROOM5, resetCheckpoint: false, nextRoomPlayerPos: 500},
                 [DizzolGame.ROOM5]: {nextRoom: DizzolGame.ROOM6, resetCheckpoint: false, nextRoomPlayerPos: 500},
                 [DizzolGame.ROOM6]: {nextRoom: DizzolGame.ROOM7, resetCheckpoint: false, nextRoomPlayerPos: 500},
-                [DizzolGame.ROOM7]: {nextRoom: DizzolGame.ROOM8, resetCheckpoint: false, nextRoomPlayerPos: 500},
+                [DizzolGame.ROOM7]: {nextRoom: DizzolGame.ROOM8, resetCheckpoint: true, nextRoomPlayerPos: 500},
                 [DizzolGame.ROOM8]: {nextRoom: DizzolGame.ROOM9, resetCheckpoint: false, nextRoomPlayerPos: 500},
                 [DizzolGame.ROOM9]: {nextRoom: DizzolGame.ROOM1, resetCheckpoint: false, nextRoomPlayerPos: 500}
             };
@@ -234,17 +241,18 @@ class DizzolGame{
                 [DizzolGame.ROOM9]: {nextRoom: DizzolGame.ROOM8, resetCheckpoint: true, nextRoomPlayerPos: 5}
             };
 
-
     constructor(canvas, c64Blackbox){
         this.canvas = canvas;
         let roomReg = new RoomRegistry();
         this.rooms = roomReg.createRoomSet(canvas, c64Blackbox);
         this.player = new Dizzy(canvas);
+        this.rooms[DizzolGame.ROOM8 - 1].checkpoints[0].event.setPlayer(this.player);
 
         let context = canvas.getContext('2d');
         this.dizzyPicLoader = new PictureLoader(context);
         this.reset();
         this.startAnimationLoop();
+        this.startRoomInfoDisplayLoop();
     }
 
     reset(){
@@ -260,6 +268,15 @@ class DizzolGame{
         let currentRoom = this.getCurrentRoom();
         currentRoom.load();
         this.dizzyPicLoader.load(this.player.picPath, this.player.x, this.player.y);
+	}
+
+	startRoomInfoDisplayLoop(){
+	    this.roomInfoLoop = setInterval(() => {
+             if (!this.active)
+                 return;
+             const currentRoom = this.getCurrentRoom();
+             currentRoom.writeRoomInfo();
+        }, 1500);
 	}
 
     startAnimationLoop() {
@@ -279,7 +296,7 @@ class DizzolGame{
             if (bat.collide(this.player)){
                 console.log("BAT ATTACK !");
                 if (this.player.fightBatWithGarlic(bat)){
-                    const currentRoom = this.getCurrentRoom();
+                    //const currentRoom = this.getCurrentRoom();
                     currentRoom.writeUpperInfo("GARLIC SCARED THE BAT OFF !");
                 }
                 else{
@@ -377,16 +394,17 @@ class DizzolGame{
             const transition = roomTransitions[this.currentRoomId];
             if (transition) {
                 if (transition.resetCheckpoint) {
-                    room.checkpoint.reset();
+                    room.checkpoints.forEach(chkpt => chkpt.reset());
                 }
 
                 this.player.x = transition.nextRoomPlayerPos;
                 this.currentRoomId = transition.nextRoom;
                 console.log('Moved to room ' + this.currentRoomId);
             }
-        } else if (room.checkpoint.contains(this.player)) {
-            room.checkpoint.action();
         }
+         else room.checkpoints.filter(checkpoint=> checkpoint.contains(this.player)).forEach(checkpoint => {
+             checkpoint.action();
+        });
     }
 
     getCurrentRoom(){
@@ -448,37 +466,40 @@ class RoomRegistry{
         const exit67Right = new RoomExit(530, 425);
 
         const room1Sfx = new SfxEvent("dizzol/huu.mp3");
-        const room1Checkpoint = new Checkpoint(310, 411, room1Sfx);
-        const room2Sfx = new SfxEvent("dizzol/totem.mp3");
-        const room2Checkpoint = new Checkpoint(315, 411, room2Sfx);
+        const room1Checkpoints = [new Checkpoint(310, 411, room1Sfx)];
+        const totemSfx1 = new SfxEvent("dizzol/totem.mp3");
+        const totemSfx2 = new SfxEvent("dizzol/totem.mp3");
+        const singleTotemCheckpoints = [new Checkpoint(315, 411, totemSfx1)];
+        const twoTotemCheckpoints = [new Checkpoint(140, 435, totemSfx1), new Checkpoint(305, 435, totemSfx2)];
 
-        const emptyCheckpoint = new Checkpoint(0, 0, null);
+        const desertDeathEvent = new DelayedDeathEvent(null, 8000);
+        const desertDeathCheckpoints = [new Checkpoint(500, 411, desertDeathEvent)];
 
-        const room1 = new Room(DizzolGame.ROOM1, canvas, "dizzol/1.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), null, room1floorLevels, room1Checkpoint, 0);
+        const room1 = new Room(DizzolGame.ROOM1, canvas, "dizzol/1.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), null, room1floorLevels, room1Checkpoints, 0);
         room1.setInfo("1. SCULPTURE");
         const garlic11 = new Garlic(canvas, 500, 300);
         const garlic12 = new Garlic(canvas, 400, 300);
         room1.addItemOnFloor(garlic11);
         room1.addItemOnFloor(garlic12);
 
-        const room2 = new Room(DizzolGame.ROOM2, canvas, "dizzol/2.png", new RoomExit(100, 428), new RoomExit(510, 20.5 * C64Blackbox.rowHeight), room2floorLevels, room2Checkpoint, 0);
+        const room2 = new Room(DizzolGame.ROOM2, canvas, "dizzol/2.png", new RoomExit(100, 428), new RoomExit(510, 20.5 * C64Blackbox.rowHeight), room2floorLevels, singleTotemCheckpoints, 0);
         room2.setInfo("2. TOTEM");
         const garlic21 = new Garlic(canvas, 500, 300);
         room2.addItemOnFloor(garlic21);
 
-        const room3 = new Room(DizzolGame.ROOM3, canvas, "dizzol/3.png", new RoomExit(-5, 350), new RoomExit(530, 20.5 * C64Blackbox.rowHeight), room3floorLevels, emptyCheckpoint, 1);
+        const room3 = new Room(DizzolGame.ROOM3, canvas, "dizzol/3.png", new RoomExit(-5, 350), new RoomExit(530, 20.5 * C64Blackbox.rowHeight), room3floorLevels, [], 1);
         room3.setInfo("3. BAT CAVE ENTRANCE");
-        const room4 = new Room(DizzolGame.ROOM4, canvas, "dizzol/4.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), new RoomExit(530, 350), room4floorLevels, emptyCheckpoint, 0);
+        const room4 = new Room(DizzolGame.ROOM4, canvas, "dizzol/4.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), new RoomExit(530, 350), room4floorLevels, [], 0);
         room4.setInfo("4. ANCIENT DRAWINGS");
-        const room5 = new Room(DizzolGame.ROOM5, canvas, "dizzol/5.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), new RoomExit(510, 20.5 * C64Blackbox.rowHeight), room1floorLevels, emptyCheckpoint, 3);
+        const room5 = new Room(DizzolGame.ROOM5, canvas, "dizzol/5.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), new RoomExit(510, 20.5 * C64Blackbox.rowHeight), room1floorLevels, [], 3);
         room5.setInfo("5. MAIN BAT LAIR");
-        const room6 = new Room(DizzolGame.ROOM6, canvas, "dizzol/6.png", exit6Left, exit67Right, room67floorLevels, emptyCheckpoint, 1);
+        const room6 = new Room(DizzolGame.ROOM6, canvas, "dizzol/6.png", exit6Left, exit67Right, room67floorLevels, [], 1);
         room6.setInfo("6. BAT CAVE EXIT");
-        const room7 = new Room(DizzolGame.ROOM7, canvas, "dizzol/7.png", exit67Left, exit67Right, room67floorLevels, room2Checkpoint, 0);
+        const room7 = new Room(DizzolGame.ROOM7, canvas, "dizzol/7.png", exit67Left, exit67Right, room67floorLevels, twoTotemCheckpoints, 0);
         room7.setInfo("7. TWO TOTEMS");
-        const room8 = new Room(DizzolGame.ROOM8, canvas, "dizzol/8.png", exit67Left, exit67Right, room67floorLevels, emptyCheckpoint, 0);
-        room8.setInfo("8.");
-        const room9 = new Room(DizzolGame.ROOM9, canvas, "dizzol/8.png", exit67Left, exit67Right, room67floorLevels, emptyCheckpoint, 0);
+        const room8 = new Room(DizzolGame.ROOM8, canvas, "dizzol/8.png", exit67Left, exit67Right, room67floorLevels, desertDeathCheckpoints, 0);
+        room8.setInfo("8. DESERT");
+        const room9 = new Room(DizzolGame.ROOM9, canvas, "dizzol/8.png", exit67Left, exit67Right, room67floorLevels, [], 0);
         room9.setInfo("9.");
 
         room6.bats[0].y += 80;
@@ -509,19 +530,19 @@ class RoomExit{
 
 class Checkpoint extends RoomExit{
 
-    constructor(x, y, sfxEvent){
+    constructor(x, y, event){
         super(x,y);
-        this.sfxEvent = sfxEvent;
+        this.event = event;
     }
 
     action(){
-         if (this.sfxEvent != null)
-            this.sfxEvent.playOnce();
+         if (this.event != null)
+            this.event.executeOnce();
     }
 
     reset(){
-        if (this.sfxEvent != null)
-            this.sfxEvent.reset();
+        if (this.event != null)
+            this.event.reset();
     }
 }
 
@@ -537,12 +558,47 @@ class SfxEvent{
         this.active = true;
     }
 
-    playOnce(){
+    executeOnce(){
         if (!this.active){
             return;
         }
 
         this.audio.play();
         this.active = false;
+    }
+}
+
+class DelayedDeathEvent {
+    constructor(player, delay) {
+        this.player = player;
+        this.delay = delay;
+        this.active = true;
+    }
+
+    reset() {
+        this.active = false;
+        console.log('DelayedDeathEvent DEACTIVATED.');
+    }
+
+    executeOnce() {
+        if (!this.active) {
+            return;
+        }
+
+        console.log('Desert countdown started...');
+
+        setTimeout(() => {
+            if (!this.active) {
+                return;
+            }
+
+            this.player.hp = 0;
+            console.log('You died on a desert');
+            this.player.checkIfDead();//he is
+        }, this.delay);
+    }
+
+    setPlayer(player){
+        this.player = player;
     }
 }
