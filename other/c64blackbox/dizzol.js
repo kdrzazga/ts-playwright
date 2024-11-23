@@ -241,12 +241,12 @@ class DizzolGame{
                 [DizzolGame.ROOM9]: {nextRoom: DizzolGame.ROOM8, resetCheckpoint: true, nextRoomPlayerPos: 5}
             };
 
-
     constructor(canvas, c64Blackbox){
         this.canvas = canvas;
         let roomReg = new RoomRegistry();
         this.rooms = roomReg.createRoomSet(canvas, c64Blackbox);
         this.player = new Dizzy(canvas);
+        this.rooms[DizzolGame.ROOM8 - 1].checkpoints[0].event.setPlayer(this.player);
 
         let context = canvas.getContext('2d');
         this.dizzyPicLoader = new PictureLoader(context);
@@ -472,6 +472,9 @@ class RoomRegistry{
         const singleTotemCheckpoints = [new Checkpoint(315, 411, totemSfx1)];
         const twoTotemCheckpoints = [new Checkpoint(140, 435, totemSfx1), new Checkpoint(305, 435, totemSfx2)];
 
+        const desertDeathEvent = new DelayedDeathEvent(null, 8000);
+        const desertDeathCheckpoints = [new Checkpoint(500, 411, desertDeathEvent)];
+
         const room1 = new Room(DizzolGame.ROOM1, canvas, "dizzol/1.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), null, room1floorLevels, room1Checkpoints, 0);
         room1.setInfo("1. SCULPTURE");
         const garlic11 = new Garlic(canvas, 500, 300);
@@ -494,7 +497,7 @@ class RoomRegistry{
         room6.setInfo("6. BAT CAVE EXIT");
         const room7 = new Room(DizzolGame.ROOM7, canvas, "dizzol/7.png", exit67Left, exit67Right, room67floorLevels, twoTotemCheckpoints, 0);
         room7.setInfo("7. TWO TOTEMS");
-        const room8 = new Room(DizzolGame.ROOM8, canvas, "dizzol/8.png", exit67Left, exit67Right, room67floorLevels, [], 0);
+        const room8 = new Room(DizzolGame.ROOM8, canvas, "dizzol/8.png", exit67Left, exit67Right, room67floorLevels, desertDeathCheckpoints, 0);
         room8.setInfo("8. DESERT");
         const room9 = new Room(DizzolGame.ROOM9, canvas, "dizzol/8.png", exit67Left, exit67Right, room67floorLevels, [], 0);
         room9.setInfo("9.");
@@ -565,25 +568,37 @@ class SfxEvent{
     }
 }
 
-class DelayedDeathEvent{
-
-    constructor(player, delay){
+class DelayedDeathEvent {
+    constructor(player, delay) {
         this.player = player;
-        this.delay = delay
+        this.delay = delay;
         this.active = true;
     }
 
-    reset(){
+    reset() {
         this.active = false;
+        console.log('DelayedDeathEvent DEACTIVATED.');
     }
 
-    executeOnce(){
-        if (!this.active){
+    executeOnce() {
+        if (!this.active) {
             return;
         }
 
-        setTimeout( () => {
+        console.log('Desert countdown started...');
 
-        });
+        setTimeout(() => {
+            if (!this.active) {
+                return;
+            }
+
+            this.player.hp = 0;
+            console.log('You died on a desert');
+            this.player.checkIfDead();//he is
+        }, this.delay);
+    }
+
+    setPlayer(player){
+        this.player = player;
     }
 }
