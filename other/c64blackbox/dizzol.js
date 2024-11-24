@@ -215,6 +215,8 @@ class DizzolGame{
     static ROOM7 = 7;
     static ROOM8 = 8;
     static ROOM9 = 9;
+    static ROOM10 = 10;
+    static ROOM11 = 11;
     static NO_ROOM = 999999999;
 
     static roomTransitionsLeft = {
@@ -225,8 +227,10 @@ class DizzolGame{
                 [DizzolGame.ROOM5]: {nextRoom: DizzolGame.ROOM6, resetCheckpoint: false, nextRoomPlayerPos: 500},
                 [DizzolGame.ROOM6]: {nextRoom: DizzolGame.ROOM7, resetCheckpoint: false, nextRoomPlayerPos: 500},
                 [DizzolGame.ROOM7]: {nextRoom: DizzolGame.ROOM8, resetCheckpoint: true, nextRoomPlayerPos: 500},
-                [DizzolGame.ROOM8]: {nextRoom: DizzolGame.ROOM9, resetCheckpoint: false, nextRoomPlayerPos: 500},
-                [DizzolGame.ROOM9]: {nextRoom: DizzolGame.ROOM1, resetCheckpoint: false, nextRoomPlayerPos: 500}
+                [DizzolGame.ROOM8]: {nextRoom: DizzolGame.ROOM9, resetCheckpoint: true, nextRoomPlayerPos: 500},
+                [DizzolGame.ROOM9]: {nextRoom: DizzolGame.ROOM10, resetCheckpoint: false, nextRoomPlayerPos: 500},
+                [DizzolGame.ROOM10]: {nextRoom: DizzolGame.ROOM11, resetCheckpoint: false, nextRoomPlayerPos: 500},
+                [DizzolGame.ROOM11]: {nextRoom: DizzolGame.ROOM1, resetCheckpoint: false, nextRoomPlayerPos: 500}
             };
 
     static roomTransitionsRight = {
@@ -238,7 +242,9 @@ class DizzolGame{
                 [DizzolGame.ROOM6]: {nextRoom: DizzolGame.ROOM5, resetCheckpoint: true, nextRoomPlayerPos: 5},
                 [DizzolGame.ROOM7]: {nextRoom: DizzolGame.ROOM6, resetCheckpoint: true, nextRoomPlayerPos: 70},
                 [DizzolGame.ROOM8]: {nextRoom: DizzolGame.ROOM7, resetCheckpoint: true, nextRoomPlayerPos: 5},
-                [DizzolGame.ROOM9]: {nextRoom: DizzolGame.ROOM8, resetCheckpoint: true, nextRoomPlayerPos: 5}
+                [DizzolGame.ROOM9]: {nextRoom: DizzolGame.ROOM8, resetCheckpoint: true, nextRoomPlayerPos: 5},
+                [DizzolGame.ROOM10]: {nextRoom: DizzolGame.ROOM9, resetCheckpoint: true, nextRoomPlayerPos: 5},
+                [DizzolGame.ROOM11]: {nextRoom: DizzolGame.ROOM10, resetCheckpoint: true, nextRoomPlayerPos: 5}
             };
 
     constructor(canvas, c64Blackbox){
@@ -246,7 +252,8 @@ class DizzolGame{
         let roomReg = new RoomRegistry();
         this.rooms = roomReg.createRoomSet(canvas, c64Blackbox);
         this.player = new Dizzy(canvas);
-        this.rooms[DizzolGame.ROOM8 - 1].checkpoints[0].event.setPlayer(this.player);
+        const desertRooms = [this.rooms[DizzolGame.ROOM10 - 1], this.rooms[DizzolGame.ROOM11 - 1]];
+        desertRooms.forEach(room => room.checkpoints[0].event.setPlayer(this.player));
 
         let context = canvas.getContext('2d');
         this.dizzyPicLoader = new PictureLoader(context);
@@ -473,40 +480,50 @@ class RoomRegistry{
         const twoTotemCheckpoints = [new Checkpoint(140, 435, totemSfx1), new Checkpoint(305, 435, totemSfx2)];
 
         const desertDeathEvent = new DelayedDeathEvent(null, 8000);
+        const desertDeathEvent2 = new DelayedDeathEvent(null, 8000);
         const desertDeathCheckpoints = [new Checkpoint(500, 411, desertDeathEvent)];
+        const desertDeathCheckpoints2 = [new Checkpoint(500, 411, desertDeathEvent2)];
 
         const room1 = new Room(DizzolGame.ROOM1, canvas, "dizzol/1.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), null, room1floorLevels, room1Checkpoints, 0);
-        room1.setInfo("1. SCULPTURE");
         const garlic11 = new Garlic(canvas, 500, 300);
         const garlic12 = new Garlic(canvas, 400, 300);
         room1.addItemOnFloor(garlic11);
         room1.addItemOnFloor(garlic12);
 
         const room2 = new Room(DizzolGame.ROOM2, canvas, "dizzol/2.png", new RoomExit(100, 428), new RoomExit(510, 20.5 * C64Blackbox.rowHeight), room2floorLevels, singleTotemCheckpoints, 0);
-        room2.setInfo("2. TOTEM");
         const garlic21 = new Garlic(canvas, 500, 300);
         room2.addItemOnFloor(garlic21);
 
         const room3 = new Room(DizzolGame.ROOM3, canvas, "dizzol/3.png", new RoomExit(-5, 350), new RoomExit(530, 20.5 * C64Blackbox.rowHeight), room3floorLevels, [], 1);
-        room3.setInfo("3. BAT CAVE ENTRANCE");
         const room4 = new Room(DizzolGame.ROOM4, canvas, "dizzol/4.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), new RoomExit(530, 350), room4floorLevels, [], 0);
-        room4.setInfo("4. ANCIENT DRAWINGS");
         const room5 = new Room(DizzolGame.ROOM5, canvas, "dizzol/5.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), new RoomExit(510, 20.5 * C64Blackbox.rowHeight), room1floorLevels, [], 3);
-        room5.setInfo("5. MAIN BAT LAIR");
         const room6 = new Room(DizzolGame.ROOM6, canvas, "dizzol/6.png", exit6Left, exit67Right, room67floorLevels, [], 1);
-        room6.setInfo("6. BAT CAVE EXIT");
         const room7 = new Room(DizzolGame.ROOM7, canvas, "dizzol/7.png", exit67Left, exit67Right, room67floorLevels, twoTotemCheckpoints, 0);
-        room7.setInfo("7. TWO TOTEMS");
-        const room8 = new Room(DizzolGame.ROOM8, canvas, "dizzol/8.png", exit67Left, exit67Right, room67floorLevels, desertDeathCheckpoints, 0);
-        room8.setInfo("8. DESERT");
-        const room9 = new Room(DizzolGame.ROOM9, canvas, "dizzol/8.png", exit67Left, exit67Right, room67floorLevels, [], 0);
-        room9.setInfo("9.");
+        const room8 = new Room(DizzolGame.ROOM8, canvas, "dizzol/8.png", exit67Left, exit67Right, room67floorLevels, [], 0);
+        const room9 = new Room(DizzolGame.ROOM9, canvas, "dizzol/9.png", exit67Left, exit67Right, room67floorLevels, [], 0);
+        const room10 = new Room(DizzolGame.ROOM10, canvas, "dizzol/10.png", exit67Left, exit67Right, room67floorLevels, desertDeathCheckpoints, 0);
+        const room11 = new Room(DizzolGame.ROOM11, canvas, "dizzol/11.png", exit67Left, exit67Right, room67floorLevels, desertDeathCheckpoints2, 0);
 
         room6.bats[0].y += 80;
 
-        const allRooms = [room1, room2, room3, room4, room5, room6, room7, room8, room9];
+        const labels = [
+            "1. SCULPTURE", "2. TOTEM", "3. BAT CAVE ENTRANCE", "4. ANCIENT DRAWINGS",
+            "5. MAIN BAT LAIR", "6. BAT CAVE EXIT", "7. TWO TOTEMS", "8. ",
+            "9. ", "10. DESERT", "11. DESERT"
+        ];
+
+        const allRooms = [room1, room2, room3, room4, room5, room6, room7, room8, room9, room10, room11];
+        let labelIndex = 0;
+
         allRooms.forEach(room => {
-            room.read();//read = load background without displaying it
+            if (labelIndex < labels.length) {
+                room.setInfo(labels[labelIndex]);
+            } else {
+                console.warn(`No label found for room at index ${labelIndex}`);
+                room.setInfo(''); // or handle it as you see fit
+            }
+            labelIndex++;
+            room.read(); // read = load background without displaying it
             room.setC64Blackbox(c64Blackbox);
         });
 
@@ -578,6 +595,10 @@ class DelayedDeathEvent {
     reset() {
         this.active = false;
         console.log('DelayedDeathEvent DEACTIVATED.');
+    }
+
+    activate(){
+        this.active = true;
     }
 
     executeOnce() {
