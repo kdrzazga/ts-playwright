@@ -509,19 +509,20 @@ class RoomRegistry{
         const totemSfx2 = new SfxEvent("dizzol/totem.mp3");
         const singleTotemCheckpoints = [new Checkpoint(315, 411, totemSfx1)];
         const twoTotemCheckpoints = [new Checkpoint(140, 435, totemSfx1), new Checkpoint(305, 435, totemSfx2)];
-
         const desertDeathEvent = new DelayedDeathEvent(null, 22000);
         const desertDeathEvent2 = new DelayedDeathEvent(null, 22000);
         const desertDeathCheckpoints = [new Checkpoint(500, 411, desertDeathEvent)];
         const desertDeathCheckpoints2 = [new Checkpoint(500, 411, desertDeathEvent2)];
 
         const room1 = new Room(DizzolGame.ROOM1, canvas, "dizzol/1.png", new RoomExit(-5, 20.5 * C64Blackbox.rowHeight), null, room1floorLevels, room1Checkpoints, 0);
+
         const garlic11 = new Garlic(canvas, 500, 300);
         const garlic12 = new Garlic(canvas, 400, 300);
         room1.addItemOnFloor(garlic11);
         room1.addItemOnFloor(garlic12);
 
         const room2 = new Room(DizzolGame.ROOM2, canvas, "dizzol/2.png", new RoomExit(100, 428), new RoomExit(510, 20.5 * C64Blackbox.rowHeight), room2floorLevels, singleTotemCheckpoints, 0);
+
         const garlic21 = new Garlic(canvas, 500, 300);
         room2.addItemOnFloor(garlic21);
 
@@ -534,6 +535,7 @@ class RoomRegistry{
         const room9 = new Room(DizzolGame.ROOM9, canvas, "dizzol/9.png", exit67Left, exit67Right, room67floorLevels, [], 0);
         const room10 = new Room(DizzolGame.ROOM10, canvas, "dizzol/10.png", exit67Left, exit67Right, room67floorLevels, desertDeathCheckpoints, 0);
         const room11 = new Room(DizzolGame.ROOM11, canvas, "dizzol/11.png", exit67Left, exit67Right, room67floorLevels, desertDeathCheckpoints2, 0);
+
 
         room6.bats[0].y += 80;
 
@@ -631,6 +633,7 @@ class DelayedDeathEvent {
     activate(){
         this.active = true;
         console.log('Delayed Death Event DEACTIVATED.');
+
     }
 
     executeOnce() {
@@ -647,6 +650,7 @@ class DelayedDeathEvent {
 
             this.player.hp = 0;
             console.log('You died in a desert');
+
             this.player.checkIfDead();//he is
         }, this.delay);
     }
