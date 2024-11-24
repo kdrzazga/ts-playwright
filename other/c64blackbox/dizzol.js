@@ -520,7 +520,7 @@ class RoomRegistry{
                 room.setInfo(labels[labelIndex]);
             } else {
                 console.warn(`No label found for room at index ${labelIndex}`);
-                room.setInfo(''); // or handle it as you see fit
+                room.setInfo('');
             }
             labelIndex++;
             room.read(); // read = load background without displaying it
