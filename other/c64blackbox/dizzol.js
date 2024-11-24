@@ -479,8 +479,8 @@ class RoomRegistry{
         const singleTotemCheckpoints = [new Checkpoint(315, 411, totemSfx1)];
         const twoTotemCheckpoints = [new Checkpoint(140, 435, totemSfx1), new Checkpoint(305, 435, totemSfx2)];
 
-        const desertDeathEvent = new DelayedDeathEvent(null, 8000);
-        const desertDeathEvent2 = new DelayedDeathEvent(null, 8000);
+        const desertDeathEvent = new DelayedDeathEvent(null, 22000);
+        const desertDeathEvent2 = new DelayedDeathEvent(null, 22000);
         const desertDeathCheckpoints = [new Checkpoint(500, 411, desertDeathEvent)];
         const desertDeathCheckpoints2 = [new Checkpoint(500, 411, desertDeathEvent2)];
 
