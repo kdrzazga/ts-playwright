@@ -78,130 +78,35 @@ class Bat extends Sprite{
     }
 }
 
-class Room{
+class Troll extends Sprite{
 
-    constructor(number, canvas, picPath, leftExit, rightExit, floorLevels, checkpoints, batsCount){
-        this.number = number;
-        this.picPath = picPath;
-        this.leftExit = leftExit;
-        this.rightExit = rightExit;
-		this.floorLevels = floorLevels;
-		this.checkpoints = checkpoints;
-
-        this.context = canvas.getContext('2d');
-        this.loader = new PictureLoader(this.context);
-        this.enemyLoader = new PictureLoader(this.context);
-        this.garlicLoader = new PictureLoader(this.context);
-        this.bats = [];
-        this.items = [];
-        this.info = '';
-
-        this.initializeBats(batsCount, canvas);
+    constructor(canvas, x){
+        super(canvas, x, 400);
+    	this.picPath = "dizzol/trollR.png";
+    	this.picLeftPath = "dizzol/trollR.png";
+    	this.picRightPath = "dizzol/trollR.png";
+    	this.hp = 1;
     }
 
-    initializeBats(batsCount, canvas){
-        for (let i = 0; i < batsCount; i++) {
-            const bat = new Bat(canvas, 291 + 39 * i, 2 + i);
-            this.bats.push(bat);
-        }
-        if (this.bats.length > 0) {
-            this.bats[0].x = 326;
-        }
-        console.log('Created bats in Room ' + this.number);
+    move() {
+        //TODO
+    }
+}
+
+class Knight extends Sprite{
+
+    constructor(canvas, y){
+        super(canvas, x, 400);
+    	this.picPath = "dizzol/knight.png";
+    	this.picLeftPath = "dizzol/knight.png";
+    	this.picRightPath = "dizzol/knight.png";
+    	this.hp = 1;
     }
 
-    load(){
-        this.read();
-        this.draw();
+    move() {
+        //TODO
     }
 
-    read() {
-        this.loadPicture(this.loader, this.picPath).catch(error => {
-            console.error('Failed to load picture:', error);
-        });
-
-        if (this.bats.length > 0) {
-            this.loadPicture(this.enemyLoader, this.bats[0].picPath).catch(error => {
-                console.error('Failed to load bat picture:', error);
-            });
-        }
-
-        this.loadPicture(this.garlicLoader, Garlic.PATH).catch(error => {
-            console.error('Failed to load garlic picture:', error);
-        });
-    }
-
-    loadPicture(loader, path) {
-        if (path) {
-            loader.fileName = path;
-            return loader.read().then(texture => {
-                loader.texture = texture;
-            });
-        }
-        return Promise.resolve();  // No picture to load
-    }
-
-    draw(){
-        this.loader.draw(0, 9 * C64Blackbox.rowHeight);
-        //this.writeRoomInfo();
-    }
-
-    writeRoomInfo(){
-        this.writeUpperInfo(this.info);
-    }
-
-    writeUpperInfo(text){
-        const rowHeight = C64Blackbox.rowHeight;
-        const cursor = this.c64Blackbox.cursor;
-        const y = (2 + 3 * 2) * rowHeight;
-        const x = 2*rowHeight;
-        this.context.fillStyle = cursor.backgroundColor;
-        this.context.fillRect(x - 2, y - rowHeight + 2, 39*cursor.size + 4, cursor.size + 8);
-        this.context.fillStyle = cursor.color;
-        this.context.fillText(text, x, y);
-    }
-
-    drawEnemies(){
-       this.bats.filter(enemy => enemy.hp>0).forEach(bat => this.enemyLoader.draw(bat.x, bat.y));
-    }
-
-    drawItems(){
-        let garlics = this.items.filter(i => 'garlic' === i.name);
-        garlics.forEach(item => this.garlicLoader.draw(item.x, item.y));
-    }
-
-    animate(){
-        if (this.bats.length > 0){
-
-            this.bats.forEach(b => b.move());
-            this.draw();
-            this.drawItems();
-            this.drawEnemies();
-        }
-    }
-
-	getFloorLevel(x) {
-        for (let { range, level } of this.floorLevels) {
-            if (x >= range[0] && x <= range[1]) {
-                return level;
-            }
-        }
-        return null;
-    }
-
-    addItemOnFloor(item){
-        let x = item.x;
-        item.y = this.getFloorLevel(x) + 27;
-        this.items.push(item);
-    }
-
-    setInfo(info){
-        this.info = info;
-    }
-
-    setC64Blackbox(c64Blackbox){
-        this.c64Blackbox = c64Blackbox;
-    }
 }
 
 class DizzolGame{
@@ -589,16 +494,17 @@ class DelayedDeathEvent {
     constructor(player, delay) {
         this.player = player;
         this.delay = delay;
-        this.active = true;
+        this.activate();
     }
 
     reset() {
         this.active = false;
-        console.log('DelayedDeathEvent DEACTIVATED.');
+        console.log('Delayed Death Event DEACTIVATED.');
     }
 
     activate(){
         this.active = true;
+        console.log('Delayed Death Event DEACTIVATED.');
     }
 
     executeOnce() {
@@ -614,7 +520,7 @@ class DelayedDeathEvent {
             }
 
             this.player.hp = 0;
-            console.log('You died on a desert');
+            console.log('You died in a desert');
             this.player.checkIfDead();//he is
         }, this.delay);
     }
