@@ -1,15 +1,20 @@
 var Commodore64 = /** @class */ (function () {
     function Commodore64() {
         this.blink = true;
+        this.eyePic = 'czachaC.png';
+        this.blinkEyeCounterMax = 120;
+        this.blinkEyeCounter = this.blinkEyeCounterMax;
         this.tableContent = [
             "&nbsp",
             "<center>    &nbsp**** COMMODORE 64 BASIC V2 ****&nbsp    </center>",
             "&nbsp",
             "<center> &nbsp64K RAM SYSTEM  38911 BASIC BYTES FREE&nbsp </center>",
             "&nbsp",
-            "READY."
+            "READY.",
+            "&nbsp",
+            "&nbsp"
         ];
-        for (var i = 5; i < 21; i++) {
+        for (var i = 5; i < 20; i++) {
             this.tableContent.push("&nbsp");
         }
         this.lastRenderTime = 0;
@@ -36,11 +41,13 @@ var Commodore64 = /** @class */ (function () {
     };
     Commodore64.prototype.generateBorder = function () {
         var html = [];
+        html.push("<center>");
         html.push("<table bgcolor=\"" + Commodore64.LIGHTBLUE + "\" width=\"100%\">");
         for (var i = 0; i < 3; i++) {
             html.push("<tr><td width=\"10%\">&nbsp</td><td width=\"80%\">&nbsp</td><td width=\"10%\">&nbsp</td></tr>");
         }
         html.push("</table>");
+        html.push("</center>");
         return html.join("");
     };
     Commodore64.prototype.initBlinker = function () {
@@ -51,6 +58,11 @@ var Commodore64 = /** @class */ (function () {
         var _this = this;
         var currentTime = performance.now();
         var timeSinceLastRender = currentTime - this.lastRenderTime;
+        this.blinkCursor(currentTime, timeSinceLastRender);
+        this.blinkEye();
+        requestAnimationFrame(function () { return _this.blinker(); });
+    };
+    Commodore64.prototype.blinkCursor = function (currentTime, timeSinceLastRender) {
         if (timeSinceLastRender >= 1000 / Commodore64.FPS) {
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             if (this.blink) {
@@ -64,7 +76,22 @@ var Commodore64 = /** @class */ (function () {
             this.lastRenderTime = currentTime;
         }
         console.log("blink = " + this.blink);
-        requestAnimationFrame(function () { return _this.blinker(); });
+    };
+    Commodore64.prototype.blinkEye = function () {
+        if (this.blinkEyeCounter > 0) {
+            this.blinkEyeCounter--;
+            return;
+        }
+        this.blinkEyeCounter = this.blinkEyeCounterMax;
+        var middlePicture = document.getElementById('middle-pic');
+        this.eyePic = this.eyePic === 'czachaC.png' ? 'closedeye.png' : 'czachaC.png';
+        var url = "resources/" + this.eyePic;
+        middlePicture.setAttribute("src", url);
+    };
+    Commodore64.prototype.drawCzacha = function () {
+        var pictureCell = document.getElementById('row7');
+        pictureCell.innerHTML = "<img src = \"resources/czachaL.png\"/><img id = 'middle-pic' src = \"resources/czachaC.png\"/><img src = \"resources/czachaR.png\"/>";
+        pictureCell.setAttribute("rowspan", "15");
     };
     Commodore64.FPS = 2;
     Commodore64.BLUE = "#352879";
@@ -83,5 +110,6 @@ var bottomBorderDiv = document.getElementById('bottom-border');
 div.innerHTML = html;
 topBorderDiv.innerHTML = commodore64.generateBorder();
 bottomBorderDiv.innerHTML = commodore64.generateBorder();
+commodore64.drawCzacha();
 commodore64.initBlinker();
 commodore64.blinker();
