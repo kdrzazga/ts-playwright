@@ -1,7 +1,4 @@
 class SkullCommodore64 extends Commodore64{
-  static FPS = 2;
-  static BLUE = "#352879";
-  static LIGHTBLUE = "#6c5eb5";
   static blinkEyeCounterMax = 120;
 
   constructor() {
@@ -9,16 +6,7 @@ class SkullCommodore64 extends Commodore64{
 	this.blinkEyeCounter = SkullCommodore64.blinkEyeCounterMax;
     this.blink = true;
     this.eyePic = 'czachaC.png';
-    this.tableContent = [
-      "&nbsp",
-      "<center>    &nbsp**** COMMODORE 64 BASIC V2 ****&nbsp    </center>",
-      "&nbsp",
-      "<center> &nbsp64K RAM SYSTEM  38911 BASIC BYTES FREE&nbsp </center>",
-      "&nbsp",
-	  "READY.",
-	  "&nbsp",
-	  "&nbsp"
-	];
+    this.tableContent = this.generateC64Header();
 
 	for (let i = 5; i < 20; i++) {
       this.tableContent.push("&nbsp");
@@ -45,12 +33,12 @@ class SkullCommodore64 extends Commodore64{
   }
 
    blinkCursor(currentTime, timeSinceLastRender){
- 	if (timeSinceLastRender >= 1000 / SkullCommodore64.FPS) {
+ 	if (timeSinceLastRender >= 1000 / Commodore64.FPS) {
 	    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         if (this.blink) {
-          this.ctx.fillStyle = SkullCommodore64.LIGHTBLUE;
+          this.ctx.fillStyle = Commodore64.LIGHTBLUE;
         } else {
-          this.ctx.fillStyle = SkullCommodore64.BLUE;
+          this.ctx.fillStyle = Commodore64.BLUE;
         }
 
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);

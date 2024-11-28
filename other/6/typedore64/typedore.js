@@ -6,17 +6,8 @@ class Commodore64 {
   constructor() {
     this.blink = true;
     this.lastRenderTime;
-    this.canvas;
     this.canvasContainer;
-    this.ctx;
-    this.tableContent = [
-      "&nbsp",		
-      "<center>    &nbsp**** COMMODORE 64 BASIC V2 ****&nbsp    </center>",
-      "&nbsp",
-      "<center> &nbsp64K RAM SYSTEM  38911 BASIC BYTES FREE&nbsp </center>",
-	  "&nbsp",
-	  "READY."
-    ];
+    this.tableContent = this.generateC64Header();
 	
 	for (let i = 5; i < 21; i++) {
       this.tableContent.push("&nbsp");
@@ -30,6 +21,18 @@ class Commodore64 {
 	this.canvas.width = 16;
 	this.canvas.height = 16;
 	this.ctx = this.canvas.getContext('2d');
+  }
+
+  generateC64Header(){
+    let header = [
+      "&nbsp",
+      "<center>    &nbsp**** COMMODORE 64 BASIC V2 ****&nbsp    </center>",
+      "&nbsp",
+      "<center> &nbsp64K RAM SYSTEM  38911 BASIC BYTES FREE&nbsp </center>",
+      "&nbsp",
+      "READY."
+    ];
+    return header;
   }
 
   generateHtml() {
