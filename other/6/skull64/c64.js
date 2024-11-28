@@ -1,11 +1,11 @@
-class Commodore64 {
+class SkullCommodore64 {
   static FPS = 2;
   static BLUE = "#352879";
   static LIGHTBLUE = "#6c5eb5";
   static blinkEyeCounterMax = 120;
 
   constructor() {
-	this.blinkEyeCounter = Commodore64.blinkEyeCounterMax;
+	this.blinkEyeCounter = SkullCommodore64.blinkEyeCounterMax;
     this.blink = true;
     this.eyePic = 'czachaC.png';
     this.tableContent = [
@@ -36,7 +36,7 @@ class Commodore64 {
   generateHtml() {
     const html = [];
 	let number = 0;
-    html.push("<table id=\"main\" bgcolor=\"" + Commodore64.BLUE + "\">");
+    html.push("<table id=\"main\" bgcolor=\"" + SkullCommodore64.BLUE + "\">");
     this.tableContent.forEach((line) => {
 	  let strNumber = String(number);
 	  let style = line === "&nbsp" ? "" : "style='white-space: nowrap;'";
@@ -50,7 +50,7 @@ class Commodore64 {
   generateBorder() {
     const html = [];
 	html.push("<center>");
-	html.push("<table bgcolor=\"" + Commodore64.LIGHTBLUE + "\" width=\"100%\">")
+	html.push("<table bgcolor=\"" + SkullCommodore64.LIGHTBLUE + "\" width=\"100%\">")
 	for (let i = 0; i < 3; i++){
 		html.push("<tr><td width=\"10%\">&nbsp</td><td width=\"80%\">&nbsp</td><td width=\"10%\">&nbsp</td></tr>");
 	}
@@ -75,12 +75,12 @@ class Commodore64 {
   }
   
    blinkCursor(currentTime, timeSinceLastRender){
- 	if (timeSinceLastRender >= 1000 / Commodore64.FPS) {
+ 	if (timeSinceLastRender >= 1000 / SkullCommodore64.FPS) {
 	    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         if (this.blink) {
-          this.ctx.fillStyle = Commodore64.LIGHTBLUE;
+          this.ctx.fillStyle = SkullCommodore64.LIGHTBLUE;
         } else {
-          this.ctx.fillStyle = Commodore64.BLUE;
+          this.ctx.fillStyle = SkullCommodore64.BLUE;
         }
 		
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
@@ -98,7 +98,7 @@ class Commodore64 {
 		return;
 	}
 	
-	this.blinkEyeCounter = Commodore64.blinkEyeCounterMax;
+	this.blinkEyeCounter = SkullCommodore64.blinkEyeCounterMax;
 	
 	let middlePicture = document.getElementById('middle-pic');
 	this.eyePic = this.eyePic === 'czachaC.png' ? 'closedeye.png' : 'czachaC.png';	
@@ -119,7 +119,7 @@ let height = 600;
 window.innerWidth = width;
 window.innerHeight = height;
 
-const commodore64 = new Commodore64();
+const commodore64 = new SkullCommodore64();
 const html = commodore64.generateHtml();
 const div = document.getElementById('commodore64');
 const topBorderDiv = document.getElementById('top-border');
