@@ -8,7 +8,7 @@ class SkullCommodore64 extends Commodore64{
     this.eyePic = 'czachaC.png';
     this.tableContent = this.generateC64Header();
 
-	for (let i = 5; i < 20; i++) {
+	for (let i = 5; i < 22; i++) {
       this.tableContent.push("&nbsp");
     }
 	this.lastRenderTime = 0;
