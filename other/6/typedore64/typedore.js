@@ -3,14 +3,12 @@ class Commodore64 {
   static BLUE = "#352879";
   static LIGHTBLUE = "#6c5eb5";
 
-  private tableContent: string[];
-  private blink = true;
-  private lastRenderTime;
-  private canvas;
-  private canvasContainer;
-  private ctx;
-
   constructor() {
+    this.blink = true;
+    this.lastRenderTime;
+    this.canvas;
+    this.canvasContainer;
+    this.ctx;
     this.tableContent = [
       "&nbsp",		
       "<center>    &nbsp**** COMMODORE 64 BASIC V2 ****&nbsp    </center>",
@@ -34,7 +32,7 @@ class Commodore64 {
 	this.ctx = this.canvas.getContext('2d');
   }
 
-  generateHtml(): string {
+  generateHtml() {
     const html = [];
 	let number = 0;
     html.push("<table id=\"main\" bgcolor=\"" + Commodore64.BLUE + "\">");
@@ -48,7 +46,7 @@ class Commodore64 {
     return html.join("");
   }
   
-  generateBorder(): string {
+  generateBorder() {
     const html = [];
 	html.push("<table bgcolor=\"" + Commodore64.LIGHTBLUE + "\" width=\"100%\">")
 	for (let i = 0; i < 3; i++){

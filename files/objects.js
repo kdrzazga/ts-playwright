@@ -32,7 +32,7 @@ function restoreStar(id){
     }
 }
 
-class Bubble{
+class Bubble {
 
     static currentIndex = 0;
 
