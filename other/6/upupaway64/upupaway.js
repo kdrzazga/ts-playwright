@@ -1,37 +1,31 @@
-class CircularList<T> {
-    private list: T[];
-    private index: number;
+class CircularList {
 
-    constructor(list: T[]) {
+    constructor(list) {
         this.list = list;
         this.index = 0;
     }
 
-    public next(): T {
+    next(){
         let result = this.list[this.index];
         this.index = (this.index + 1) % this.list.length;
         return result;
     }
 }
 
-class Commodore64 {
-  static FPS = 2;
-  static BLUE = "#352879";
-  static LIGHTBLUE = "#6c5eb5";
-
-  private tableContent: string[];
-  private blink = true;
-  private lastRenderTime;
-  private cursorCanvas;
-  private cursorContainer;
-  private ctx;
-  private delay;
-  private ballonCounterMax = 40;
-  private ballonCounter;
-  private baloonImages: CircularList<string>;
-  private currentImage: string;
-
+class UpUpAway64 extends Commodore64 {
   constructor(delay) {
+    super();
+    this.blink = true;
+    this.lastRenderTime;
+    this.cursorCanvas;
+    this.cursorContainer;
+    this.ctx;
+    this.delay;
+    this.ballonCounterMax = 40;
+    this.ballonCounter;
+    this.baloonImages;
+    this.currentImage;
+
 	this.ballonCounter = this.ballonCounterMax;
 	this.baloonImages = new CircularList(['uua.png', 'uuaW.png', 'uuaP.png', 'uuaWR.png']);
 	this.currentImage = this.baloonImages.next();
@@ -73,32 +67,8 @@ class Commodore64 {
 	this.ctx = this.cursorCanvas.getContext('2d');
 	this.delay = delay;
   }
-
-  generateHtml(): string {
-    const html = [];
-	let number = 0;
-    html.push("<table id=\"main\" bgcolor=\"" + Commodore64.BLUE + "\">");
-    this.tableContent.forEach((line) => {
-	  let strNumber = String(number);
-	  let style = line === "&nbsp" ? "" : "style='white-space: nowrap;'";
-	  html.push("<tr><td id=\"row" + strNumber + "\" colspan=\"2\" " + style + ">" + line + "</td></tr>");
-	  number++;
-    });
-    html.push("</table>");
-    return html.join("");
-  }
   
-  generateBorder(): string {
-    const html = [];
-	html.push("<table bgcolor=\"" + Commodore64.LIGHTBLUE + "\" width=\"100%\">")
-	for (let i = 0; i < 3; i++){
-		html.push("<tr><td width=\"10%\">&nbsp</td><td width=\"80%\">&nbsp</td><td width=\"10%\">&nbsp</td></tr>");
-	}
-	html.push("</table>");
-    return html.join("");
-  }
-  
-  initTimeLoop(){
+  initTimeLoop() {
 	this.cursorContainer = document.getElementById('row20');
 	this.cursorContainer.appendChild(this.cursorCanvas);
   }
@@ -125,16 +95,16 @@ class Commodore64 {
     requestAnimationFrame(() => this.timeLoop());	
   }
   
-  private changeColor(){
-	this.currentImage = this.baloonImages.next();
+  changeColor(){
+	    this.currentImage = this.baloonImages.next();
   }
   
-  private moveBaloon(){
+  moveBaloon(){
 		let randomNum = Math.random() * (300 - 50) + 110;
 		this.delay = randomNum;
   }
   
-  private blinkCursor(currentTime, timeSinceLastRender){
+  blinkCursor(currentTime, timeSinceLastRender){
 	    this.ctx.clearRect(0, 0, this.cursorCanvas.width, this.cursorCanvas.height);
         if (this.blink) {
           this.ctx.fillStyle = Commodore64.LIGHTBLUE;
@@ -149,12 +119,12 @@ class Commodore64 {
   }
 
   animate(delay){
-	console.log("Delay = ", delay);
-	let baloon = document.getElementById('baloon');
-	const delayStr: string = new String(delay).toUpperCase();
-	baloon.style.left = delayStr + 'px';
-	const url = "resources/" + this.currentImage;
-	baloon.setAttribute("src", url);
+	    console.log("Delay = ", delay);
+	    let baloon = document.getElementById('baloon');
+	    const delayStr = new String(delay).toUpperCase();
+	    baloon.style.left = delayStr + 'px';
+	    const url = "resources/" + this.currentImage;
+	    baloon.setAttribute("src", url);
  }
 }
 
@@ -167,7 +137,7 @@ window.innerHeight = height;
 const params = new URLSearchParams(window.location.search);
 const delay = params.get('delay');
 
-const commodore64 = new Commodore64(delay);
+const commodore64 = new UpUpAway64(delay);
 const html = commodore64.generateHtml();
 const div = document.getElementById('commodore64');
 const topBorderDiv = document.getElementById('top-border');
