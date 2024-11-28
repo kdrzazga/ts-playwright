@@ -9,7 +9,7 @@ class SkullCommodore64 {
     this.blink = true;
     this.eyePic = 'czachaC.png';
     this.tableContent = [
-      "&nbsp",		
+      "&nbsp",
       "<center>    &nbsp**** COMMODORE 64 BASIC V2 ****&nbsp    </center>",
       "&nbsp",
       "<center> &nbsp64K RAM SYSTEM  38911 BASIC BYTES FREE&nbsp </center>",
@@ -18,12 +18,12 @@ class SkullCommodore64 {
 	  "&nbsp",
 	  "&nbsp"
 	];
-	
+
 	for (let i = 5; i < 20; i++) {
       this.tableContent.push("&nbsp");
     }
 	this.lastRenderTime = 0;
-	
+
 	this.canvas = document.createElement('canvas');
 	this.canvas.style.position = 'relative';
 	this.canvas.style.top = '-2px';
@@ -46,7 +46,7 @@ class SkullCommodore64 {
     html.push("</table>");
     return html.join("");
   }
-  
+
   generateBorder() {
     const html = [];
 	html.push("<center>");
@@ -56,24 +56,24 @@ class SkullCommodore64 {
 	}
 	html.push("</table>");
 	html.push("</center>");
-    return html.join("");  
+    return html.join("");
   }
-  
+
   initBlinker(){
 	this.canvasContainer = document.getElementById('row6');
 	this.canvasContainer.appendChild(this.canvas);
   }
-  
+
   blinker() {
 	const currentTime = performance.now();
 	const timeSinceLastRender = currentTime - this.lastRenderTime;
-	
+
 	this.blinkCursor(currentTime, timeSinceLastRender);
 	this.blinkEye();
 
-    requestAnimationFrame(() => this.blinker());	
+    requestAnimationFrame(() => this.blinker());
   }
-  
+
    blinkCursor(currentTime, timeSinceLastRender){
  	if (timeSinceLastRender >= 1000 / SkullCommodore64.FPS) {
 	    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -82,30 +82,30 @@ class SkullCommodore64 {
         } else {
           this.ctx.fillStyle = SkullCommodore64.BLUE;
         }
-		
+
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 		this.blink = !this.blink;
 		this.lastRenderTime = currentTime;
 	}
-	
+
 	//console.log("blink = " + this.blink);
   }
-  
+
   blinkEye(){
-  
+
 	if (this.blinkEyeCounter > 0){
 		this.blinkEyeCounter--;
 		return;
 	}
-	
+
 	this.blinkEyeCounter = SkullCommodore64.blinkEyeCounterMax;
-	
+
 	let middlePicture = document.getElementById('middle-pic');
-	this.eyePic = this.eyePic === 'czachaC.png' ? 'closedeye.png' : 'czachaC.png';	
+	this.eyePic = this.eyePic === 'czachaC.png' ? 'closedeye.png' : 'czachaC.png';
 	const url = "resources/" + this.eyePic;
-	middlePicture.setAttribute("src", url);	
+	middlePicture.setAttribute("src", url);
   }
-  
+
   drawCzacha(){
 	let pictureCell = document.getElementById('row7');
 	pictureCell.innerHTML = "<img src = \"resources/czachaL.png\"/><img id = 'middle-pic' src = \"resources/czachaC.png\"/><img src = \"resources/czachaR.png\"/>";
