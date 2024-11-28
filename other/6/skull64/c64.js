@@ -1,10 +1,11 @@
-class SkullCommodore64 {
+class SkullCommodore64 extends Commodore64{
   static FPS = 2;
   static BLUE = "#352879";
   static LIGHTBLUE = "#6c5eb5";
   static blinkEyeCounterMax = 120;
 
   constructor() {
+    super();
 	this.blinkEyeCounter = SkullCommodore64.blinkEyeCounterMax;
     this.blink = true;
     this.eyePic = 'czachaC.png';
@@ -31,37 +32,6 @@ class SkullCommodore64 {
 	this.canvas.width = 16;
 	this.canvas.height = 16;
 	this.ctx = this.canvas.getContext('2d');
-  }
-
-  generateHtml() {
-    const html = [];
-	let number = 0;
-    html.push("<table id=\"main\" bgcolor=\"" + SkullCommodore64.BLUE + "\">");
-    this.tableContent.forEach((line) => {
-	  let strNumber = String(number);
-	  let style = line === "&nbsp" ? "" : "style='white-space: nowrap;'";
-	  html.push("<tr><td id=\"row" + strNumber + "\" colspan=\"2\" " + style + ">" + line + "</td></tr>");
-	  number++;
-    });
-    html.push("</table>");
-    return html.join("");
-  }
-
-  generateBorder() {
-    const html = [];
-	html.push("<center>");
-	html.push("<table bgcolor=\"" + SkullCommodore64.LIGHTBLUE + "\" width=\"100%\">")
-	for (let i = 0; i < 3; i++){
-		html.push("<tr><td width=\"10%\">&nbsp</td><td width=\"80%\">&nbsp</td><td width=\"10%\">&nbsp</td></tr>");
-	}
-	html.push("</table>");
-	html.push("</center>");
-    return html.join("");
-  }
-
-  initBlinker(){
-	this.canvasContainer = document.getElementById('row6');
-	this.canvasContainer.appendChild(this.canvas);
   }
 
   blinker() {
