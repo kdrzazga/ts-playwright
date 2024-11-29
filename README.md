@@ -7,38 +7,38 @@ Browse to http://localhost:3000
 
 ------------------------------------------
 
-Webapps: https://kdrzazga.github.io/ts-playwright
+Webapps: https://kdrzazga.github.io/js-playwright
 
 C64 Blackbox:
 ---
-https://kdrzazga.github.io/ts-playwright/other/c64blackbox/
+https://kdrzazga.github.io/js-playwright/other/c64blackbox/
 
-https://kdrzazga.github.io/ts-playwright/other/c64blackbox/directF9.html
+https://kdrzazga.github.io/js-playwright/other/c64blackbox/directF9.html
 
-https://kdrzazga.github.io/ts-playwright/other/c64blackbox/directF7.html
+https://kdrzazga.github.io/js-playwright/other/c64blackbox/directF7.html
 
-https://kdrzazga.github.io/ts-playwright/other/c64blackbox/cebulus.html
+https://kdrzazga.github.io/js-playwright/other/c64blackbox/cebulus.html
 
-K&A+: https://kdrzazga.github.io/ts-playwright/other/c64blackbox/directF6.html
+K&A+: https://kdrzazga.github.io/js-playwright/other/c64blackbox/directF6.html
 
 C64 Classic:
 ---
-https://kdrzazga.github.io/ts-playwright/other/c64blackbox/classicC64.html
+https://kdrzazga.github.io/js-playwright/other/c64blackbox/classicC64.html
 
-K&A+: https://kdrzazga.github.io/ts-playwright/other/c64blackbox/directF6ClassicC64.html
+K&A+: https://kdrzazga.github.io/js-playwright/other/c64blackbox/directF6ClassicC64.html
 
 6:
 ---
-https://kdrzazga.github.io/ts-playwright/other/6/6.html
+https://kdrzazga.github.io/js-playwright/other/6/6.html
 
 Pacman w lesie:
 ---
-https://kdrzazga.github.io/ts-playwright/other/ForestPacman
+https://kdrzazga.github.io/js-playwright/other/ForestPacman
 
 Cube animation:
 --
-https://kdrzazga.github.io/ts-playwright/other/cube
+https://kdrzazga.github.io/js-playwright/other/cube
 
 Simple animation - Runner:
 --
-https://kdrzazga.github.io/ts-playwright/other/ts-anim-runner/runner.html
+https://kdrzazga.github.io/js-playwright/other/ts-anim-runner/runner.html
