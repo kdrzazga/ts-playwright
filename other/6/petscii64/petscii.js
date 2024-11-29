@@ -1,7 +1,5 @@
-class Pacman64 extends Commodore64 {
-  static FPS = 2;
-  static BLUE = "#352879";
-  static LIGHTBLUE = "#6c5eb5";
+class Petscii {
+
   static VERT_S = 179;
   static VERT_LEFT_S = 180;
   static TOP_RIGHT_S = 191;
@@ -16,6 +14,9 @@ class Pacman64 extends Commodore64 {
   static SPACE = 160;
   static LOWER_HALF_BLOCK = 0x2585;
   static BLOCK = 0xdb;
+}
+
+class Pacman64 extends Commodore64 {
 
   constructor(delay) {
     super();
@@ -114,70 +115,70 @@ class Pacman64 extends Commodore64 {
 	let elements = [];
 	
 	let topRow = document.getElementById('row7');	
-	topRow.textContent = this.createLongFrame(Pacman64.TOP_LEFT_S, Pacman64.TOP_RIGHT_S);
+	topRow.textContent = this.createLongFrame(Petscii.TOP_LEFT_S, Petscii.TOP_RIGHT_S);
 	
 	let frameRow = document.getElementById('row8');
-	frameRow.textContent = String.fromCharCode(Pacman64.VERT_S) + String.fromCharCode(Pacman64.SPACE).repeat(16) + "PACMAN" + String.fromCharCode(Pacman64.SPACE).repeat(16) + String.fromCharCode(Pacman64.VERT_S);
+	frameRow.textContent = String.fromCharCode(Petscii.VERT_S) + String.fromCharCode(Petscii.SPACE).repeat(16) + "PACMAN" + String.fromCharCode(Petscii.SPACE).repeat(16) + String.fromCharCode(Petscii.VERT_S);
 	
 	//Board starts here
-	elements = [  [1, Pacman64.VERT_RIGHT_S],  [8, Pacman64.HORIZ_S],  [1, Pacman64.HORIZ_DOWN_S],  [4, Pacman64.HORIZ_S],
-		[1, Pacman64.HORIZ_DOWN_S],  [12, Pacman64.HORIZ_S],  [1, Pacman64.HORIZ_DOWN_S],  [4, Pacman64.HORIZ_S], [1, Pacman64.HORIZ_DOWN_S], [6, Pacman64.HORIZ_S], [1, Pacman64.VERT_LEFT_S]];
+	elements = [  [1, Petscii.VERT_RIGHT_S],  [8, Petscii.HORIZ_S],  [1, Petscii.HORIZ_DOWN_S],  [4, Petscii.HORIZ_S],
+		[1, Petscii.HORIZ_DOWN_S],  [12, Petscii.HORIZ_S],  [1, Petscii.HORIZ_DOWN_S],  [4, Petscii.HORIZ_S], [1, Petscii.HORIZ_DOWN_S], [6, Petscii.HORIZ_S], [1, Petscii.VERT_LEFT_S]];
 	this.generateRow('row9', elements);
 		
-	elements = [  [1, Pacman64.VERT_S],  [8, Pacman64.SPACE],  [1, Pacman64.VERT_S],  [4, Pacman64.SPACE],
-		[1, Pacman64.VERT_S],  [2, Pacman64.SPACE],  [10, Pacman64.SPACE],  [1, Pacman64.VERT_S], [4, Pacman64.SPACE], [1, Pacman64.VERT_S], [6, Pacman64.SPACE], [1, Pacman64.VERT_S] ];
+	elements = [  [1, Petscii.VERT_S],  [8, Petscii.SPACE],  [1, Petscii.VERT_S],  [4, Petscii.SPACE],
+		[1, Petscii.VERT_S],  [2, Petscii.SPACE],  [10, Petscii.SPACE],  [1, Petscii.VERT_S], [4, Petscii.SPACE], [1, Petscii.VERT_S], [6, Petscii.SPACE], [1, Petscii.VERT_S] ];
 	this.generateRow('row10', elements);
 	
-	elements = [ [1, Pacman64.VERT_S], [2, Pacman64.SPACE], [1, Pacman64.TOP_LEFT_S], [2, Pacman64.HORIZ_S], [1, Pacman64.TOP_RIGHT_S], [2, Pacman64.SPACE], [1, Pacman64.VERT_S], [4, Pacman64.SPACE], [1, Pacman64.VERT_S], [2, Pacman64.SPACE], [1, Pacman64.TOP_LEFT_S], [6, Pacman64.HORIZ_S], [1, Pacman64.TOP_RIGHT_S], [2, Pacman64.SPACE], [1, Pacman64.VERT_S],[4, Pacman64.SPACE], [1, Pacman64.VERT_S], [2, Pacman64.SPACE], [1, Pacman64.TOP_LEFT_S], [1, Pacman64.TOP_RIGHT_S],  [2, Pacman64.SPACE], [1, Pacman64.VERT_S]];
+	elements = [ [1, Petscii.VERT_S], [2, Petscii.SPACE], [1, Petscii.TOP_LEFT_S], [2, Petscii.HORIZ_S], [1, Petscii.TOP_RIGHT_S], [2, Petscii.SPACE], [1, Petscii.VERT_S], [4, Petscii.SPACE], [1, Petscii.VERT_S], [2, Petscii.SPACE], [1, Petscii.TOP_LEFT_S], [6, Petscii.HORIZ_S], [1, Petscii.TOP_RIGHT_S], [2, Petscii.SPACE], [1, Petscii.VERT_S],[4, Petscii.SPACE], [1, Petscii.VERT_S], [2, Petscii.SPACE], [1, Petscii.TOP_LEFT_S], [1, Petscii.TOP_RIGHT_S],  [2, Petscii.SPACE], [1, Petscii.VERT_S]];
 	this.generateRow('row11', elements);
 	
-	elements = [ [1, Pacman64.VERT_S], [2, Pacman64.SPACE], [1, Pacman64.VERT_S], [2, Pacman64.SPACE], [1, Pacman64.VERT_S], [2, Pacman64.SPACE], [1, Pacman64.VERT_S], [4, Pacman64.SPACE], [1, Pacman64.VERT_S], [2, Pacman64.SPACE], [1, Pacman64.VERT_S],[6, Pacman64.SPACE], [1, Pacman64.VERT_S], [2, Pacman64.SPACE], [1, Pacman64.VERT_S], [4, Pacman64.SPACE],[1, Pacman64.VERT_S], [2, Pacman64.SPACE], [2, Pacman64.VERT_S], [2, Pacman64.SPACE], [1, Pacman64.VERT_S]];
+	elements = [ [1, Petscii.VERT_S], [2, Petscii.SPACE], [1, Petscii.VERT_S], [2, Petscii.SPACE], [1, Petscii.VERT_S], [2, Petscii.SPACE], [1, Petscii.VERT_S], [4, Petscii.SPACE], [1, Petscii.VERT_S], [2, Petscii.SPACE], [1, Petscii.VERT_S],[6, Petscii.SPACE], [1, Petscii.VERT_S], [2, Petscii.SPACE], [1, Petscii.VERT_S], [4, Petscii.SPACE],[1, Petscii.VERT_S], [2, Petscii.SPACE], [2, Petscii.VERT_S], [2, Petscii.SPACE], [1, Petscii.VERT_S]];
 	this.generateRow('row12', elements);
 	
-	elements = [ [1, Pacman64.VERT_S], [2, Pacman64.SPACE], [1, Pacman64.BOTTOM_LEFT_S], [2, Pacman64.HORIZ_S], [1, Pacman64.BOTTOM_RIGHT_S], [2, Pacman64.SPACE], [1, Pacman64.BOTTOM_LEFT_S], [4, Pacman64.HORIZ_S], [1, Pacman64.BOTTOM_RIGHT_S], [2, Pacman64.SPACE], [1, Pacman64.BOTTOM_LEFT_S], [6, Pacman64.HORIZ_S], [1, Pacman64.BOTTOM_RIGHT_S], [2, Pacman64.SPACE], [1, Pacman64.BOTTOM_LEFT_S], [4, Pacman64.HORIZ_S], [1, Pacman64.BOTTOM_RIGHT_S], [2, Pacman64.SPACE], [1, Pacman64.BOTTOM_LEFT_S], [1, Pacman64.BOTTOM_RIGHT_S], [2, Pacman64.SPACE], [1, Pacman64.VERT_S]];
+	elements = [ [1, Petscii.VERT_S], [2, Petscii.SPACE], [1, Petscii.BOTTOM_LEFT_S], [2, Petscii.HORIZ_S], [1, Petscii.BOTTOM_RIGHT_S], [2, Petscii.SPACE], [1, Petscii.BOTTOM_LEFT_S], [4, Petscii.HORIZ_S], [1, Petscii.BOTTOM_RIGHT_S], [2, Petscii.SPACE], [1, Petscii.BOTTOM_LEFT_S], [6, Petscii.HORIZ_S], [1, Petscii.BOTTOM_RIGHT_S], [2, Petscii.SPACE], [1, Petscii.BOTTOM_LEFT_S], [4, Petscii.HORIZ_S], [1, Petscii.BOTTOM_RIGHT_S], [2, Petscii.SPACE], [1, Petscii.BOTTOM_LEFT_S], [1, Petscii.BOTTOM_RIGHT_S], [2, Petscii.SPACE], [1, Petscii.VERT_S]];
 	this.generateRow('row13', elements);
 	
 	frameRow = document.getElementById('row14');
-	frameRow.innerHTML = String.fromCharCode(Pacman64.VERT_S)
+	frameRow.innerHTML = String.fromCharCode(Petscii.VERT_S)
 		+ '&nbsp</td>'
 		+ '<td width = "10%"></td>'	
 		+ '<td width = "95%"><img id = "pacman" src = "resources/pm.png" style = "margin-left : 50px"></img></td>'
 		+ '<td width = "5%"></td>'	
-		+ String.fromCharCode(Pacman64.SPACE)
-		+ String.fromCharCode(Pacman64.VERT_S);
+		+ String.fromCharCode(Petscii.SPACE)
+		+ String.fromCharCode(Petscii.VERT_S);
 	
-	elements = [ [1, Pacman64.VERT_S] , [2, Pacman64.SPACE], [1, Pacman64.TOP_LEFT_S], [10, Pacman64.HORIZ_S], [1, Pacman64.TOP_RIGHT_S], [2, Pacman64.SPACE], [1, Pacman64.TOP_LEFT_S], [6, Pacman64.HORIZ_S], [1, Pacman64.TOP_RIGHT_S], [2, Pacman64.SPACE], [1, Pacman64.TOP_LEFT_S], [8, Pacman64.HORIZ_S], [1, Pacman64.TOP_RIGHT_S], [2, Pacman64.SPACE], [1, Pacman64.VERT_S]];
+	elements = [ [1, Petscii.VERT_S] , [2, Petscii.SPACE], [1, Petscii.TOP_LEFT_S], [10, Petscii.HORIZ_S], [1, Petscii.TOP_RIGHT_S], [2, Petscii.SPACE], [1, Petscii.TOP_LEFT_S], [6, Petscii.HORIZ_S], [1, Petscii.TOP_RIGHT_S], [2, Petscii.SPACE], [1, Petscii.TOP_LEFT_S], [8, Petscii.HORIZ_S], [1, Petscii.TOP_RIGHT_S], [2, Petscii.SPACE], [1, Petscii.VERT_S]];
 	this.generateRow('row15', elements);
 	
-	elements = [ [1, Pacman64.VERT_S] , [2, Pacman64.SPACE], [1, Pacman64.VERT_S], [10, Pacman64.SPACE], [1, Pacman64.VERT_S]
-	,[2, Pacman64.SPACE], [1, Pacman64.VERT_S], [6, Pacman64.SPACE], [1, Pacman64.VERT_S], [2, Pacman64.SPACE]
-	, [1, Pacman64.VERT_S], [8, Pacman64.SPACE], [1, Pacman64.VERT_S], [2, Pacman64.SPACE], [1, Pacman64.VERT_S]];
+	elements = [ [1, Petscii.VERT_S] , [2, Petscii.SPACE], [1, Petscii.VERT_S], [10, Petscii.SPACE], [1, Petscii.VERT_S]
+	,[2, Petscii.SPACE], [1, Petscii.VERT_S], [6, Petscii.SPACE], [1, Petscii.VERT_S], [2, Petscii.SPACE]
+	, [1, Petscii.VERT_S], [8, Petscii.SPACE], [1, Petscii.VERT_S], [2, Petscii.SPACE], [1, Petscii.VERT_S]];
 	this.generateRow('row16', elements);
 	
-	elements = [ [1, Pacman64.VERT_S], [2, Pacman64.SPACE], [1, Pacman64.BOTTOM_LEFT_S], [5, Pacman64.HORIZ_S], [1, Pacman64.TOP_RIGHT_S],[4, Pacman64.SPACE], [1, Pacman64.VERT_S], [2, Pacman64.SPACE], [1, Pacman64.VERT_S], [6, Pacman64.SPACE], [1, Pacman64.VERT_S], [2, Pacman64.SPACE], [1, Pacman64.VERT_S], [8, Pacman64.SPACE], [1, Pacman64.VERT_S], [2, Pacman64.SPACE], [1, Pacman64.VERT_S]];
+	elements = [ [1, Petscii.VERT_S], [2, Petscii.SPACE], [1, Petscii.BOTTOM_LEFT_S], [5, Petscii.HORIZ_S], [1, Petscii.TOP_RIGHT_S],[4, Petscii.SPACE], [1, Petscii.VERT_S], [2, Petscii.SPACE], [1, Petscii.VERT_S], [6, Petscii.SPACE], [1, Petscii.VERT_S], [2, Petscii.SPACE], [1, Petscii.VERT_S], [8, Petscii.SPACE], [1, Petscii.VERT_S], [2, Petscii.SPACE], [1, Petscii.VERT_S]];
 	this.generateRow('row17', elements);
 	
-	elements = [ [1, Pacman64.VERT_S], [8, Pacman64.SPACE], [1, Pacman64.VERT_S], [4, Pacman64.SPACE], [1, Pacman64.VERT_S]
-	, [2, Pacman64.SPACE], [1, Pacman64.VERT_S], [6, Pacman64.SPACE], [1, Pacman64.VERT_S], [2, Pacman64.SPACE], [1, Pacman64.VERT_S], [8, Pacman64.SPACE], [1, Pacman64.VERT_S], [2, Pacman64.SPACE], [1, Pacman64.VERT_S]];
+	elements = [ [1, Petscii.VERT_S], [8, Petscii.SPACE], [1, Petscii.VERT_S], [4, Petscii.SPACE], [1, Petscii.VERT_S]
+	, [2, Petscii.SPACE], [1, Petscii.VERT_S], [6, Petscii.SPACE], [1, Petscii.VERT_S], [2, Petscii.SPACE], [1, Petscii.VERT_S], [8, Petscii.SPACE], [1, Petscii.VERT_S], [2, Petscii.SPACE], [1, Petscii.VERT_S]];
 	this.generateRow('row18', elements);
 	
-	elements = [ [1, Pacman64.VERT_RIGHT_S], [5, Pacman64.HORIZ_S], [1, Pacman64.TOP_RIGHT_S], [2, Pacman64.SPACE], [1, Pacman64.BOTTOM_LEFT_S], [4, Pacman64.HORIZ_S], [1, Pacman64.BOTTOM_RIGHT_S], [2, Pacman64.SPACE], [1, Pacman64.BOTTOM_LEFT_S]
-	, [6, Pacman64.HORIZ_S], [1, Pacman64.BOTTOM_RIGHT_S], [2, Pacman64.SPACE], [1, Pacman64.BOTTOM_LEFT_S]
-	, [8, Pacman64.HORIZ_S], [1, Pacman64.BOTTOM_RIGHT_S], [2, Pacman64.SPACE], [1, Pacman64.VERT_S]];
+	elements = [ [1, Petscii.VERT_RIGHT_S], [5, Petscii.HORIZ_S], [1, Petscii.TOP_RIGHT_S], [2, Petscii.SPACE], [1, Petscii.BOTTOM_LEFT_S], [4, Petscii.HORIZ_S], [1, Petscii.BOTTOM_RIGHT_S], [2, Petscii.SPACE], [1, Petscii.BOTTOM_LEFT_S]
+	, [6, Petscii.HORIZ_S], [1, Petscii.BOTTOM_RIGHT_S], [2, Petscii.SPACE], [1, Petscii.BOTTOM_LEFT_S]
+	, [8, Petscii.HORIZ_S], [1, Petscii.BOTTOM_RIGHT_S], [2, Petscii.SPACE], [1, Petscii.VERT_S]];
 	this.generateRow('row19', elements);
 		
 	frameRow = document.getElementById('row20');
-		frameRow.innerHTML = String.fromCharCode(Pacman64.VERT_S) + String.fromCharCode(Pacman64.SPACE).repeat(5) + String.fromCharCode(Pacman64.VERT_S)
+		frameRow.innerHTML = String.fromCharCode(Petscii.VERT_S) + String.fromCharCode(Petscii.SPACE).repeat(5) + String.fromCharCode(Petscii.VERT_S)
 		+ '&nbsp</td>'
 		+ '<td width = "10%"></td>'	
 		+ '<td width = "95%"><img id = "ghost" src = "resources/ghost.png" style = "margin-left : 50px"></img></td>'
 		+ '<td width = "5%"></td>'	
-		+ String.fromCharCode(Pacman64.SPACE).repeat(7)
+		+ String.fromCharCode(Petscii.SPACE).repeat(7)
 		+ String.fromCharCode(0xe1a7);
 	
-	let bottom = this.createLongFrame(Pacman64.BOTTOM_LEFT_S, Pacman64.BOTTOM_RIGHT_S);
+	let bottom = this.createLongFrame(Petscii.BOTTOM_LEFT_S, Petscii.BOTTOM_RIGHT_S);
 	let bottomRow = document.getElementById('row21');	
-	bottomRow.textContent = bottom.substring(0, 6) + String.fromCharCode(Pacman64.HORIZ_UP_S) + bottom.substring(7);
+	bottomRow.textContent = bottom.substring(0, 6) + String.fromCharCode(Petscii.HORIZ_UP_S) + bottom.substring(7);
   }
   
   generateRow(id, elements) {
@@ -202,7 +203,7 @@ class Pacman64 extends Commodore64 {
 	let longHorizLine = [];
 
 	for (let i = 1; i < 39; i++){
-		longHorizLine.push(Pacman64.HORIZ_S);
+		longHorizLine.push(Petscii.HORIZ_S);
 	}
 
 	return longHorizLine;
