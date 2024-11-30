@@ -25,8 +25,9 @@ function startPlayback(){
   }
 }
 
-
-
+const step = window.innerHeight / 300;
+let y = 0;
+let direction = 1;
 
 function smoothScroll() {
     y += step * direction;
@@ -41,16 +42,14 @@ function smoothScroll() {
 
 document.addEventListener('DOMContentLoaded', function() {
     let spans = document.querySelectorAll('span[name="slash"]');
-    spans.forEach((span, index) => {
+    let backslashSpans = document.querySelectorAll('span[name="backslash"]');
+    spans.forEach((span) => {
         span.innerText = String.fromCharCode(0x25e2);
     });
-
-    const step = window.innerHeight / 300;
-    let y = 0;
-    let direction = 1;
+    backslashSpans.forEach((span) => {
+        span.innerText = String.fromCharCode(0x25e5);
+    });
 
     console.log("Merry Christmas !");
     //smoothScroll();
-
 });
-
