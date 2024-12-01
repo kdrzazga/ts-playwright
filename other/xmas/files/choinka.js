@@ -2,29 +2,6 @@ class Petscii{
     static TRIANGLE_LEFT = 0;
 }
 
-function play() {
-  var audio = new Audio('carols.mp3');
-  audio.play();
-  setInterval(function() {
-    audio.play();
-  }, 50037);
-  console.log('Music started.');
-}
-
-function hide(){
-	var button = document.getElementById('start-tune');
-	button.hidden = true;
-	console.log('Button hidden.');
-}
-
-function startPlayback(){
-  const alreadyPlaying = sessionStorage.getItem('carols-playing');
-  if (alreadyPlaying !== 'true'){
-	  sessionStorage.setItem('carols-playing', 'true');
-	  play();
-  }
-}
-
 const step = window.innerHeight / 300;
 let y = 0;
 let direction = 1;
