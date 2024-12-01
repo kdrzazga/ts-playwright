@@ -1,6 +1,11 @@
 var counter = 3;
 const counterMax = 3;
 
+const contentCounterMax = 600;
+var currentCounter = contentCounterMax;
+
+let cribUrlDisplay = false;
+
 function play() {
   var audio = new Audio('files/carols.mp3');
   audio.play();
@@ -32,12 +37,32 @@ function conditionalSanta1Reset() {
     }
 }
 
+function flipIframeSource() {
+    cribUrlDisplay = !cribUrlDisplay;
+    var iframe = document.querySelector('iframe');
+    const treeUrl = 'files/choinka.html';
+    const cribUrl = 'files/szopka.html';
+
+    iframe.src = cribUrlDisplay ? cribUrl : treeUrl;
+}
+
+function conditionalIframeChange(){
+    currentCounter--;
+    if(currentCounter < 0){
+        currentCounter = contentCounterMax;
+        flipIframeSource();
+    }
+}
+
 function timeLoop() {
     var _this = this;
     var lastRenderTime = 0;
     var currentTime = performance.now();
     var timeSinceLastRender = currentTime - lastRenderTime;
     if (timeSinceLastRender >= 15) {
+
+        conditionalIframeChange();
+
         if (counter < 0) {
             moveSanta1();
             conditionalSanta1Reset();

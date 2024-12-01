@@ -28,5 +28,5 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     console.log("Merry Christmas !");
-    //smoothScroll();
+    smoothScroll();
 });
