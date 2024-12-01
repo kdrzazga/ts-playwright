@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PETscii code list</title>
+
+    <style>
+        @font-face {
+          font-family: 'c64mono';
+          src: url('https://kdrzazga.github.io/js-playwright/other/6/typedore64/resources/C64_Pro_Mono-STYLE.ttf') format('truetype');
+        }
+        table {
+          font-family: 'c64mono';
+          color: #eeeeee;
+        }
+    </style>
+</head>
+<body>
+PETSCII codes:
+<table></table>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let table = document.getElementsByTagName('table')[0];
+        for (var i = 0x21; i < 0xf8ff; i++){
+            let row = document.createElement('tr');
+            let cell1 = document.createElement('td');
+            let cell2 = document.createElement('td');
+            let cell3 = document.createElement('td');
+            cell1.innerText = i;
+            cell2.innerText = i.toString(16);
+            cell3.innerText = String.fromCharCode(i);
+            row.appendChild(cell1);
+            row.appendChild(cell2);
+            row.appendChild(cell3);
+            table.appendChild(row);
+        }
+    });
+</script>
+</body>
+</html>
