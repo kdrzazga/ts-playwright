@@ -39,7 +39,7 @@ function conditionalSanta1Reset() {
 
 function flipIframeSource() {
     var iframe = document.querySelector('iframe');
-    const urls = ['files/choinka.html', 'files/snowman1.html', 'files/presents.html'];
+    const urls = ['files/choinka.html', 'files/snowman1.html', 'files/presents.html', 'files/sleigh.html'];
     currentUrlDisplay = (currentUrlDisplay + 1) % urls.length;
 
     iframe.src = urls[currentUrlDisplay];
