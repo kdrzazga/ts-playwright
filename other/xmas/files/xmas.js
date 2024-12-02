@@ -41,7 +41,7 @@ function flipIframeSource() {
     cribUrlDisplay = !cribUrlDisplay;
     var iframe = document.querySelector('iframe');
     const treeUrl = 'files/choinka.html';
-    const cribUrl = 'files/szopka.html';
+    const cribUrl = 'files/presents16-2.html';
 
     iframe.src = cribUrlDisplay ? cribUrl : treeUrl;
 }
