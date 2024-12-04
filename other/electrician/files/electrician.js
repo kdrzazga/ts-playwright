@@ -6,16 +6,16 @@ class MainScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('sprite', 'files/electrician.png'); // Load the sprite image
+        this.load.image('sprite', 'files/electrician.png');
     }
 
     create() {
-        this.physics.world.setBounds(0, 0, 800, 600); // Set the bounds of the physics world
+        this.physics.world.setBounds(0, 0, 800, 600);
 
-        this.building = this.createBuilding(3);
+        this.building = new Building(3);
 
-        this.sprite = this.physics.add.sprite(100, 400, 'sprite'); // Use the loaded sprite image
-        this.sprite.setCollideWorldBounds(true); // Prevent sprite from going out of bounds
+        this.sprite = this.physics.add.sprite(100, 400, 'sprite');
+        this.sprite.setCollideWorldBounds(true);
 
         this.cursors = this.input.keyboard.createCursorKeys();
     }
@@ -24,33 +24,26 @@ class MainScene extends Phaser.Scene {
         this.handleMovement();
     }
 
-    createBuilding(floorCount) {
-        const floors = [];
-        for (let i = 0; i < floorCount; i++) {
-            const floor = new Floor();
-            floors.push(floor);
-            // You can draw the visual representation of floors here if needed
-        }
-        return floors;
-    }
-
     handleMovement() {
-        // Move sprite based on cursor input
+        let velocityX = 0;
+        let velocityY = 0;
+
         if (this.cursors.left.isDown) {
-            this.sprite.setVelocityX(-160); // Move left
+            velocityX = -160;
         } else if (this.cursors.right.isDown) {
-            this.sprite.setVelocityX(160); // Move right
-        } else if (this.cursors.up.isDown && this.ladder.onLadder(this.sprite.x)) {
-            this.sprite.setVelocityY(-160); // Move left
-        } else if (this.cursors.down.isDown && this.ladder.onLadder(this.sprite.x)) {
-            this.sprite.setVelocityY(160); // Move right
+            velocityX = 160;
         }
 
-         else {
-            this.sprite.setVelocityX(0);
+        if (velocityX === 0 && this.ladder.onLadder(this.sprite.x)) {
+            if (this.cursors.up.isDown) {
+                velocityY = -160;
+            } else if (this.cursors.down.isDown) {
+                velocityY = 160;
+            }
         }
 
-        // You can add additional movement for up/down or jumping if needed
+        this.sprite.setVelocityX(velocityX);
+        this.sprite.setVelocityY(velocityY);
     }
 }
 

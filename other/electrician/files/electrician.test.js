@@ -1,4 +1,4 @@
-const { Floor, Ladder } = require('./classdef');
+const { Floor, Ladder, Building } = require('./classdef');
 
 describe('Floor Class', () => {
     beforeEach(() => {
@@ -45,4 +45,30 @@ describe('Ladder Class', () => {
         expect(ladder.onLadder(29)).toBe(true); // Just inside
         expect(ladder.onLadder(31)).toBe(true); // Just inside
     });
+});
+
+describe('Building', () => {
+    let building;
+
+    beforeEach(() => {
+        Floor.COUNT = 0;
+        building = new Building(5);
+    });
+
+    test('should create the correct number of floors', () => {
+        expect(building.floors.length).toBe(5);
+    });
+
+    test('should correctly calculate floor levels', () => {
+        const expectedLevels = [84, 167, 250, 334, 417];
+        building.floors.forEach((floor, index) => {
+            expect(floor.floorLevel).toBe(expectedLevels[index]);
+        });
+    });
+
+    test('should create a ladder with correct position', () => {
+        expect(building.ladder.x).toBe(30);
+        expect(Ladder.WIDTH).toBe(60);
+    });
+
 });
