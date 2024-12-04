@@ -13,6 +13,14 @@ class Floor {
         this.floorLevel = Math.ceil((this.id + 1) * Floor.BUILDING_HEIGHT / (Floor.COUNT + 1));
         console.log(`Floor ${this.id} is on level = ${this.floorLevel}`);
     }
+
+    onFloor(y) {
+        const tolerance = this.floorLevel * 0.10;
+        const lowerBound = this.floorLevel;
+        const upperBound = this.floorLevel + tolerance;
+        return y >= lowerBound && y <= upperBound;
+    }
+
 }
 
 class Ladder {
