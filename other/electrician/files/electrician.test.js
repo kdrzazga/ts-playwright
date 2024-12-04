@@ -21,7 +21,7 @@ describe('Floor Class', () => {
         expect(Floor.COUNT).toBe(3);
     });
 });
-/*
+
 describe('Ladder Class', () => {
     let ladder;
 
@@ -34,16 +34,15 @@ describe('Ladder Class', () => {
     });
 
     test('should report if a given x position is on the ladder', () => {
-        expect(ladder.onLadder(30)).toBe(true); // Exact position
-        expect(ladder.onLadder(45)).toBe(true); // Within WIDTH (30 + 30)
         expect(ladder.onLadder(0)).toBe(false); // Outside WIDTH (30 - 60)
         expect(ladder.onLadder(100)).toBe(false); // Outside WIDTH (30 + 60)
+        expect(ladder.onLadder(30)).toBe(true); // Exact position
+        expect(ladder.onLadder(45)).toBe(true); // Within WIDTH (30 + 30)
     });
 
     test('should correctly handle different x positions for being on the ladder', () => {
+        expect(ladder.onLadder(90)).toBe(false); // Way outside
         expect(ladder.onLadder(29)).toBe(true); // Just inside
         expect(ladder.onLadder(31)).toBe(true); // Just inside
-        expect(ladder.onLadder(90)).toBe(false); // Way outside
     });
 });
-*/

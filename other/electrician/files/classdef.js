@@ -16,7 +16,9 @@ class Ladder {
     }
 
     onLadder(x1){
-        return (Math.abs(x1 - this.x) > Ladder.WIDTH);
+        const d = Math.abs(x1 - this.x);
+        console.log(`x1 = ${x1} Distance = ${d}`);
+        return (d > Ladder.WIDTH);
     }
 }
 
