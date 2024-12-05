@@ -29,18 +29,17 @@ class MainScene extends Phaser.Scene {
         if (!this.spriteCanJump) return;
 
         this.spriteCanJump = false;
-
         const jumpHeight = 45;
         const duration = 750;
 
-        this.tweens.add({
+        const jumpTween = {
             targets: this.sprite,
             y: this.sprite.y - jumpHeight, // Move up
             duration: duration / 2, // Up for half the duration
             ease: 'Linear',
             onComplete: () => {
-                // Create a tween to come down
-                this.tweens.add({
+
+                const comeDownTween = {
                     targets: this.sprite,
                     y: this.sprite.y + jumpHeight, // Move down
                     duration: duration / 2,
@@ -49,9 +48,12 @@ class MainScene extends Phaser.Scene {
                         // Re-enable jumping after 1 second
                         this.spriteCanJump = true;
                     }
-                });
+                };
+                this.tweens.add(comeDownTween);
             }
-        });
+        }
+
+        this.tweens.add(jumpTween);
 
         if (direction === 'left') {
             this.sprite.setVelocityX(-160);
