@@ -56,7 +56,7 @@ class MainScene extends Phaser.Scene {
         if (direction === 'left') {
             this.sprite.setVelocityX(-160);
         } else if (direction === 'right') {
-            this.sprite.setVelocityX(160);t
+            this.sprite.setVelocityX(160);
         } else {
             this.sprite.setVelocityX(0); // No horizontal movement if just jumping
         }
