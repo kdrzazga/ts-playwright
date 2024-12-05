@@ -3,6 +3,7 @@ class MainScene extends Phaser.Scene {
         super({ key: 'MainScene' });
         this.floors = [];
         this.ladder = new Ladder();
+        this.spriteCanJump = true;
     }
 
     preload() {
@@ -24,14 +25,57 @@ class MainScene extends Phaser.Scene {
         this.handleMovement();
     }
 
+    jump(direction) {
+        if (!this.spriteCanJump) return;
+
+        this.spriteCanJump = false;
+
+        const jumpHeight = 45;
+        const duration = 750;
+
+        this.tweens.add({
+            targets: this.sprite,
+            y: this.sprite.y - jumpHeight, // Move up
+            duration: duration / 2, // Up for half the duration
+            ease: 'Linear',
+            onComplete: () => {
+                // Create a tween to come down
+                this.tweens.add({
+                    targets: this.sprite,
+                    y: this.sprite.y + jumpHeight, // Move down
+                    duration: duration / 2,
+                    ease: 'Linear',
+                    onComplete: () => {
+                        // Re-enable jumping after 1 second
+                        this.spriteCanJump = true;
+                    }
+                });
+            }
+        });
+
+        if (direction === 'left') {
+            this.sprite.setVelocityX(-160);
+        } else if (direction === 'right') {
+            this.sprite.setVelocityX(160);t
+        } else {
+            this.sprite.setVelocityX(0); // No horizontal movement if just jumping
+        }
+    }
+
     handleMovement() {
         let velocityX = 0;
         let velocityY = 0;
 
         if (this.cursors.left.isDown) {
             velocityX = -160;
+            if (this.cursors.up.isDown) {
+                this.jump('left');
+            }
         } else if (this.cursors.right.isDown) {
             velocityX = 160;
+            if (this.cursors.up.isDown) {
+                this.jump('right');
+            }
         }
 
         if (velocityX === 0 && this.ladder.onLadder(this.sprite.x)) {
@@ -52,10 +96,10 @@ const config = {
     width: 800,
     height: 600,
     physics: {
-        default: 'arcade', // Enable Arcade Physics
+        default: 'arcade',
         arcade: {
-            gravity: { y: 0 }, // No gravity (set to 0 to keep the sprite grounded)
-            debug: false // Set to true to see physics bodies and debug information
+            gravity: { y: 0 },
+            debug: false
         }
     },
     scene: MainScene

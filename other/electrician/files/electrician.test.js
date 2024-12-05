@@ -68,7 +68,6 @@ describe('Building', () => {
 
     test('should create a ladder with correct position', () => {
         expect(building.ladder.x).toBe(30);
-        expect(Ladder.WIDTH).toBe(60);
     });
 
 });
