@@ -23,6 +23,7 @@ class MainScene extends Phaser.Scene {
 
     update() {
         this.handleMovement();
+        this.conditionalFallDown();
     }
 
     jump(direction) {
@@ -62,6 +63,12 @@ class MainScene extends Phaser.Scene {
         } else {
             this.sprite.setVelocityX(0); // No horizontal movement if just jumping
         }
+    }
+
+    conditionalFallDown(){
+        if (this.ladder.onLadder(this.sprite.x))
+            return; //Ladder prevents from falling;
+        else this.sprite.setVelocityY(160);
     }
 
     handleMovement() {
