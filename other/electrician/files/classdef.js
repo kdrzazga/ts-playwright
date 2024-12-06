@@ -15,6 +15,9 @@ class Floor {
     }
 
     onFloor(y) {
+        if (typeof y !== 'number')
+            console.warn('Wrong argument'); //defensive programming makes sense in this particular place
+
         const tolerance = this.floorLevel * 0.10;
         const lowerBound = this.floorLevel;
         const upperBound = this.floorLevel + tolerance;

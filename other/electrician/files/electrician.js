@@ -66,9 +66,26 @@ class MainScene extends Phaser.Scene {
     }
 
     conditionalFallDown(){
-        if (this.ladder.onLadder(this.sprite.x))
+        let flrs = ""
+
+        if (this.ladder.onLadder(this.sprite.x)){
             return; //Ladder prevents from falling;
-        else this.sprite.setVelocityY(160);
+        }
+
+        let velocity = 160;
+
+        this.building.floors.forEach(f => {
+            flrs += " " + f.floorLevel;
+
+            if (f.onFloor(this.sprite.y) && !this.ladder.onLadder(this.sprite.x)){
+                console.log('Floor met on y= ' + this.sprite.y);
+                velocity = 0; //Floor under feet prevents from falling
+                return;
+            }
+        });
+
+        this.sprite.setVelocityY(velocity);
+        console.log("Fall down y = ", this.sprite.y, " FloorLevels = " + flrs);
     }
 
     handleMovement() {
