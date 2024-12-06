@@ -57,7 +57,8 @@ class Ladder {
 
 class Building {
     init(floorCount, physics){
-        this.ladder = new Ladder();
+       this.ladder = new Ladder();
+       this.ladder.init(physics);
 
        this.floors = [];
        for (let i = 0; i < floorCount; i++) {
@@ -67,6 +68,12 @@ class Building {
            this.floors.push(floor);
        }
        this.floors.forEach(f => f.calculateFloorLevel());
+
+       this.leftPowerLine = new PowerLine();
+       this.leftPowerLine.init(physics, 'left');
+       this.rightPowerLine = new PowerLine();
+       this.rightPowerLine.init(physics, 'right');
+
     }
 }
 

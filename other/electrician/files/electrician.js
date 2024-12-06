@@ -28,15 +28,7 @@ class MainScene extends Phaser.Scene {
 
         this.building = new Building();
         this.building.init(3, this.physics);
-
-        this.ladder = new Ladder();
-        this.ladder.init(this.physics);
-
-        this.leftPowerLine = new PowerLine();
-        this.leftPowerLine.init(this.physics, 'left');
-        this.rightPowerLine = new PowerLine();
-        this.rightPowerLine.init(this.physics, 'right');
-
+        
         this.sprite = this.physics.add.sprite(100, 400, 'sprite');
         this.sprite.setCollideWorldBounds(true);
 
@@ -90,7 +82,7 @@ class MainScene extends Phaser.Scene {
     conditionalFallDown(){
         let flrs = ""
 
-        if (this.ladder.onLadder(this.sprite.x)){
+        if (this.building.ladder.onLadder(this.sprite.x)){
             return; //Ladder prevents from falling;
         }
 
@@ -99,7 +91,7 @@ class MainScene extends Phaser.Scene {
         this.building.floors.forEach(f => {
             flrs += " " + f.floorLevel;
 
-            if (f.onFloor(this.sprite.x, this.sprite.y) && !this.ladder.onLadder(this.sprite.x)){
+            if (f.onFloor(this.sprite.x, this.sprite.y) && !this.building.ladder.onLadder(this.sprite.x)){
                 console.log('Floor met on y= ' + this.sprite.y);
                 velocity = 0; //Floor under feet prevents from falling
                 return;
@@ -126,7 +118,7 @@ class MainScene extends Phaser.Scene {
             }
         }
 
-        if (velocityX === 0 && this.ladder.onLadder(this.sprite.x)) {
+        if (velocityX === 0 && this.building.ladder.onLadder(this.sprite.x)) {
             if (this.cursors.up.isDown) {
                 velocityY = -160;
             } else if (this.cursors.down.isDown) {
