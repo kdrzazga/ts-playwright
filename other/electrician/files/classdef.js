@@ -70,4 +70,12 @@ class Building {
     }
 }
 
+class PowerLine {
+    init(physics, type){
+        const objectName = 'power-line-' + type;
+        const x = type === 'left' ? Ladder.WIDTH + 30 : Ladder.WIDTH + Floor.WIDTH + 60;
+        this.sprite = physics.add.sprite(x, 600/2, objectName);
+    }
+}
+
 module.exports = { Floor, Ladder, Building};

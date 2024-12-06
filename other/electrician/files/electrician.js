@@ -18,6 +18,9 @@ class MainScene extends Phaser.Scene {
         this.load.image('floor1', 'files/floor.png');
         this.load.image('floor2', 'files/floor.png');
 
+        this.load.image('power-line-left', 'files/powerlineL.png');
+        this.load.image('power-line-right', 'files/powerlineR.png');
+
     }
 
     create() {
@@ -28,6 +31,11 @@ class MainScene extends Phaser.Scene {
 
         this.ladder = new Ladder();
         this.ladder.init(this.physics);
+
+        this.leftPowerLine = new PowerLine();
+        this.leftPowerLine.init(this.physics, 'left');
+        this.rightPowerLine = new PowerLine();
+        this.rightPowerLine.init(this.physics, 'right');
 
         this.sprite = this.physics.add.sprite(100, 400, 'sprite');
         this.sprite.setCollideWorldBounds(true);

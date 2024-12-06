@@ -1,11 +1,27 @@
 <html>
     <head>
+    <style>
+        body {
+            background-color: black;
+            text-align: center;
+        }
 
+        #header{
+            color: yellow;
+            font-family: 'SFatarian';
+            font-size: 2.5em;
+        }
+
+        @font-face {
+            font-family: 'SFatarian';
+            src: url('atari.ttf');
+        }
+    </style>
     </head>
 <body>
-    <div id = "board">
 
-    </div>
+<div id="header" style="font-family: 'SFatarian'">ELECTRICIAN</div>
+    <div id = "board"></div>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.55.2/phaser.min.js"></script>
 <script src="files/classdef.js"></script>
