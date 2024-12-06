@@ -61,6 +61,7 @@ class Building {
        this.ladder.init(physics);
 
        this.floors = [];
+       this.wires = [];
        for (let i = 0; i < floorCount; i++) {
            const floor = new Floor();
            floor.init(physics);
@@ -85,4 +86,11 @@ class PowerLine {
     }
 }
 
-module.exports = { Floor, Ladder, Building};
+class Wire {//connects PowerLine to Floor
+
+    constructor(floor1, floor2){
+
+    }
+}
+
+module.exports = { Floor, Ladder, Building, PowerLine};
