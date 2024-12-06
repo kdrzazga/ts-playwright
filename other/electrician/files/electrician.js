@@ -8,14 +8,20 @@ class MainScene extends Phaser.Scene {
     preload() {
         this.load.image('sprite', 'files/electrician.png');
         this.load.image('ladder', 'files/ladder.png');
+        this.load.image('floor0', 'files/floor.png');
+        this.load.image('floor1', 'files/floor.png');
+        this.load.image('floor2', 'files/floor.png');
     }
 
     create() {
         this.physics.world.setBounds(0, 0, 800, 600);
 
-        this.building = new Building(3);
+        this.building = new Building();
+        this.building.init(3, this.physics);
+
         this.ladder = new Ladder();
         this.ladder.init(this.physics);
+
         this.sprite = this.physics.add.sprite(100, 400, 'sprite');
 
         this.sprite.setCollideWorldBounds(true);
