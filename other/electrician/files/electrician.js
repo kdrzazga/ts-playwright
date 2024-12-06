@@ -7,14 +7,13 @@ class MainScene extends Phaser.Scene {
 
     preload() {
         this.load.image('sprite', 'files/electrician.png');
-
         this.load.image('ladder', 'files/ladder.png');
 
         this.load.image('floor0', 'files/floor.png');
         const ladderTexture = this.textures.get('floor0');
-        Floor.WIDTH = ladderTexture.getSourceImage().width;
+        Floor.WIDTH = 617;//ladderTexture.getSourceImage().width;
         Floor.HEIGHT = 110;//ladderTexture.getSourceImage().height;
-        console.log('FLoor height = ' + Floor.HEIGHT);
+        console.log('Floor height = ' + Floor.HEIGHT);
 
         this.load.image('floor1', 'files/floor.png');
         this.load.image('floor2', 'files/floor.png');
@@ -92,7 +91,7 @@ class MainScene extends Phaser.Scene {
         this.building.floors.forEach(f => {
             flrs += " " + f.floorLevel;
 
-            if (f.onFloor(this.sprite.y) && !this.ladder.onLadder(this.sprite.x)){
+            if (f.onFloor(this.sprite.x, this.sprite.y) && !this.ladder.onLadder(this.sprite.x)){
                 console.log('Floor met on y= ' + this.sprite.y);
                 velocity = 0; //Floor under feet prevents from falling
                 return;

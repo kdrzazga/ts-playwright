@@ -11,24 +11,28 @@ class Floor {
     }
 
     init(physics){
-        this.sprite = physics.add.sprite(800/2 + Ladder.WIDTH/2 + 20, 600/this.id, 'floor' + this.id)
+        this.sprite = physics.add.sprite(800/2 + Ladder.WIDTH/2 - 20, 600/this.id, 'floor' + this.id)
     }
 
     calculateFloorLevel(){
         //should be called only after all floors are created
-        this.floorLevel = Math.ceil((this.id + 1) * Floor.BUILDING_HEIGHT / (Floor.COUNT)) - Floor.HEIGHT;
-        this.sprite.y = this.floorLevel + Floor.HEIGHT;
+        this.floorLevel = Math.ceil((this.id + 1) * Floor.BUILDING_HEIGHT / (Floor.COUNT));
+        this.sprite.y = this.floorLevel;
         console.log(`Floor ${this.id} is on level = ${this.floorLevel}`);
     }
 
-    onFloor(y) {
+    onFloor(x, y) {
+        y += Floor.HEIGHT - 30;
         if (typeof y !== 'number')
             console.warn('Wrong argument'); //defensive programming makes sense in this particular place
 
         const tolerance = this.floorLevel * 0.05;
-        const lowerBound = this.floorLevel;
-        const upperBound = this.floorLevel + tolerance;
-        return y >= lowerBound && y <= upperBound;
+        const lowerBoundY = this.floorLevel;
+        const upperBoundY = this.floorLevel + tolerance;
+
+        const lowerBoundX = this.sprite.x - Floor.WIDTH/2;
+        const upperBoundX = lowerBoundX + Floor.WIDTH;
+        return x > lowerBoundX && x < upperBoundX  && y >= lowerBoundY && y <= upperBoundY;
     }
 
 }
