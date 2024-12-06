@@ -30,12 +30,15 @@ class Ladder {
     static WIDTH = 60;
 
     constructor() {
-        this.x = 30;
+    }
+
+    init(physics){
+        this.sprite = physics.add.sprite(Ladder.WIDTH/2, 600/2, 'ladder');
     }
 
     onLadder(x1){
-        const edge1 = this.x - Ladder.WIDTH /2;
-        const edge2 = this.x + Ladder.WIDTH /2;
+        const edge1 = this.sprite.x - Ladder.WIDTH /2;
+        const edge2 = this.sprite.x + Ladder.WIDTH /2;
         return x1 > edge1 && x1 < edge2;
     }
 }

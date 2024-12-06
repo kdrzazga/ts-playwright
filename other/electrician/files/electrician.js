@@ -2,20 +2,22 @@ class MainScene extends Phaser.Scene {
     constructor() {
         super({ key: 'MainScene' });
         this.floors = [];
-        this.ladder = new Ladder();
         this.spriteCanJump = true;
     }
 
     preload() {
         this.load.image('sprite', 'files/electrician.png');
+        this.load.image('ladder', 'files/ladder.png');
     }
 
     create() {
         this.physics.world.setBounds(0, 0, 800, 600);
 
         this.building = new Building(3);
-
+        this.ladder = new Ladder();
+        this.ladder.init(this.physics);
         this.sprite = this.physics.add.sprite(100, 400, 'sprite');
+
         this.sprite.setCollideWorldBounds(true);
 
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -85,7 +87,7 @@ class MainScene extends Phaser.Scene {
         });
 
         this.sprite.setVelocityY(velocity);
-        console.log("Fall down y = ", this.sprite.y, " FloorLevels = " + flrs);
+        //console.log("Fall down y = ", this.sprite.y, " FloorLevels = " + flrs);
     }
 
     handleMovement() {
