@@ -1,6 +1,8 @@
 class Floor {
     static COUNT = 0;
     static BUILDING_HEIGHT = 500;
+    static WIDTH;
+    static HEIGHT;
 
     constructor() {
         this.id = Floor.COUNT;
@@ -14,8 +16,8 @@ class Floor {
 
     calculateFloorLevel(){
         //should be called only after all floors are created
-        this.floorLevel = Math.ceil((this.id + 1) * Floor.BUILDING_HEIGHT / (Floor.COUNT)) - 20;
-        this.sprite.y = this.floorLevel;
+        this.floorLevel = Math.ceil((this.id + 1) * Floor.BUILDING_HEIGHT / (Floor.COUNT)) - Floor.HEIGHT;
+        this.sprite.y = this.floorLevel + Floor.HEIGHT;
         console.log(`Floor ${this.id} is on level = ${this.floorLevel}`);
     }
 
@@ -23,7 +25,7 @@ class Floor {
         if (typeof y !== 'number')
             console.warn('Wrong argument'); //defensive programming makes sense in this particular place
 
-        const tolerance = this.floorLevel * 0.10;
+        const tolerance = this.floorLevel * 0.05;
         const lowerBound = this.floorLevel;
         const upperBound = this.floorLevel + tolerance;
         return y >= lowerBound && y <= upperBound;
@@ -46,6 +48,7 @@ class Ladder {
         const edge2 = this.sprite.x + Ladder.WIDTH /2;
         return x1 > edge1 && x1 < edge2;
     }
+
 }
 
 class Building {

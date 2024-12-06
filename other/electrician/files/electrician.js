@@ -7,10 +7,18 @@ class MainScene extends Phaser.Scene {
 
     preload() {
         this.load.image('sprite', 'files/electrician.png');
+
         this.load.image('ladder', 'files/ladder.png');
+
         this.load.image('floor0', 'files/floor.png');
+        const ladderTexture = this.textures.get('floor0');
+        Floor.WIDTH = ladderTexture.getSourceImage().width;
+        Floor.HEIGHT = 110;//ladderTexture.getSourceImage().height;
+        console.log('FLoor height = ' + Floor.HEIGHT);
+
         this.load.image('floor1', 'files/floor.png');
         this.load.image('floor2', 'files/floor.png');
+
     }
 
     create() {
@@ -23,7 +31,6 @@ class MainScene extends Phaser.Scene {
         this.ladder.init(this.physics);
 
         this.sprite = this.physics.add.sprite(100, 400, 'sprite');
-
         this.sprite.setCollideWorldBounds(true);
 
         this.cursors = this.input.keyboard.createCursorKeys();
