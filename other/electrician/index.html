@@ -1,4 +1,4 @@
-<html>
+<html lang="en">
     <head>
     <style>
         body {
@@ -35,12 +35,16 @@
             src: url('files/atari.ttf');
         }
     </style>
+        <title>Electrician</title>
     </head>
 <body>
 
 <div id="header" class="big header">ELECTRICIAN</div>
 <div class="small header" style="font-size: 0.5em'">Controls: arrow keys, fire: space/shift</div>
-<div id="infoFrame" class="panel">Floor:<div id="floor-number"></div></div>
+<div id="infoFrame" class="panel">Floor:
+    <div id="floor-number"></div>
+    <div id="extra-info"></div>
+</div>
 <div id = "board"></div>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.55.2/phaser.min.js"></script>
