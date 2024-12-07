@@ -1,11 +1,51 @@
-<html>
+<html lang="en">
     <head>
+    <style>
+        body {
+            background-color: black;
+            text-align: center;
+        }
 
+        .panel {
+            position: absolute;
+            left: 10px;
+            background-color: rgba(136, 0, 21, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            color: yellow;
+            z-index: 1000;
+        }
+
+        .header{
+            color: yellow;
+            font-family: 'SFatarian';
+        }
+
+        .big {
+            font-size: 2.5em;
+        }
+        .small {
+            font-size: 0.75em;
+        }
+
+        @font-face {
+            font-family: 'SFatarian';
+            src: url('files/atari.ttf');
+        }
+    </style>
+        <title>Electrician</title>
     </head>
 <body>
-    <div id = "board">
 
-    </div>
+<div id="header" class="big header">ELECTRICIAN</div>
+<div class="small header" style="font-size: 0.5em'">Controls: arrow keys, fire: space/shift</div>
+<div id="infoFrame" class="panel">Floor:
+    <div id="floor-number"></div>
+    <div id="extra-info"></div>
+</div>
+<div id = "board"></div>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.55.2/phaser.min.js"></script>
 <script src="files/classdef.js"></script>
