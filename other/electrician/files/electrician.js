@@ -29,8 +29,8 @@ class MainScene extends Phaser.Scene {
         this.building = new Building();
         this.building.init(3, this.physics);
         
-        this.sprite = this.physics.add.sprite(100, 400, 'sprite');
-        this.sprite.setCollideWorldBounds(true);
+        this.player = this.physics.add.sprite(100, 400, 'sprite');
+        this.player.setCollideWorldBounds(true);
 
         this.cursors = this.input.keyboard.createCursorKeys();
     }
@@ -48,15 +48,15 @@ class MainScene extends Phaser.Scene {
         const duration = 750;
 
         const jumpTween = {
-            targets: this.sprite,
-            y: this.sprite.y - jumpHeight, // Move up
+            targets: this.player,
+            y: this.player.y - jumpHeight, // Move up
             duration: duration / 2, // Up for half the duration
             ease: 'Linear',
             onComplete: () => {
 
                 const comeDownTween = {
-                    targets: this.sprite,
-                    y: this.sprite.y + jumpHeight, // Move down
+                    targets: this.player,
+                    y: this.player.y + jumpHeight, // Move down
                     duration: duration / 2,
                     ease: 'Linear',
                     onComplete: () => {
@@ -71,18 +71,18 @@ class MainScene extends Phaser.Scene {
         this.tweens.add(jumpTween);
 
         if (direction === 'left') {
-            this.sprite.setVelocityX(-160);
+            this.player.setVelocityX(-160);
         } else if (direction === 'right') {
-            this.sprite.setVelocityX(160);
+            this.player.setVelocityX(160);
         } else {
-            this.sprite.setVelocityX(0); // No horizontal movement if just jumping
+            this.player.setVelocityX(0); // No horizontal movement if just jumping
         }
     }
 
     conditionalFallDown(){
         let flrs = ""
 
-        if (this.building.ladder.onLadder(this.sprite.x)){
+        if (this.building.ladder.onLadder(this.player.x)){
             return; //Ladder prevents from falling;
         }
 
@@ -91,15 +91,15 @@ class MainScene extends Phaser.Scene {
         this.building.floors.forEach(f => {
             flrs += " " + f.floorLevel;
 
-            if (f.onFloor(this.sprite.x, this.sprite.y) && !this.building.ladder.onLadder(this.sprite.x)){
-                console.log('Floor met on y= ' + this.sprite.y);
+            if (f.onFloor(this.player.x, this.player.y) && !this.building.ladder.onLadder(this.player.x)){
+                console.log('Floor met on y= ' + this.player.y);
                 velocity = 0; //Floor under feet prevents from falling
                 return;
             }
         });
 
-        this.sprite.setVelocityY(velocity);
-        //console.log("Fall down y = ", this.sprite.y, " FloorLevels = " + flrs);
+        this.player.setVelocityY(velocity);
+        //console.log("Fall down y = ", this.player.y, " FloorLevels = " + flrs);
     }
 
     handleMovement() {
@@ -118,7 +118,7 @@ class MainScene extends Phaser.Scene {
             }
         }
 
-        if (velocityX === 0 && this.building.ladder.onLadder(this.sprite.x)) {
+        if (velocityX === 0 && this.building.ladder.onLadder(this.player.x)) {
             if (this.cursors.up.isDown) {
                 velocityY = -160;
             } else if (this.cursors.down.isDown) {
@@ -126,8 +126,8 @@ class MainScene extends Phaser.Scene {
             }
         }
 
-        this.sprite.setVelocityX(velocityX);
-        this.sprite.setVelocityY(velocityY);
+        this.player.setVelocityX(velocityX);
+        this.player.setVelocityY(velocityY);
     }
 }
 

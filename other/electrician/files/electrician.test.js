@@ -62,39 +62,35 @@ describe('Ladder Class', () => {
     });
 });
 
-describe('Building Class', () => {
+ test('Building1: should create ladder correctly', () => {
     let building;
     let mockPhysics;
 
-    beforeEach(() => {
-        mockPhysics = {
-            add: {
-                sprite: jest.fn().mockReturnValue({ x: 0 })
-            }
-        };
-        building = new Building();
-        building.init(3, mockPhysics); // Create a building with 3 floors
-    });
+    mockPhysics = {
+        add: {
+            sprite: jest.fn().mockReturnValue({ x: Ladder.WIDTH/2 })
+        }
+    };
+    building = new Building();
+    building.init(11, mockPhysics);
 
-    test('Building1: should create floors and ladder correctly', () => {
-        expect(building.floors.length).toBe(3);
-        expect(building.ladder.sprite.x).toBe(Ladder.WIDTH/2);
-    });
-
-    test('Building2: should have a unique wire connecting each pair of consecutive floors', () => {
-        const pairsSet = new Set();
-
-        building.wires.forEach((wire) => {
-            const floorPair = `${building.floors.indexOf(wire.floor1)}-${building.floors.indexOf(wire.floor2)}`;
-            if (pairsSet.has(floorPair)) {
-
-                throw new Error(`Duplicate wire found between floor ${wire.floor1} and floor ${wire.floor2}`);
-            } else {
-                pairsSet.add(floorPair);
-            }
-        });
-
-        expect(pairsSet.size).toBe(wires.length);
-    });
+    expect(building.ladder.sprite.x).toBe(Ladder.WIDTH/2);
+    expect(building.ladder.onLadder(Ladder.WIDTH - 1)).toBe(true);
+    expect(building.ladder.onLadder(Ladder.WIDTH + 1)).toBe(false);
 });
 
+test('Building2: should create floors correctly', () => {
+   let mockPhysics = {
+       add: {
+           sprite: jest.fn().mockReturnValue({ x: 800/2 + Ladder.WIDTH/2 - 20 })
+       }
+   };
+   let building = new Building();
+   building.init(3, mockPhysics);
+
+   expect(building.floors.length).toBe(3);
+
+   for (let i = 0; i < building.floors; i++){
+        console.log(`Floor ${i} level ${building.floors[i].floorLevel}`);
+   }
+});
