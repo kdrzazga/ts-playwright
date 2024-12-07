@@ -6,10 +6,16 @@
             text-align: center;
         }
 
-        #header{
+        .header{
             color: yellow;
             font-family: 'SFatarian';
+        }
+
+        .big {
             font-size: 2.5em;
+        }
+        .small {
+            font-size: 0.75em;
         }
 
         @font-face {
@@ -20,7 +26,8 @@
     </head>
 <body>
 
-<div id="header" style="font-family: 'SFatarian'">ELECTRICIAN</div>
+<div id="header" class="big header">ELECTRICIAN</div>
+<div class="small header" style="font-size: 0.5em'">Controls: arrow keys, fire: space/shift</div>
     <div id = "board"></div>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.55.2/phaser.min.js"></script>

@@ -70,7 +70,7 @@ class Building {
        }
 
        for (let w = 0; w < floorCount - 1; w++){
-            const wire = new Wire(this.floors[w], this.floors[w+1]);
+            const wire = new Wire(physics, this.floors[w], this.floors[w+1]);
             this.wires.push(wire);
        }
        this.floors.forEach(f => f.calculateFloorLevel());
@@ -111,7 +111,7 @@ class Wire {//connects PowerLine to Floor
     }
 
     place(spriteX, spriteY){
-        this.physics.add.sprite(x, this.y, 'wire');
+        this.physics.add.sprite(spriteX, this.y, 'wire');
     }
 }
 

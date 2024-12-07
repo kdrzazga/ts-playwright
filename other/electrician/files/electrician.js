@@ -130,8 +130,9 @@ class MainScene extends Phaser.Scene {
         this.player.setVelocityX(velocityX);
         this.player.setVelocityY(velocityY);
 
-        if (this.cursors.space.isDown){
+        if (this.cursors.space.isDown || this.cursors.shift.isDown){
             this.building.drawWire(this.player);
+            console.log('Draw wire access');
         }
     }
 }
