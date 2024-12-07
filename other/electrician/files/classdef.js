@@ -81,6 +81,10 @@ class Building {
        this.rightPowerLine.init(physics, 'right');
 
     }
+
+    drawWire(player){
+        this.wires[0].place(player.x, player.y);
+    }
 }
 
 class PowerLine {
@@ -93,11 +97,21 @@ class PowerLine {
 
 class Wire {//connects PowerLine to Floor
 
-    constructor(floor1, floor2){
+    constructor(physics, floor1, floor2){
+        this.physics = physics;
+        const y2 = floor2 == null ? 0 : floor2.sprite.y;
+        this.x = floor1.sprite.x;
+        this.y = (floor1.sprite.y + y2) / 2;
+
         this.fields = [];
+        this.sprites = [];
         for (var i = 0; i < 40; i++){
             this.fields.push(false);
         }
+    }
+
+    place(spriteX, spriteY){
+        this.physics.add.sprite(x, this.y, 'wire');
     }
 }
 

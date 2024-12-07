@@ -21,6 +21,7 @@ class MainScene extends Phaser.Scene {
         this.load.image('power-line-left', 'files/powerlineL.png');
         this.load.image('power-line-right', 'files/powerlineR.png');
 
+        this.load.image('wire-section', 'files/wire.png');
     }
 
     create() {
@@ -128,6 +129,10 @@ class MainScene extends Phaser.Scene {
 
         this.player.setVelocityX(velocityX);
         this.player.setVelocityY(velocityY);
+
+        if (this.cursors.space.isDown){
+            this.building.drawWire(this.player);
+        }
     }
 }
 
