@@ -108,7 +108,8 @@ class Building {
 
     drawWire(player){
         const currentFloor = this.getCurrentFloor(player);
-        this.wires[0].place(currentFloor, player);
+        console.log(`Draw wire on ${currentFloor}`);
+        this.wires[currentFloor].place(this.floors[currentFloor], player);
     }
 }
 
@@ -139,7 +140,7 @@ class Wire {//connects PowerLine to Floor
     place(floor, sprite){
         const extraInfoDiv = document.getElementById('extra-info');
         extraInfoDiv.innerText = floor.id + " " + floor.floorLevel ;
-        this.physics.add.sprite(sprite.x, floor.floorLevel, 'wire-section');
+        this.physics.add.sprite(sprite.x, this.y, 'wire-section');
     }
 }
 
