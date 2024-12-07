@@ -134,6 +134,20 @@ class MainScene extends Phaser.Scene {
             this.building.drawWire(this.player);
             console.log('Draw wire access');
         }
+
+        this.writeFloorInfo();
+    }
+
+    writeFloorInfo(){
+        const floorInfo = document.getElementById('floor-number');
+        const realCurrentFloor = this.building.getCurrentFloor(this.player);
+        let prettyCurrentFloor = this.building.floors.length - realCurrentFloor;
+        if (Math.abs(this.player.y - 600) < 30){
+            prettyCurrentFloor = 0;
+        }
+
+        let prettyCurrentFloorText = realCurrentFloor < 0 ? ' ' : prettyCurrentFloor;
+        floorInfo.innerText = `${prettyCurrentFloorText} (${realCurrentFloor})`;
     }
 }
 

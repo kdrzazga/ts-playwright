@@ -84,6 +84,20 @@ class Building {
 
     }
 
+    getCurrentFloor(player){
+        if (player == null)
+            return -1;
+
+        const floorLevels = this.floors.map(floor => floor.floorLevel);
+        for (let f = 0; f < floorLevels.length; f++){
+            const tolerance = 50;
+            if (Math.abs(Math.abs(floorLevels[f] - player.y) - 28) < tolerance)
+                return f;
+        }
+
+        return -1;
+    }
+
     drawWire(player){
         this.wires[0].place(player.x, player.y);
     }
