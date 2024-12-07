@@ -68,6 +68,11 @@ class Building {
 
            this.floors.push(floor);
        }
+
+       for (let w = 0; w < floorCount - 1; w++){
+            const wire = new Wire(this.floors[w], this.floors[w+1]);
+            this.wires.push(wire);
+       }
        this.floors.forEach(f => f.calculateFloorLevel());
 
        this.leftPowerLine = new PowerLine();
@@ -89,8 +94,11 @@ class PowerLine {
 class Wire {//connects PowerLine to Floor
 
     constructor(floor1, floor2){
-
+        this.fields = [];
+        for (var i = 0; i < 40; i++){
+            this.fields.push(false);
+        }
     }
 }
 
-module.exports = { Floor, Ladder, Building, PowerLine};
+module.exports = { Floor, Ladder, Building, PowerLine, Wire};

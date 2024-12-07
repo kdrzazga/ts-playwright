@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest" ,
+    "TestFloors": "jest -t \"Floor1|Floor2|Floor3|Floor4\"" ,
+    "TestLadders": "jest -t \"Ladder1\"" ,
+    "TestBuildings": "jest -t \"Building1|Building2\""
   },
   "keywords": [],
   "author": "",
