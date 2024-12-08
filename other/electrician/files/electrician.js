@@ -132,7 +132,7 @@ class MainScene extends Phaser.Scene {
 
         if (this.cursors.space.isDown || this.cursors.shift.isDown){
             this.building.drawWire(this.player);
-            console.log('Draw wire access');
+            //console.log('Drawing wire');
         }
 
         this.writeFloorInfo();
@@ -153,8 +153,8 @@ class MainScene extends Phaser.Scene {
 
 const config = {
     type: Phaser.AUTO,
-    width: 800,
-    height: 600,
+    width: Constants.SCREEN_WIDTH,
+    height: Constants.SCREEN_HEIGHT,
     physics: {
         default: 'arcade',
         arcade: {

@@ -1,6 +1,11 @@
+class Constants{
+    static SCREEN_WIDTH = 800;
+    static SCREEN_HEIGHT = 600;
+}
+
 class Floor {
     static COUNT = 0;
-    static BUILDING_HEIGHT = 500;
+    static BUILDING_HEIGHT = Constants.SCREEN_HEIGHT - 100;
     static WIDTH;
     static HEIGHT;
 
@@ -30,9 +35,13 @@ class Floor {
         const lowerBoundY = this.floorLevel;
         const upperBoundY = this.floorLevel + tolerance;
 
-        const lowerBoundX = this.sprite.x - Floor.WIDTH/2;
+        const lowerBoundX = this.getLeftPosition();
         const upperBoundX = lowerBoundX + Floor.WIDTH;
         return x > lowerBoundX && x < upperBoundX  && y >= lowerBoundY && y <= upperBoundY;
+    }
+
+    getLeftPosition(){
+        return this.sprite.x - Floor.WIDTH/2;
     }
 
 }
@@ -72,17 +81,11 @@ class Building {
             f.calculateFloorLevel();
        });
 
-       for (let w = 0; w <= floorCount; w++) {
+       for (let w = 0; w < floorCount; w++) {
             const aboveFloor = this.floors[w] || null;
             const belowFloor = this.floors[w - 1] || null;
             const wire = new Wire(physics, belowFloor, aboveFloor);
             this.wires.push(wire);
-       }
-
-       if (this.wires.length > 0) {
-            const lastFloorY = this.floors[floorCount - 1].floorLevel;
-            const secondToLastFloorY = this.floors[floorCount - 2].floorLevel;
-            this.wires[this.wires.length - 1].y = lastFloorY + Math.abs(lastFloorY - secondToLastFloorY)/2;
        }
 
        this.addWireInfoToInfoFrame();
@@ -127,7 +130,7 @@ class Building {
         const currentFloor = this.floors[currentFloorNumber];
 
         if (currentFloor.onFloor(player.x, player.y)){
-            console.log(`Draw wire on ${currentFloor}`);
+            console.log(`Draw wire over floor ${currentFloorNumber}`);
             this.wires[currentFloorNumber].place(currentFloor, player);
         }
     }
@@ -142,6 +145,7 @@ class PowerLine {
 }
 
 class Wire {//connects PowerLine to Floor
+    static SIZE = 20;
 
     constructor(physics, floor1, floor2){
         this.physics = physics;
@@ -150,22 +154,32 @@ class Wire {//connects PowerLine to Floor
         this.x = floor1 ? floor1.sprite.x : 0;
         this.y = (y1 + y2) / 2;
 
-        this.fields = [];
+        this.slots = [];
         this.sprites = [];
-        for (var i = 0; i < 40; i++){
-            this.fields.push(false);
+        for (var i = 0; i < Floor.WIDTH/Wire.SIZE; i++){
+            this.slots.push(false);
         }
+        console.log(`Created ${this.slots.length} wire slots in wire.`);
     }
 
     place(floor, sprite){
         const extraInfoDiv = document.getElementById('extra-info');
         extraInfoDiv.innerText = floor.id + " " + floor.floorLevel ;
-        this.physics.add.sprite(sprite.x, this.y, 'wire-section');
+        const y = this.y;
+
+        const index = Math.floor((sprite.x - floor.getLeftPosition()) / Wire.SIZE);
+
+        if (!this.slots[index]){
+            const x = floor.getLeftPosition() + index * Wire.SIZE;
+            this.slots[index] = true;
+            this.physics.add.sprite(x, y, 'wire-section');
+            console.log(`Placing wire: [${x}, ${y}]. Index = ${index}`);
+        }
     }
 
     checkConnected(){
-        //TODO this.fields.forEach(field => )
+        //TODO this.slots.forEach(field => )
     }
 }
 
-module.exports = { Floor, Ladder, Building, PowerLine, Wire};
+module.exports = { Constants, Floor, Ladder, Building, PowerLine, Wire};
