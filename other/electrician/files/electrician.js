@@ -1,7 +1,6 @@
 class MainScene extends Phaser.Scene {
     constructor() {
         super({ key: 'MainScene' });
-        this.floors = [];
         this.spriteCanJump = true;
     }
 
@@ -9,14 +8,14 @@ class MainScene extends Phaser.Scene {
         this.load.image('sprite', 'files/electrician.png');
         this.load.image('ladder', 'files/ladder.png');
 
-        this.load.image('floor0', 'files/floor.png');
+        this.load.image('floor0', 'files/darkFloor.png');
         const ladderTexture = this.textures.get('floor0');
         Floor.WIDTH = 617;//ladderTexture.getSourceImage().width;
         Floor.HEIGHT = 110;//ladderTexture.getSourceImage().height;
         console.log('Floor height = ' + Floor.HEIGHT);
 
-        this.load.image('floor1', 'files/floor.png');
-        this.load.image('floor2', 'files/floor.png');
+        this.load.image('floor1', 'files/darkFloor.png');
+        this.load.image('floor2', 'files/darkFloor.png');
 
         this.load.image('power-line-left', 'files/powerlineL.png');
         this.load.image('power-line-right', 'files/powerlineR.png');
@@ -27,8 +26,7 @@ class MainScene extends Phaser.Scene {
     create() {
         this.physics.world.setBounds(0, 0, 800, 600);
 
-        this.building = new Building();
-        this.building.init(3, this.physics);
+        this.building = Creator.create3storeBuilding(this.physics);
         
         this.player = this.physics.add.sprite(100, 400, 'sprite');
         this.player.setCollideWorldBounds(true);

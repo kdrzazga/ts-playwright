@@ -88,15 +88,13 @@ class Building {
             this.wires.push(wire);
        }
 
-       this.createWireInfoToInfoFrame();
-
        this.leftPowerLine = new PowerLine();
        this.leftPowerLine.init(physics, 'left');
        this.rightPowerLine = new PowerLine();
        this.rightPowerLine.init(physics, 'right');
     }
 
-    createWireInfoToInfoFrame(){
+    includeWiresInInfoFrame(){
         const infoFrameWebElement = document.getElementById('connection-status');
         for (let i = 0; i < this.wires.length; i++) {
             let wireDiv = document.createElement('div');
@@ -186,6 +184,16 @@ class Wire {//connects PowerLine to Floor
         const percentage = Math.ceil(trueSlots.length / total * 100);
         const statusText = percentage == 100 ? 'CONNECTED' : "" + percentage + " %";
         wireDiv.innerText = statusText;
+    }
+}
+
+class Creator{
+    static create3storeBuilding(physics) {
+        const building = new Building();
+        building.init(3, physics);
+        building.includeWiresInInfoFrame();
+
+        return building;
     }
 }
 
