@@ -3,6 +3,13 @@ class Constants{
     static SCREEN_HEIGHT = 600;
 }
 
+const WireSlot = Object.freeze({
+    EMPTY: 'empty',
+    WIRE_STRAIGHT: 'straight',
+    WIRE_UP: 'up',
+    WIRE_DOWN: 'down'
+});
+
 class Floor {
     static COUNT = 0;
     static BUILDING_HEIGHT = Constants.SCREEN_HEIGHT - 100;
@@ -23,7 +30,7 @@ class Floor {
 
     calculateFloorLevel(){
         //should be called only after all floors are created
-        this.floorLevel = Math.ceil((this.id + 1) * Floor.BUILDING_HEIGHT / (Floor.COUNT));
+        this.floorLevel = Math.ceil((this.id + 1) * Floor.BUILDING_HEIGHT / Floor.COUNT);
         this.sprite.y = this.floorLevel;
         console.log(`Floor ${this.id} is on level = ${this.floorLevel}`);
     }
@@ -63,7 +70,6 @@ class Ladder {
         const edge2 = this.sprite.x + Ladder.WIDTH /2;
         return x1 > edge1 && x1 < edge2;
     }
-
 }
 
 class Building {
@@ -152,7 +158,7 @@ class Wire {//connects PowerLine to Floor
         this.slots = [];
         this.sprites = [];
         for (var i = 0; i < Floor.WIDTH/Wire.SIZE; i++){
-            this.slots.push(false);
+            this.slots.push(WireSlot.EMPTY);
         }
         console.log(`Created ${this.slots.length} wire slots in wire.`);
     }
@@ -164,9 +170,9 @@ class Wire {//connects PowerLine to Floor
 
         const index = Math.floor((sprite.x - floor.getLeftPosition()) / Wire.SIZE);
 
-        if (!this.slots[index]){
+        if (this.slots[index] === WireSlot.EMPTY){
             const x = floor.getLeftPosition() + index * Wire.SIZE;
-            this.slots[index] = true;
+            this.slots[index] = WireSlot.WIRE_STRAIGHT;
             this.physics.add.sprite(x, y, 'wire-section');
             console.log(`Placing wire: [${x}, ${y}]. Index = ${index}`);
             this.updateWiringInfo();
@@ -175,7 +181,7 @@ class Wire {//connects PowerLine to Floor
 
     updateWiringInfo(){
         const total = this.slots.length;
-        const trueSlots = this.slots.filter(field => field);
+        const trueSlots = this.slots.filter(field => field != WireSlot.EMPTY);
         const wireDiv = document.getElementById('wire' + this.id);
         const percentage = Math.ceil(trueSlots.length / total * 100);
         const statusText = percentage == 100 ? 'CONNECTED' : "" + percentage + " %";
