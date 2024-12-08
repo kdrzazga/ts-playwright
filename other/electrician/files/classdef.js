@@ -13,6 +13,8 @@ class Floor {
         this.id = Floor.COUNT;
         Floor.COUNT++;
         this.floorLevel = 0;
+        this.ceilingConnectors = [];
+        this.bottomConnectors = [];
     }
 
     init(physics){
@@ -69,7 +71,14 @@ class Building {
        this.ladder = new Ladder();
        this.ladder.init(physics);
 
-       this.floors = Array.from({ length: floorCount }, () => new Floor());
+       this.floors = [];
+       const floorBuilder1 = new FloorBuilder();
+       this.floors.push(floorBuilder1.withTVInCenter().build());
+       const floorBuilder2 = new FloorBuilder();
+       this.floors.push(floorBuilder2.withLampInCenter().withTVInCenter().build());
+       const floorBuilder3 = new FloorBuilder();
+       this.floors.push(floorBuilder3.withLampInCenter().build());
+
        this.floors.forEach(floor => floor.init(physics));
        this.floors.forEach(floor => floor.calculateFloorLevel());
 
@@ -181,6 +190,39 @@ class Creator{
         building.includeWiresInInfoFrame();
 
         return building;
+    }
+}
+
+class FloorBuilder {
+
+    constructor(){
+        this.floor = new Floor();
+    }
+
+    build(){
+        return this.floor;
+    }
+
+    withCeilingConnector(connectorX){
+        this.floor.ceilingConnectors.push(connectorX);
+        return this;
+    }
+
+    withBottomConnector(connectorX){
+        this.floor.bottomConnectors.push(connectorX);
+        return this;
+    }
+
+    withLampInCenter(){
+        const lampConnectorX = Math.floor(Floor.WIDTH /2);
+        this.withCeilingConnector(lampConnectorX);
+        return this;
+    }
+
+    withTVInCenter(){
+        const tvConnectorX = Math.floor(Floor.WIDTH /2);
+        this.withBottomConnector(tvConnectorX);
+        return this;
     }
 }
 
