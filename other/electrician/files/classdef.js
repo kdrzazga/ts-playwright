@@ -124,7 +124,7 @@ class Building {
 class PowerLine {
     init(physics, type){
         const objectName = 'power-line-' + type;
-        const x = type === 'left' ? Ladder.WIDTH + 30 : Ladder.WIDTH + Floor.WIDTH + 60;
+        const x = type === 'left' ? Ladder.WIDTH + 30 : Ladder.WIDTH + Floor.WIDTH + 50;
         this.sprite = physics.add.sprite(x, Constants.SCREEN_HEIGHT/2, objectName);
     }
 }
