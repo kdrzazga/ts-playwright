@@ -16,7 +16,7 @@ class Floor {
     }
 
     init(physics){
-        this.sprite = physics.add.sprite(800/2 + Ladder.WIDTH/2 - 20, 600/this.id, 'floor' + this.id)
+        this.sprite = physics.add.sprite(Constants.SCREEN_WIDTH/2 + Ladder.WIDTH/2 - 20, Constants.SCREEN_HEIGHT/this.id, 'floor' + this.id)
     }
 
     calculateFloorLevel(){
@@ -53,7 +53,7 @@ class Ladder {
     }
 
     init(physics){
-        this.sprite = physics.add.sprite(Ladder.WIDTH/2, 600/2, 'ladder');
+        this.sprite = physics.add.sprite(Ladder.WIDTH/2, Constants.SCREEN_HEIGHT/2, 'ladder');
     }
 
     onLadder(x1){
@@ -140,7 +140,7 @@ class PowerLine {
     init(physics, type){
         const objectName = 'power-line-' + type;
         const x = type === 'left' ? Ladder.WIDTH + 30 : Ladder.WIDTH + Floor.WIDTH + 60;
-        this.sprite = physics.add.sprite(x, 600/2, objectName);
+        this.sprite = physics.add.sprite(x, Constants.SCREEN_HEIGHT/2, objectName);
     }
 }
 
