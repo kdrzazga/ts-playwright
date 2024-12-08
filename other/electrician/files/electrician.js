@@ -131,8 +131,15 @@ class MainScene extends Phaser.Scene {
         this.player.setVelocityY(velocityY);
 
         if (this.cursors.space.isDown || this.cursors.shift.isDown){
-            this.building.drawWire(this.player, WireSlot.WIRE_STRAIGHT);
-            //console.log('Drawing wire');
+            let action = WireSlot.WIRE_STRAIGHT;
+            if (this.cursors.down.isDown) {
+                action = WireSlot.WIRE_DOWN;
+            }
+            else if (this.cursors.up.isDown) {
+                action = WireSlot.WIRE_UP;
+            }
+
+            this.building.drawWire(this.player, action);
         }
 
         this.writeFloorInfo();
