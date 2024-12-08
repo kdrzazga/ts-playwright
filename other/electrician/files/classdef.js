@@ -69,24 +69,15 @@ class Building {
        this.ladder = new Ladder();
        this.ladder.init(physics);
 
-       this.floors = [];
-       this.wires = [];
-       for (let i = 0; i < floorCount; i++) {
-           const floor = new Floor();
-           this.floors.push(floor);
-       }
+       this.floors = Array.from({ length: floorCount }, () => new Floor());
+       this.floors.forEach(floor => floor.init(physics));
+       this.floors.forEach(floor => floor.calculateFloorLevel());
 
-       this.floors.forEach(f => {
-            f.init(physics);
-            f.calculateFloorLevel();
+       this.wires = this.floors.map((floor, i) => {
+           const aboveFloor = this.floors[i] || null;
+           const belowFloor = this.floors[i - 1] || null;
+           return new Wire(i, physics, belowFloor, aboveFloor);
        });
-
-       for (let w = 0; w < floorCount; w++) {
-            const aboveFloor = this.floors[w] || null;
-            const belowFloor = this.floors[w - 1] || null;
-            const wire = new Wire(w, physics, belowFloor, aboveFloor);
-            this.wires.push(wire);
-       }
 
        this.leftPowerLine = new PowerLine();
        this.leftPowerLine.init(physics, 'left');
@@ -94,30 +85,26 @@ class Building {
        this.rightPowerLine.init(physics, 'right');
     }
 
-    includeWiresInInfoFrame(){
-        const infoFrameWebElement = document.getElementById('connection-status');
-        for (let i = 0; i < this.wires.length; i++) {
-            let wireDiv = document.createElement('div');
+    includeWiresInInfoFrame() {
+        const infoFrame = document.getElementById('connection-status');
+        this.wires.forEach((_, i) => {
+            const wireDiv = document.createElement('div');
             wireDiv.name = 'wire-info';
             wireDiv.id = 'wire' + i;
-            wireDiv.style = 'font-size: 1em; color: yellow;';
+            wireDiv.style.fontSize = '1em';
+            wireDiv.style.color = 'yellow';
             wireDiv.innerText = 'no power';
-            infoFrameWebElement.appendChild(wireDiv);
-        }
+            infoFrame.appendChild(wireDiv);
+        });
     }
 
-    getCurrentFloor(player){
-        if (player == null)
-            return -1;
+    getCurrentFloor(player) {
+        if (!player) return -1;
 
-        const floorLevels = this.floors.map(floor => floor.floorLevel);
-        for (let f = 0; f < floorLevels.length; f++){
-            const tolerance = 50;
-            if (Math.abs(Math.abs(floorLevels[f] - player.y) - 28) < tolerance)
-                return f;
-        }
-
-        return -1;
+        const tolerance = 50;
+        return this.floors.findIndex(floor =>
+            Math.abs(Math.abs(floor.floorLevel - player.y) - 28) < tolerance
+        );
     }
 
     drawWire(player){
