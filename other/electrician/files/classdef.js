@@ -172,7 +172,7 @@ class Wire {//connects PowerLine to Floor
 
         if (this.slots[index] === WireSlot.EMPTY){
             const x = floor.getLeftPosition() + index * Wire.SIZE;
-            this.slots[index] = WireSlot.WIRE_UP;
+            this.slots[index] = WireSlot.WIRE_STRAIGHT;
             this.physics.add.sprite(x, y, this.slots[index].imageId);
             console.log(`Placing wire: [${x}, ${y}]. Index = ${index}`);
             this.updateWiringInfo();
