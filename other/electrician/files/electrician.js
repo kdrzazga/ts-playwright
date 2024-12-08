@@ -21,6 +21,8 @@ class MainScene extends Phaser.Scene {
         this.load.image('power-line-right', 'files/powerlineR.png');
 
         this.load.image('wire-section', 'files/wire.png');
+        this.load.image('wire-section-up', 'files/wireUp.png');
+        this.load.image('wire-section-down', 'files/wireDown.png');
     }
 
     create() {

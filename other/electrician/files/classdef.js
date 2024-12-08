@@ -4,10 +4,10 @@ class Constants{
 }
 
 const WireSlot = Object.freeze({
-    EMPTY: 'empty',
-    WIRE_STRAIGHT: 'straight',
-    WIRE_UP: 'up',
-    WIRE_DOWN: 'down'
+    EMPTY: {imageId: '', shift : 0},
+    WIRE_STRAIGHT: {imageId: 'wire-section', shift : 0},
+    WIRE_UP: {imageId: 'wire-section-up', shift : -30},
+    WIRE_DOWN: {imageId: 'wire-section-down', shift : 0},
 });
 
 class Floor {
@@ -172,8 +172,8 @@ class Wire {//connects PowerLine to Floor
 
         if (this.slots[index] === WireSlot.EMPTY){
             const x = floor.getLeftPosition() + index * Wire.SIZE;
-            this.slots[index] = WireSlot.WIRE_STRAIGHT;
-            this.physics.add.sprite(x, y, 'wire-section');
+            this.slots[index] = WireSlot.WIRE_UP;
+            this.physics.add.sprite(x, y, this.slots[index].imageId);
             console.log(`Placing wire: [${x}, ${y}]. Index = ${index}`);
             this.updateWiringInfo();
         }
