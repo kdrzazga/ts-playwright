@@ -4,10 +4,10 @@ class Constants{
 }
 
 const WireSlot = Object.freeze({
-    EMPTY: {imageId: '', shift : 0},
-    WIRE_STRAIGHT: {imageId: 'wire-section', shift : 0},
-    WIRE_UP: {imageId: 'wire-section-up', shift : -30},
-    WIRE_DOWN: {imageId: 'wire-section-down', shift : 0},
+    EMPTY: {imageId: ''},
+    WIRE_STRAIGHT: {imageId: 'wire-section'},
+    WIRE_UP: {imageId: 'wire-section-up'},
+    WIRE_DOWN: {imageId: 'wire-section-down'},
 });
 
 class Floor {
