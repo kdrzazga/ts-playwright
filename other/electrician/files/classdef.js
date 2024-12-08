@@ -84,11 +84,11 @@ class Building {
        for (let w = 0; w < floorCount; w++) {
             const aboveFloor = this.floors[w] || null;
             const belowFloor = this.floors[w - 1] || null;
-            const wire = new Wire(physics, belowFloor, aboveFloor);
+            const wire = new Wire(w, physics, belowFloor, aboveFloor);
             this.wires.push(wire);
        }
 
-       this.addWireInfoToInfoFrame();
+       this.createWireInfoToInfoFrame();
 
        this.leftPowerLine = new PowerLine();
        this.leftPowerLine.init(physics, 'left');
@@ -96,7 +96,7 @@ class Building {
        this.rightPowerLine.init(physics, 'right');
     }
 
-    addWireInfoToInfoFrame(){
+    createWireInfoToInfoFrame(){
         const infoFrameWebElement = document.getElementById('connection-status');
         for (let i = 0; i < this.wires.length; i++) {
             let wireDiv = document.createElement('div');
@@ -147,7 +147,8 @@ class PowerLine {
 class Wire {//connects PowerLine to Floor
     static SIZE = 20;
 
-    constructor(physics, floor1, floor2){
+    constructor(id, physics, floor1, floor2){
+        this.id = id;
         this.physics = physics;
         const y2 = floor2 == null ? 0 : floor2.sprite.y;
         const y1 = floor1 == null ? 0 : floor1.sprite.y;
@@ -174,11 +175,17 @@ class Wire {//connects PowerLine to Floor
             this.slots[index] = true;
             this.physics.add.sprite(x, y, 'wire-section');
             console.log(`Placing wire: [${x}, ${y}]. Index = ${index}`);
+            this.updateWiringInfo();
         }
     }
 
-    checkConnected(){
-        //TODO this.slots.forEach(field => )
+    updateWiringInfo(){
+        const total = this.slots.length;
+        const trueSlots = this.slots.filter(field => field);
+        const wireDiv = document.getElementById('wire' + this.id);
+        const percentage = Math.ceil(trueSlots.length / total * 100);
+        const statusText = percentage == 100 ? 'CONNECTED' : "" + percentage + " %";
+        wireDiv.innerText = statusText;
     }
 }
 
