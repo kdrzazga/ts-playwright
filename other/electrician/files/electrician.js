@@ -1,7 +1,6 @@
 class MainScene extends Phaser.Scene {
     constructor() {
         super({ key: 'MainScene' });
-        this.floors = [];
         this.spriteCanJump = true;
     }
 
@@ -9,26 +8,27 @@ class MainScene extends Phaser.Scene {
         this.load.image('sprite', 'files/electrician.png');
         this.load.image('ladder', 'files/ladder.png');
 
-        this.load.image('floor0', 'files/floor.png');
+        this.load.image('floor0', 'files/darkFloor.png');
         const ladderTexture = this.textures.get('floor0');
         Floor.WIDTH = 617;//ladderTexture.getSourceImage().width;
         Floor.HEIGHT = 110;//ladderTexture.getSourceImage().height;
         console.log('Floor height = ' + Floor.HEIGHT);
 
-        this.load.image('floor1', 'files/floor.png');
-        this.load.image('floor2', 'files/floor.png');
+        this.load.image('floor1', 'files/darkFloor.png');
+        this.load.image('floor2', 'files/darkFloor.png');
 
         this.load.image('power-line-left', 'files/powerlineL.png');
         this.load.image('power-line-right', 'files/powerlineR.png');
 
         this.load.image('wire-section', 'files/wire.png');
+        this.load.image('wire-section-up', 'files/wireUp.png');
+        this.load.image('wire-section-down', 'files/wireDown.png');
     }
 
     create() {
         this.physics.world.setBounds(0, 0, 800, 600);
 
-        this.building = new Building();
-        this.building.init(3, this.physics);
+        this.building = Creator.create3storeBuilding(this.physics);
         
         this.player = this.physics.add.sprite(100, 400, 'sprite');
         this.player.setCollideWorldBounds(true);
@@ -131,8 +131,15 @@ class MainScene extends Phaser.Scene {
         this.player.setVelocityY(velocityY);
 
         if (this.cursors.space.isDown || this.cursors.shift.isDown){
-            this.building.drawWire(this.player);
-            console.log('Draw wire access');
+            let action = WireSlot.WIRE_STRAIGHT;
+            if (this.cursors.down.isDown) {
+                action = WireSlot.WIRE_DOWN;
+            }
+            else if (this.cursors.up.isDown) {
+                action = WireSlot.WIRE_UP;
+            }
+
+            this.building.drawWire(this.player, action);
         }
 
         this.writeFloorInfo();
@@ -153,8 +160,8 @@ class MainScene extends Phaser.Scene {
 
 const config = {
     type: Phaser.AUTO,
-    width: 800,
-    height: 600,
+    width: Constants.SCREEN_WIDTH,
+    height: Constants.SCREEN_HEIGHT,
     physics: {
         default: 'arcade',
         arcade: {
