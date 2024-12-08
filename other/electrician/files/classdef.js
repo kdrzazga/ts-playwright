@@ -122,7 +122,7 @@ class Building {
         );
     }
 
-    drawWire(player){
+    drawWire(player, wireType){
         const currentFloorNumber = this.getCurrentFloor(player);
         if (currentFloorNumber < 0)
             return;
@@ -131,7 +131,7 @@ class Building {
 
         if (currentFloor.onFloor(player.x, player.y)){
             console.log(`Draw wire over floor ${currentFloorNumber}`);
-            this.wires[currentFloorNumber].place(currentFloor, player);
+            this.wires[currentFloorNumber].place(currentFloor, player, wireType);
         }
     }
 }
@@ -163,7 +163,7 @@ class Wire {//connects PowerLine to Floor
         console.log(`Created ${this.slots.length} wire slots in wire.`);
     }
 
-    place(floor, sprite){
+    place(floor, sprite, wireType){
         const extraInfoDiv = document.getElementById('extra-info');
         extraInfoDiv.innerText = floor.id + " " + floor.floorLevel ;
         const y = this.y;
@@ -172,7 +172,7 @@ class Wire {//connects PowerLine to Floor
 
         if (this.slots[index] === WireSlot.EMPTY){
             const x = floor.getLeftPosition() + index * Wire.SIZE;
-            this.slots[index] = WireSlot.WIRE_STRAIGHT;
+            this.slots[index] = wireType;
             this.physics.add.sprite(x, y, this.slots[index].imageId);
             console.log(`Placing wire: [${x}, ${y}]. Index = ${index}`);
             this.updateWiringInfo();
