@@ -81,15 +81,28 @@ class Building {
 
        if (this.wires.length > 0) {
             const lastFloorY = this.floors[floorCount - 1].floorLevel;
-            const secondTolastFloorY = this.floors[floorCount - 2].floorLevel;
-            this.wires[this.wires.length - 1].y = lastFloorY + Math.abs(lastFloorY - secondTolastFloorY)/2;
+            const secondToLastFloorY = this.floors[floorCount - 2].floorLevel;
+            this.wires[this.wires.length - 1].y = lastFloorY + Math.abs(lastFloorY - secondToLastFloorY)/2;
        }
+
+       this.addWireInfoToInfoFrame();
 
        this.leftPowerLine = new PowerLine();
        this.leftPowerLine.init(physics, 'left');
        this.rightPowerLine = new PowerLine();
        this.rightPowerLine.init(physics, 'right');
+    }
 
+    addWireInfoToInfoFrame(){
+        const infoFrameWebElement = document.getElementById('connection-status');
+        for (let i = 0; i < this.wires.length; i++) {
+            let wireDiv = document.createElement('div');
+            wireDiv.name = 'wire-info';
+            wireDiv.id = 'wire' + i;
+            wireDiv.style = 'font-size: 1em; color: yellow;';
+            wireDiv.innerText = 'no power';
+            infoFrameWebElement.appendChild(wireDiv);
+        }
     }
 
     getCurrentFloor(player){
@@ -107,9 +120,16 @@ class Building {
     }
 
     drawWire(player){
-        const currentFloor = this.getCurrentFloor(player);
-        console.log(`Draw wire on ${currentFloor}`);
-        this.wires[currentFloor].place(this.floors[currentFloor], player);
+        const currentFloorNumber = this.getCurrentFloor(player);
+        if (currentFloorNumber < 0)
+            return;
+
+        const currentFloor = this.floors[currentFloorNumber];
+
+        if (currentFloor.onFloor(player.x, player.y)){
+            console.log(`Draw wire on ${currentFloor}`);
+            this.wires[currentFloorNumber].place(currentFloor, player);
+        }
     }
 }
 
@@ -141,6 +161,10 @@ class Wire {//connects PowerLine to Floor
         const extraInfoDiv = document.getElementById('extra-info');
         extraInfoDiv.innerText = floor.id + " " + floor.floorLevel ;
         this.physics.add.sprite(sprite.x, this.y, 'wire-section');
+    }
+
+    checkConnected(){
+        //TODO this.fields.forEach(field => )
     }
 }
 

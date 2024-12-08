@@ -9,17 +9,17 @@
         .panel {
             position: absolute;
             left: 10px;
-            background-color: rgba(136, 0, 21, 0.8);
+            background-color: rgba(156, 98, 253, 1);
             padding: 10px;
             border-radius: 5px;
             font-family: Arial, sans-serif;
             font-size: 14px;
-            color: yellow;
+            color: white;
             z-index: 1000;
         }
 
-        .header{
-            color: yellow;
+        div{
+            color: white;//rgba(186, 129, 255, 0.8);
             font-family: 'SFatarian';
         }
 
@@ -40,9 +40,20 @@
 <body>
 
 <div id="header" class="big header">ELECTRICIAN</div>
-<div class="small header" style="font-size: 0.5em'">Controls: arrow keys, fire: space/shift</div>
 <div id="infoFrame" class="panel">Floor:
     <div id="floor-number"></div>
+    <hr>
+    <div id="connection-info" style="font-size: 1em; color: white;">
+        Floors connected:
+        <div id="connection-status" style="font-size: 0.7em; color: white;"></div>
+    </div>
+    <hr>
+    <div id="controls" class="small header" style="font-size: 1em">Movement: arrow keys<br>Wiring: space/shift</div>
+    <hr>
+    <div id="clock"><img src="files/clock.gif"></div>
+    <hr>
+    <div id="tribute">This game is tribute to:<br><a href="https://youtu.be/CVUXopRcDtc">Electrician by David Bunch</a></div>
+    <hr>
     <div id="extra-info"></div>
 </div>
 <div id = "board"></div>
