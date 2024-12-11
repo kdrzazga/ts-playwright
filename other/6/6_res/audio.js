@@ -8,6 +8,7 @@ class AudioPlayer {
   playAudio() {
     this.audio.src = this.audioArray[this.currentAudio][0];
     const tuneTitle = document.getElementById('bottom-border');
+    tuneTitle.style.fontFamily = 'c64mono';
     tuneTitle.innerText = 'Playing track: ' + this.audioArray[this.currentAudio][2];
     
     setTimeout(() => {
