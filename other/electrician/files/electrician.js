@@ -14,7 +14,7 @@ class MainScene extends Phaser.Scene {
         Floor.HEIGHT = 110;//ladderTexture.getSourceImage().height;
         console.log('Floor height = ' + Floor.HEIGHT);
 
-        this.load.image('floor1', 'files/darkFloor.png');
+        this.load.image('floor1', 'files/floor1.png');
         this.load.image('floor2', 'files/darkFloor.png');
 
         this.load.image('power-line-left', 'files/powerlineL.png');
