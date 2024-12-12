@@ -20,7 +20,7 @@ class Floor {
         this.id = Floor.COUNT;
         Floor.COUNT++;
         this.floorLevel = 0;
-        this.ceilingConnectors = [];//conntector unit is Slor number, not position on screen
+        this.ceilingConnectors = [];//conntector unit is Slot number, not position on screen
         this.bottomConnectors = [];
     }
 
@@ -131,7 +131,29 @@ class Building {
 
         if (currentFloor.onFloor(player.x, player.y)){
             console.log(`Draw wire over floor ${currentFloorNumber}`);
-            this.wires[currentFloorNumber].place(currentFloor, player, wireType);
+
+            if(wireType === WireSlot.WIRE_UP){
+                if (currentFloorNumber == 0) return;
+
+                const upperFloor = this.floors[currentFloorNumber-1];
+                const index = Math.floor((player.x - currentFloor.getLeftPosition()) / Wire.SIZE);
+                const match = upperFloor.bottomConnectors.filter(cnctr => cnctr == index);
+                if (match.length > 0){
+                    this.wires[currentFloorNumber].place(currentFloor, player, WireSlot.WIRE_UP);
+                }
+            }
+            else if(wireType === WireSlot.WIRE_DOWN) {
+                if (currentFloorNumber > this.floors.length - 1) return;
+
+                const lowerFloor = currentFloor;
+                const index = Math.floor((player.x - currentFloor.getLeftPosition()) / Wire.SIZE);
+                const match = lowerFloor.ceilingConnectors.filter(cnctr => cnctr == index);
+                if (match.length > 0){
+                    this.wires[currentFloorNumber].place(currentFloor, player, WireSlot.WIRE_DOWN);
+                }
+            }
+            else
+                this.wires[currentFloorNumber].place(currentFloor, player, wireType);
         }
     }
 }
