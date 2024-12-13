@@ -17,6 +17,7 @@ class Floor {
     static HEIGHT;
 
     constructor() {
+        this.name = '';
         this.id = Floor.COUNT;
         Floor.COUNT++;
         this.floorLevel = 0;
@@ -79,11 +80,11 @@ class Building {
 
        this.floors = [];
        const floorBuilder1 = new FloorBuilder();
-       this.floors.push(floorBuilder1.withTVInCenter().build());
+       this.floors.push(floorBuilder1.withName('attic').build());
        const floorBuilder2 = new FloorBuilder();
-       this.floors.push(floorBuilder2.withLampInCenter().withTVInCenter().build());
-       const floorBuilder3 = new FloorBuilder();
-       this.floors.push(floorBuilder3.withLampInCenter().build());
+       this.floors.push(floorBuilder2.withName('living room').withLampInCenter().withTVInCenterLeft().build());
+       const kitchenBuilder = new FloorBuilder();
+       this.floors.push(kitchenBuilder.withName('kitchen').withFridgeOnLeft().withLampInCenter().build());
 
        this.floors.forEach(floor => floor.init(physics));
        this.floors.forEach(floor => floor.calculateFloorLevel());
@@ -231,25 +232,36 @@ class FloorBuilder {
         return this.floor;
     }
 
+    withName(name) {
+        this.floor.name = name;
+        return this;
+    }
+
     withCeilingConnector(connectorSlot){
         this.floor.ceilingConnectors.push(connectorSlot);
         return this;
     }
 
-    withBottomConnector(connectorSlot){
+    withBottomConnector(connectorSlot) {
         this.floor.bottomConnectors.push(connectorSlot);
         return this;
     }
 
-    withLampInCenter(){
+    withLampInCenter() {
         const lampConnectorX = Math.floor(Floor.WIDTH/Wire.SIZE /2);
         this.withCeilingConnector(lampConnectorX);
         return this;
     }
 
-    withTVInCenter(){
-        const tvConnectorX = Math.floor(Floor.WIDTH/Wire.SIZE /2); //should be 15
+    withTVInCenterLeft(){
+        const tvConnectorX = 12;
         this.withBottomConnector(tvConnectorX);
+        return this;
+    }
+
+    withFridgeOnLeft(){
+        const fridgeConnectorSlot = 2;
+        this.withBottomConnector(fridgeConnectorSlot);
         return this;
     }
 }
