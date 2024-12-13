@@ -84,7 +84,7 @@ class Building {
        const floorBuilder2 = new FloorBuilder();
        this.floors.push(floorBuilder2.withName('living room').withLampInCenter().withTVInCenterLeft().build());
        const kitchenBuilder = new FloorBuilder();
-       this.floors.push(kitchenBuilder.withName('kitchen').withFridgeOnLeft().withLampInCenter().build());
+       this.floors.push(kitchenBuilder.withName('kitchen').withFridgeOnLeft().withLampInCenter().withKitchenSegmentOnRight().build());
 
        this.floors.forEach(floor => floor.init(physics));
        this.floors.forEach(floor => floor.calculateFloorLevel());
@@ -261,7 +261,15 @@ class FloorBuilder {
 
     withFridgeOnLeft(){
         const fridgeConnectorSlot = 2;
-        this.withBottomConnector(fridgeConnectorSlot);
+        this.withCeilingConnector(fridgeConnectorSlot);
+        return this;
+    }
+
+    withKitchenSegmentOnRight(){
+        const fridge2ConnectorSlot = 29;
+        const fanConnectorSlot = 26;
+        this.withCeilingConnector(fridge2ConnectorSlot);
+        this.withCeilingConnector(fanConnectorSlot);
         return this;
     }
 }
