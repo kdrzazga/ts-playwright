@@ -8,7 +8,7 @@ class MainScene extends Phaser.Scene {
         this.load.image('sprite', 'files/electrician.png');
         this.load.image('ladder', 'files/ladder.png');
 
-        this.load.image('floor0', 'files/darkFloor.png');
+        this.load.image('floor0', 'files/attic.png');
         const ladderTexture = this.textures.get('floor0');
         Floor.WIDTH = 617;//ladderTexture.getSourceImage().width;
         Floor.HEIGHT = 110;//ladderTexture.getSourceImage().height;

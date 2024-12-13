@@ -21,7 +21,7 @@ class Floor {
         this.id = Floor.COUNT;
         Floor.COUNT++;
         this.floorLevel = 0;
-        this.ceilingConnectors = [];//conntector unit is Slot number, not position on screen
+        this.ceilingConnectors = [];//connector unit is Slot number, not position on screen
         this.bottomConnectors = [];
     }
 
@@ -80,9 +80,9 @@ class Building {
 
        this.floors = [];
        const floorBuilder1 = new FloorBuilder();
-       this.floors.push(floorBuilder1.withName('attic').build());
+       this.floors.push(floorBuilder1.withName('attic').withBottomConnector(3).withBottomConnector(11).withCeilingConnector(5).withCeilingConnector(25).withBottomConnector(28).build());
        const floorBuilder2 = new FloorBuilder();
-       this.floors.push(floorBuilder2.withName('living room').withLampInCenter().withTVInCenterLeft().build());
+       this.floors.push(floorBuilder2.withName('living room').withCeilingConnector(2).withCeilingConnector(29).withLampInCenter().withTVInCenterLeft().build());
        const kitchenBuilder = new FloorBuilder();
        this.floors.push(kitchenBuilder.withName('kitchen').withFridgeOnLeft().withLampInCenter().withKitchenSegmentOnRight().build());
 
