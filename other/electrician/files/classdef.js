@@ -17,10 +17,11 @@ class Floor {
     static HEIGHT;
 
     constructor() {
+        this.name = '';
         this.id = Floor.COUNT;
         Floor.COUNT++;
         this.floorLevel = 0;
-        this.ceilingConnectors = [];//conntector unit is Slor number, not position on screen
+        this.ceilingConnectors = [];//connector unit is Slot number, not position on screen
         this.bottomConnectors = [];
     }
 
@@ -73,17 +74,26 @@ class Ladder {
 }
 
 class Building {
+
+    constructor(){
+        this.ladder = new Ladder();
+        this.floors = [];
+        this.wires = [];
+        this.leftPowerLine = new PowerLine();
+        this.rightPowerLine = new PowerLine();
+    }
+
     init(floorCount, physics){
-       this.ladder = new Ladder();
        this.ladder.init(physics);
 
-       this.floors = [];
        const floorBuilder1 = new FloorBuilder();
-       this.floors.push(floorBuilder1.withTVInCenter().build());
+       this.floors.push(floorBuilder1.withName('attic').withBottomConnector(3).withBottomConnector(11)
+            .withCeilingConnector(5).withCeilingConnector(25).withBottomConnector(28).build());
        const floorBuilder2 = new FloorBuilder();
-       this.floors.push(floorBuilder2.withLampInCenter().withTVInCenter().build());
-       const floorBuilder3 = new FloorBuilder();
-       this.floors.push(floorBuilder3.withLampInCenter().build());
+       this.floors.push(floorBuilder2.withName('living room').withCeilingConnector(2).withCeilingConnector(29)
+            .withLampInCenter().withTVInCenterLeft().build());
+       const kitchenBuilder = new FloorBuilder();
+       this.floors.push(kitchenBuilder.withName('kitchen').withFridgeOnLeft().withLampInCenter().withKitchenSegmentOnRight().build());
 
        this.floors.forEach(floor => floor.init(physics));
        this.floors.forEach(floor => floor.calculateFloorLevel());
@@ -94,9 +104,7 @@ class Building {
            return new Wire(i, physics, belowFloor, aboveFloor);
        });
 
-       this.leftPowerLine = new PowerLine();
        this.leftPowerLine.init(physics, 'left');
-       this.rightPowerLine = new PowerLine();
        this.rightPowerLine.init(physics, 'right');
     }
 
@@ -124,14 +132,35 @@ class Building {
 
     drawWire(player, wireType){
         const currentFloorNumber = this.getCurrentFloor(player);
-        if (currentFloorNumber < 0)
-            return;
+        if (currentFloorNumber < 0) return;
 
         const currentFloor = this.floors[currentFloorNumber];
 
         if (currentFloor.onFloor(player.x, player.y)){
             console.log(`Draw wire over floor ${currentFloorNumber}`);
-            this.wires[currentFloorNumber].place(currentFloor, player, wireType);
+
+            if(wireType === WireSlot.WIRE_UP){
+                if (currentFloorNumber == 0) return;
+
+                const upperFloor = this.floors[currentFloorNumber-1];
+                const index = Math.floor((player.x - currentFloor.getLeftPosition()) / Wire.SIZE);
+                const match = upperFloor.bottomConnectors.filter(cnctr => cnctr == index);
+                if (match.length > 0){
+                    this.wires[currentFloorNumber].place(currentFloor, player, WireSlot.WIRE_UP);
+                }
+            }
+            else if(wireType === WireSlot.WIRE_DOWN) {
+                if (currentFloorNumber > this.floors.length - 1) return;
+
+                const lowerFloor = currentFloor;
+                const index = Math.floor((player.x - currentFloor.getLeftPosition()) / Wire.SIZE);
+                const match = lowerFloor.ceilingConnectors.filter(cnctr => cnctr == index);
+                if (match.length > 0){
+                    this.wires[currentFloorNumber].place(currentFloor, player, WireSlot.WIRE_DOWN);
+                }
+            }
+            else
+                this.wires[currentFloorNumber].place(currentFloor, player, wireType);
         }
     }
 }
@@ -144,48 +173,57 @@ class PowerLine {
     }
 }
 
-class Wire {//connects PowerLine to Floor
+class Wire {
     static SIZE = 20;
 
-    constructor(id, physics, floor1, floor2){
+    constructor(id, physics, floor1, floor2) {
         this.id = id;
         this.physics = physics;
-        const y2 = floor2 == null ? 0 : floor2.sprite.y;
-        const y1 = floor1 == null ? 0 : floor1.sprite.y;
         this.x = floor1 ? floor1.sprite.x : 0;
-        this.y = (y1 + y2) / 2;
-
-        this.slots = [];
+        this.y = this.calculateY(floor1, floor2);
+        this.slots = Array(Math.ceil(Floor.WIDTH / Wire.SIZE)).fill(WireSlot.EMPTY);
         this.sprites = [];
-        for (var i = 0; i < Floor.WIDTH/Wire.SIZE; i++){
-            this.slots.push(WireSlot.EMPTY);
-        }
+
         console.log(`Created ${this.slots.length} wire slots in wire.`);
     }
 
-    place(floor, sprite, wireType){
+    calculateY(floor1, floor2) {
+        const y1 = floor1 ? floor1.sprite.y : 0;
+        const y2 = floor2 ? floor2.sprite.y : 0;
+        return (y1 + y2) / 2;
+    }
+
+    place(floor, sprite, wireType) {
         const extraInfoDiv = document.getElementById('extra-info');
-        extraInfoDiv.innerText = floor.id + " " + floor.floorLevel ;
-        const y = this.y;
+        extraInfoDiv.innerText = `${floor.id} ${floor.floorLevel}`;
 
         const index = Math.floor((sprite.x - floor.getLeftPosition()) / Wire.SIZE);
+        const x = floor.getLeftPosition() + index * Wire.SIZE;
 
-        if (this.slots[index] === WireSlot.EMPTY){
-            const x = floor.getLeftPosition() + index * Wire.SIZE;
-            this.slots[index] = wireType;
-            this.physics.add.sprite(x, y, this.slots[index].imageId);
-            console.log(`Placing wire: [${x}, ${y}]. Index = ${index}`);
-            this.updateWiringInfo();
+        if (this.slots[index] !== WireSlot.EMPTY) {
+            this.removeOldWireSprite(index);
+        }
+
+        this.slots[index] = wireType;
+        const newSprite = this.physics.add.sprite(x, this.y, wireType.imageId);
+        this.sprites[index] = newSprite;
+        console.log(`Placing wire: [${x}, ${this.y}]. Index = ${index}`);
+        this.updateWiringInfo();
+    }
+
+    removeOldWireSprite(index) {
+        const oldSprite = this.sprites[index];
+        if (oldSprite) {
+            oldSprite.destroy();
+            this.sprites[index] = null;
         }
     }
 
-    updateWiringInfo(){
-        const total = this.slots.length;
-        const trueSlots = this.slots.filter(field => field != WireSlot.EMPTY);
-        const wireDiv = document.getElementById('wire' + this.id);
-        const percentage = Math.ceil(trueSlots.length / total * 100);
-        const statusText = percentage == 100 ? 'CONNECTED' : "" + percentage + " %";
-        wireDiv.innerText = statusText;
+    updateWiringInfo() {
+        const filledSlots = this.slots.filter(slot => slot !== WireSlot.EMPTY).length;
+        const percentage = Math.ceil((filledSlots / this.slots.length) * 100);
+        const wireDiv = document.getElementById(`wire${this.id}`);
+        wireDiv.innerText = percentage === 100 ? 'CONNECTED' : `${percentage} %`;
     }
 }
 
@@ -209,25 +247,44 @@ class FloorBuilder {
         return this.floor;
     }
 
+    withName(name) {
+        this.floor.name = name;
+        return this;
+    }
+
     withCeilingConnector(connectorSlot){
         this.floor.ceilingConnectors.push(connectorSlot);
         return this;
     }
 
-    withBottomConnector(connectorSlot){
+    withBottomConnector(connectorSlot) {
         this.floor.bottomConnectors.push(connectorSlot);
         return this;
     }
 
-    withLampInCenter(){
+    withLampInCenter() {
         const lampConnectorX = Math.floor(Floor.WIDTH/Wire.SIZE /2);
         this.withCeilingConnector(lampConnectorX);
         return this;
     }
 
-    withTVInCenter(){
-        const tvConnectorX = Math.floor(Floor.WIDTH/Wire.SIZE /2); //should be 15
+    withTVInCenterLeft(){
+        const tvConnectorX = 12;
         this.withBottomConnector(tvConnectorX);
+        return this;
+    }
+
+    withFridgeOnLeft(){
+        const fridgeConnectorSlot = 2;
+        this.withCeilingConnector(fridgeConnectorSlot);
+        return this;
+    }
+
+    withKitchenSegmentOnRight(){
+        const fridge2ConnectorSlot = 29;
+        const fanConnectorSlot = 26;
+        this.withCeilingConnector(fridge2ConnectorSlot);
+        this.withCeilingConnector(fanConnectorSlot);
         return this;
     }
 }
