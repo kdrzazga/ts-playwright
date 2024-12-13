@@ -173,44 +173,44 @@ class PowerLine {
     }
 }
 
-class Wire {//connects PowerLine to Floor
+class Wire {
     static SIZE = 20;
 
-    constructor(id, physics, floor1, floor2){
+    constructor(id, physics, floor1, floor2) {
         this.id = id;
         this.physics = physics;
-        const y2 = floor2 == null ? 0 : floor2.sprite.y;
-        const y1 = floor1 == null ? 0 : floor1.sprite.y;
         this.x = floor1 ? floor1.sprite.x : 0;
-        this.y = (y1 + y2) / 2;
-
+        this.y = this.calculateY(floor1, floor2);
         this.slots = Array(Math.ceil(Floor.WIDTH / Wire.SIZE)).fill(WireSlot.EMPTY);
-        this.sprites = [];
 
         console.log(`Created ${this.slots.length} wire slots in wire.`);
     }
 
-    place(floor, sprite, wireType){
+    calculateY(floor1, floor2) {
+        const y1 = floor1 ? floor1.sprite.y : 0;
+        const y2 = floor2 ? floor2.sprite.y : 0;
+        return (y1 + y2) / 2;
+    }
+
+    place(floor, sprite, wireType) {
         const extraInfoDiv = document.getElementById('extra-info');
         extraInfoDiv.innerText = `${floor.id} ${floor.floorLevel}`;
-        const y = this.y;
 
         const index = Math.floor((sprite.x - floor.getLeftPosition()) / Wire.SIZE);
 
-        if (this.slots[index] === WireSlot.EMPTY){
+        if (this.slots[index] === WireSlot.EMPTY) {
             const x = floor.getLeftPosition() + index * Wire.SIZE;
             this.slots[index] = wireType;
-            this.physics.add.sprite(x, y, this.slots[index].imageId);
-            console.log(`Placing wire: [${x}, ${y}]. Index = ${index}`);
+            this.physics.add.sprite(x, this.y, wireType.imageId);
+            console.log(`Placing wire: [${x}, ${this.y}]. Index = ${index}`);
             this.updateWiringInfo();
         }
     }
 
-    updateWiringInfo(){
-        const total = this.slots.length;
-        const trueSlots = this.slots.filter(field => field !== WireSlot.EMPTY);
+    updateWiringInfo() {
+        const filledSlots = this.slots.filter(slot => slot !== WireSlot.EMPTY).length;
+        const percentage = Math.ceil((filledSlots / this.slots.length) * 100);
         const wireDiv = document.getElementById(`wire${this.id}`);
-        const percentage = Math.ceil(trueSlots.length / total * 100);
         wireDiv.innerText = percentage === 100 ? 'CONNECTED' : `${percentage} %`;
     }
 }
