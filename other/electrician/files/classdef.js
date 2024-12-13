@@ -132,8 +132,7 @@ class Building {
 
     drawWire(player, wireType){
         const currentFloorNumber = this.getCurrentFloor(player);
-        if (currentFloorNumber < 0)
-            return;
+        if (currentFloorNumber < 0) return;
 
         const currentFloor = this.floors[currentFloorNumber];
 
@@ -185,11 +184,9 @@ class Wire {//connects PowerLine to Floor
         this.x = floor1 ? floor1.sprite.x : 0;
         this.y = (y1 + y2) / 2;
 
-        this.slots = [];
+        this.slots = Array(Math.ceil(Floor.WIDTH / Wire.SIZE)).fill(WireSlot.EMPTY);
         this.sprites = [];
-        for (var i = 0; i < Floor.WIDTH/Wire.SIZE; i++){
-            this.slots.push(WireSlot.EMPTY);
-        }
+
         console.log(`Created ${this.slots.length} wire slots in wire.`);
     }
 
