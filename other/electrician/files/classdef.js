@@ -182,6 +182,7 @@ class Wire {
         this.x = floor1 ? floor1.sprite.x : 0;
         this.y = this.calculateY(floor1, floor2);
         this.slots = Array(Math.ceil(Floor.WIDTH / Wire.SIZE)).fill(WireSlot.EMPTY);
+        this.sprites = [];
 
         console.log(`Created ${this.slots.length} wire slots in wire.`);
     }
@@ -197,13 +198,24 @@ class Wire {
         extraInfoDiv.innerText = `${floor.id} ${floor.floorLevel}`;
 
         const index = Math.floor((sprite.x - floor.getLeftPosition()) / Wire.SIZE);
+        const x = floor.getLeftPosition() + index * Wire.SIZE;
 
-        if (this.slots[index] === WireSlot.EMPTY) {
-            const x = floor.getLeftPosition() + index * Wire.SIZE;
-            this.slots[index] = wireType;
-            this.physics.add.sprite(x, this.y, wireType.imageId);
-            console.log(`Placing wire: [${x}, ${this.y}]. Index = ${index}`);
-            this.updateWiringInfo();
+        if (this.slots[index] !== WireSlot.EMPTY) {
+            this.removeOldWireSprite(index);
+        }
+
+        this.slots[index] = wireType;
+        const newSprite = this.physics.add.sprite(x, this.y, wireType.imageId);
+        this.sprites[index] = newSprite;
+        console.log(`Placing wire: [${x}, ${this.y}]. Index = ${index}`);
+        this.updateWiringInfo();
+    }
+
+    removeOldWireSprite(index) {
+        const oldSprite = this.sprites[index];
+        if (oldSprite) {
+            oldSprite.destroy();
+            this.sprites[index] = null;
         }
     }
 
