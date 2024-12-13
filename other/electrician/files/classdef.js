@@ -74,11 +74,18 @@ class Ladder {
 }
 
 class Building {
+
+    constructor(){
+        this.ladder = new Ladder();
+        this.floors = [];
+        this.wires = [];
+        this.leftPowerLine = new PowerLine();
+        this.rightPowerLine = new PowerLine();
+    }
+
     init(floorCount, physics){
-       this.ladder = new Ladder();
        this.ladder.init(physics);
 
-       this.floors = [];
        const floorBuilder1 = new FloorBuilder();
        this.floors.push(floorBuilder1.withName('attic').withBottomConnector(3).withBottomConnector(11)
             .withCeilingConnector(5).withCeilingConnector(25).withBottomConnector(28).build());
@@ -97,9 +104,7 @@ class Building {
            return new Wire(i, physics, belowFloor, aboveFloor);
        });
 
-       this.leftPowerLine = new PowerLine();
        this.leftPowerLine.init(physics, 'left');
-       this.rightPowerLine = new PowerLine();
        this.rightPowerLine.init(physics, 'right');
     }
 
@@ -190,7 +195,7 @@ class Wire {//connects PowerLine to Floor
 
     place(floor, sprite, wireType){
         const extraInfoDiv = document.getElementById('extra-info');
-        extraInfoDiv.innerText = floor.id + " " + floor.floorLevel ;
+        extraInfoDiv.innerText = `${floor.id} ${floor.floorLevel}`;
         const y = this.y;
 
         const index = Math.floor((sprite.x - floor.getLeftPosition()) / Wire.SIZE);
@@ -206,11 +211,10 @@ class Wire {//connects PowerLine to Floor
 
     updateWiringInfo(){
         const total = this.slots.length;
-        const trueSlots = this.slots.filter(field => field != WireSlot.EMPTY);
-        const wireDiv = document.getElementById('wire' + this.id);
+        const trueSlots = this.slots.filter(field => field !== WireSlot.EMPTY);
+        const wireDiv = document.getElementById(`wire${this.id}`);
         const percentage = Math.ceil(trueSlots.length / total * 100);
-        const statusText = percentage == 100 ? 'CONNECTED' : "" + percentage + " %";
-        wireDiv.innerText = statusText;
+        wireDiv.innerText = percentage === 100 ? 'CONNECTED' : `${percentage} %`;
     }
 }
 
