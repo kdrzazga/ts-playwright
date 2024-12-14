@@ -1,36 +1,57 @@
-class Streak{
-    constructor(value){
+class Streak {
+    constructor(value) {
         this.value = value;
         this.occurrence = 0;
     }
 }
 
 class Compressor {
-    constructor(imageWidth){
+    constructor(imageWidth) {
         this.streaks = [];
         this.width = imageWidth;
     }
 
-    add(element){
-        if (this.streaks.length < 1 || this.streaks.length === this.width || this.streaks[this.streaks.length - 1].value != element){
+    add(element) {
+        if (this.streaks.length === 0 ||
+            this.streaks.length === this.width ||
+            this.streaks[this.streaks.length - 1].value !== element) {
             let s = new Streak(element);
             s.occurrence = 1;
             this.streaks.push(s);
-        }
-        else {
+        } else {
             this.streaks[this.streaks.length - 1].occurrence++;
         }
     }
 
-    dump(webElement){
-        let rowId = 0;
-        let i = 0;
+    dump(textarea) {
+        let output = '<table border="0" cellpadding="0" cellspacing="0">\n';
+        let rowId = 1;
+        let currentColSpan = 0;
+
         this.streaks.forEach(s => {
-            const elem = `<td style="bgcolor=${s.value}" colspan="${s.occurrence}"></td>`;
-            webElement.value += elem;//(`${s.value} [${s.occurrence}]`);
-            i++;
-            if (i% 5 == 0) webElement.value += '<br>';
+            if (currentColSpan === 0) {
+                output += `<tr id="r${rowId}">`;
+            }
+
+            output += `<td style="background-color: ${s.value};" `;
+            if (s.occurrence > 1) output += `colspan = ${s.occurrence}`;
+            output += `>&nbsp;</td>`;
+            currentColSpan += s.occurrence;
+
+            if (currentColSpan >= this.width) {
+                output += `</tr>\n`;
+                console.log(`Row ${rowId} colSpan = ${currentColSpan}`);
+                rowId++;
+                currentColSpan = 0;
+            }
         });
+
+        if (currentColSpan > 0) {
+            output += `</tr>\n`;
+        }
+
+        output += '</table>';
+        textarea.value = output;
     }
 }
 
