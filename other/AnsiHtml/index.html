@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Read Bitmap Pixels</title>
+</head>
+<body>
+<table>
+    <tr><td><input type="file" id="upload" accept="image/*"/></td></tr>
+    <tr><td><canvas id="canvas"></canvas></td></tr>
+    <tr><td><textarea id = "output" style="width: 100%"></textarea></td></tr>
+</table>
+<script src="fileHandling.js"></script>
+<script>
+    function rgbToHex(r, g, b) {
+        const toHex = (component) => {
+            const hex = component.toString(16).padStart(2, '0');
+            return hex;
+        };
+
+        return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+    }
+
+    const uploadButton = document.getElementById('upload');
+    uploadButton.addEventListener('change', loadFile);
+</script>
+</body>
+</html>
