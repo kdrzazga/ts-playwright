@@ -1,7 +1,7 @@
 var counter = 3;
 const counterMax = 3;
 
-const contentCounterMax = 600;
+const contentCounterMax = 1050;
 var currentCounter = contentCounterMax;
 
 let currentUrlDisplay = 0;
@@ -58,7 +58,7 @@ function timeLoop() {
     var lastRenderTime = 0;
     var currentTime = performance.now();
     var timeSinceLastRender = currentTime - lastRenderTime;
-    if (timeSinceLastRender >= 15) {
+    if (timeSinceLastRender >= 10) {
 
         conditionalIframeChange();
 
