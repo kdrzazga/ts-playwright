@@ -1,0 +1,14 @@
+        @font-face {
+          font-family: 'c64mono';
+          src: url('https://kdrzazga.github.io/js-playwright/other/6/typedore64/resources/C64_Pro_Mono-STYLE.ttf') format('truetype');
+        }
+        table {
+          border-collapse: collapse;
+          font-family: 'c64mono';
+          font-size: 2px;
+        }
+
+        th, td {
+            border: 0px;
+            padding: 0px;
+        }
