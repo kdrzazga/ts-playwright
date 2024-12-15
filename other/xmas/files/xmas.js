@@ -1,26 +1,26 @@
 var counter = 3;
 const counterMax = 3;
 
-const contentCounterMax = 600;
+let contentCounterMax = 800;
 var currentCounter = contentCounterMax;
 
 let currentUrlDisplay = 0;
 
 function play() {
-  var audio = new Audio('files/carols.mp3');
-  audio.play();
-  setInterval(function() {
+    var audio = new Audio('files/carols.mp3');
     audio.play();
-  }, 11037);
-  console.log('Music started.');
+    setInterval(function() {
+        audio.play();
+    }, 11037);
+    console.log('Music started.');
 }
 
-function startPlayback(){
-  const alreadyPlaying = sessionStorage.getItem('carols-playing');
-  //if (alreadyPlaying !== 'true'){
-	  sessionStorage.setItem('carols-playing', 'true');
-	  play();
-  //}
+function startPlayback() {
+    const alreadyPlaying = sessionStorage.getItem('carols-playing');
+    if (alreadyPlaying !== 'true') {
+        sessionStorage.setItem('carols-playing', 'true');
+        play();
+    }
 }
 
 function moveSanta1() {
@@ -38,41 +38,67 @@ function conditionalSanta1Reset() {
 }
 
 function flipIframeSource() {
-    var iframe = document.querySelector('iframe');
-    const urls = ['files/choinka.html', 'files/snowman1.html', 'files/presents.html', 'files/sleigh.html'];
-    currentUrlDisplay = (currentUrlDisplay + 1) % urls.length;
+    const iframe = document.querySelector('iframe');
+    const urls = {
+        'snowman': {
+                    'url': 'files/snowman1.html',
+                    'delay': 1000
+                },
+        'tree': {
+            'url': 'files/choinka.html',
+            'delay': 800
+        },
 
-    iframe.src = urls[currentUrlDisplay];
+        'presents': {
+            'url': 'files/presents.html',
+            'delay': 600
+        },
+        'santa': {
+            'url': 'files/sleigh.html',
+            'delay': 2600
+        }
+    };
+
+    const keys = Object.keys(urls);
+    const currentKey = keys[currentUrlDisplay];
+    const currentUrl = urls[currentKey].url;
+    currentCounter = urls[currentKey].delay;
+
+    iframe.src = currentUrl;
+
+    currentUrlDisplay = (currentUrlDisplay + 1) % keys.length;
+    const timestamp = new Date().toISOString();
+    console.log(`${timestamp} ${currentUrl} is to be displayed for ${currentCounter} loop cycles.`)
 }
 
-function conditionalIframeChange(){
+function conditionalIframeChange() {
     currentCounter--;
-    if(currentCounter < 0){
+    if (currentCounter < 0) {
         currentCounter = contentCounterMax;
         flipIframeSource();
     }
 }
 
 function timeLoop() {
-    var _this = this;
-    var lastRenderTime = 0;
-    var currentTime = performance.now();
-    var timeSinceLastRender = currentTime - lastRenderTime;
-    if (timeSinceLastRender >= 15) {
+    var lastRenderTime = performance.now();
 
-        conditionalIframeChange();
-
-        if (counter < 0) {
-            moveSanta1();
-            conditionalSanta1Reset();
-            counter = counterMax;
-            lastRenderTime = currentTime;
+    function loop() {
+        var currentTime = performance.now();
+        var timeSinceLastRender = currentTime - lastRenderTime;
+        if (timeSinceLastRender >= 10) {
+            conditionalIframeChange();
+            if (counter < 0) {
+                moveSanta1();
+                conditionalSanta1Reset();
+                counter = counterMax;
+                lastRenderTime = currentTime;
+            } else {
+                counter--;
+            }
         }
-        else {
-            counter--;
-        }
+        requestAnimationFrame(loop);
     }
-    requestAnimationFrame(function () { return _this.timeLoop(); });
+    loop();
 }
 
 timeLoop();
