@@ -44,12 +44,28 @@ class Compressor {
         return { output, currentColSpan, rowComplete };
     }
 
-   generateCell(streak) {
+    generateCell(streak) {
        let cell = `<td style="background-color: ${streak.value};" `;
        if (streak.occurrence > 1) cell += `colspan="${streak.occurrence}"`;
        cell += `>&nbsp;</td>`;
        return cell;
    }
+
+
+ processImageData(data) {
+    for (let i = 0; i < data.length; i += 4) {
+        const red = data[i];
+        const green = data[i + 1];
+        const blue = data[i + 2];
+        const alpha = data[i + 3];
+        const index = i / 4;
+        const y = Math.floor(index / this.width);
+        const x = index - (y * this.width);
+        const htmlValue = rgbToHex(red, green, blue);
+        console.log(`Pixel at index ${index} [${x}, ${y}]: R=${red}, G=${green}, B=${blue}, A=${alpha}, ${htmlValue}`);
+        this.add(htmlValue);
+    }
+}
 
     dump(textarea) {
         let output = '<table class="table5">\n';
@@ -75,9 +91,32 @@ class Compressor {
     }
 }
 
-function loadFile(event){
+class Filler extends Compressor{
+    constructor(imageWidth, filament){
+        super(imageWidth);
+        this.filament = filament;
+    }
 
+    generateCell(streak) {
+       let cell = `<td style="color: ${streak.value};" `;
+       if (streak.occurrence > 1) cell += `colspan="${streak.occurrence}"`;
+       const content = this.filament.repeat(streak.occurrence);
+       cell += `>${content}</td>`;
+       return cell;
+    }
+}
+
+function chooseFile4Compressor(event){
     const file = event.target.files[0];
+    loadFile('compressor', file);
+}
+
+function chooseFile4Filler(event){
+    const file = event.target.files[0];
+    loadFile('filler', file);
+}
+
+function loadFile(compressorType, file){
     let compressor = null;
 
     if (file) {
@@ -87,23 +126,12 @@ function loadFile(event){
             img.onload = function() {
                 canvas.width = img.width;
                 canvas.height = img.height;
-                compressor = new Compressor(canvas.width);
+                compressor = compressorType === 'compressor' ? new Compressor(canvas.width) : new Filler(canvas.width, '&#178;');
                 ctx.drawImage(img, 0, 0);
                 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                 const data = imageData.data;
 
-                for (let i = 0; i < data.length; i += 4) {
-                    const red = data[i];
-                    const green = data[i + 1];
-                    const blue = data[i + 2];
-                    const alpha = data[i + 3];
-                    const index = i / 4;
-                    const y = Math.floor(index/canvas.width);
-                    const x = index - (y*canvas.width);
-                    const htmlValue = rgbToHex(red, green, blue);
-                    console.log(`Pixel at index ${index} [${x}, ${y}]: R=${red}, G=${green}, B=${blue}, A=${alpha}, ${htmlValue}`);
-                    compressor.add(htmlValue);
-                }
+                compressor.processImageData(data);
 
                 const outputTextArea = document.getElementById('output');
                 compressor.dump(outputTextArea);
