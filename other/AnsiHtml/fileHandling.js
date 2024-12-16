@@ -23,26 +23,46 @@ class Compressor {
         }
     }
 
+    generateRow(streak, currentColSpan, rowId) {
+        let output = '';
+
+        if (currentColSpan === 0) {
+            output += `<tr id="r${rowId}">`;
+        }
+
+        output += this.generateCell(streak);
+        currentColSpan += streak.occurrence;
+
+        let rowComplete = false;
+        if (currentColSpan >= this.width) {
+            output += `</tr>\n`;
+            console.log(`Row ${rowId} colSpan = ${currentColSpan}`);
+            rowComplete = true;
+            currentColSpan = 0;
+        }
+
+        return { output, currentColSpan, rowComplete };
+    }
+
+   generateCell(streak) {
+       let cell = `<td style="background-color: ${streak.value};" `;
+       if (streak.occurrence > 1) cell += `colspan="${streak.occurrence}"`;
+       cell += `>&nbsp;</td>`;
+       return cell;
+   }
+
     dump(textarea) {
         let output = '<table border="0" cellpadding="0" cellspacing="0">\n';
         let rowId = 1;
         let currentColSpan = 0;
 
         this.streaks.forEach(s => {
-            if (currentColSpan === 0) {
-                output += `<tr id="r${rowId}">`;
-            }
+            const result = this.generateRow(s, currentColSpan, rowId);
+            output += result.output;
+            currentColSpan = result.currentColSpan;
 
-            output += `<td style="background-color: ${s.value};" `;
-            if (s.occurrence > 1) output += `colspan = ${s.occurrence}`;
-            output += `>&nbsp;</td>`;
-            currentColSpan += s.occurrence;
-
-            if (currentColSpan >= this.width) {
-                output += `</tr>\n`;
-                console.log(`Row ${rowId} colSpan = ${currentColSpan}`);
+            if (result.rowComplete) {
                 rowId++;
-                currentColSpan = 0;
             }
         });
 
