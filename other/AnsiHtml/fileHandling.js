@@ -52,7 +52,7 @@ class Compressor {
    }
 
     dump(textarea) {
-        let output = '<table border="0" cellpadding="0" cellspacing="0">\n';
+        let output = '<table class="table5">\n';
         let rowId = 1;
         let currentColSpan = 0;
 
