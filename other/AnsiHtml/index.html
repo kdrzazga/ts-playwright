@@ -7,7 +7,8 @@
 </head>
 <body>
 <table>
-    <tr><td><input type="file" id="upload" accept="image/*"/></td></tr>
+    <tr><td>UPLOAD and no fill: </td><td><input type="file" id="upload" accept="image/*"/></td></tr>
+    <tr><td>UPLOAD + fill: </td><td><input type="file" id="uploadFill" accept="image/*"/></td></tr>
     <tr><td><canvas id="canvas"></canvas></td></tr>
     <tr><td><textarea id = "output" style="width: 100%"></textarea></td></tr>
 </table>
@@ -23,7 +24,9 @@
     }
 
     const uploadButton = document.getElementById('upload');
-    uploadButton.addEventListener('change', loadFile);
+    uploadButton.addEventListener('change', chooseFile4Compressor);
+    const uploadFillButton = document.getElementById('uploadFill');
+    uploadFillButton.addEventListener('change', chooseFile4Filler);
 </script>
 </body>
 </html>

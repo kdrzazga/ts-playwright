@@ -23,26 +23,62 @@ class Compressor {
         }
     }
 
+    generateRow(streak, currentColSpan, rowId) {
+        let output = '';
+
+        if (currentColSpan === 0) {
+            output += `<tr id="r${rowId}">`;
+        }
+
+        output += this.generateCell(streak);
+        currentColSpan += streak.occurrence;
+
+        let rowComplete = false;
+        if (currentColSpan >= this.width) {
+            output += `</tr>\n`;
+            console.log(`Row ${rowId} colSpan = ${currentColSpan}`);
+            rowComplete = true;
+            currentColSpan = 0;
+        }
+
+        return { output, currentColSpan, rowComplete };
+    }
+
+    generateCell(streak) {
+       let cell = `<td style="background-color: ${streak.value};" `;
+       if (streak.occurrence > 1) cell += `colspan="${streak.occurrence}"`;
+       cell += `>&nbsp;</td>`;
+       return cell;
+   }
+
+
+ processImageData(data) {
+    for (let i = 0; i < data.length; i += 4) {
+        const red = data[i];
+        const green = data[i + 1];
+        const blue = data[i + 2];
+        const alpha = data[i + 3];
+        const index = i / 4;
+        const y = Math.floor(index / this.width);
+        const x = index - (y * this.width);
+        const htmlValue = rgbToHex(red, green, blue);
+        console.log(`Pixel at index ${index} [${x}, ${y}]: R=${red}, G=${green}, B=${blue}, A=${alpha}, ${htmlValue}`);
+        this.add(htmlValue);
+    }
+}
+
     dump(textarea) {
-        let output = '<table border="0" cellpadding="0" cellspacing="0">\n';
+        let output = '<table class="table5">\n';
         let rowId = 1;
         let currentColSpan = 0;
 
         this.streaks.forEach(s => {
-            if (currentColSpan === 0) {
-                output += `<tr id="r${rowId}">`;
-            }
+            const result = this.generateRow(s, currentColSpan, rowId);
+            output += result.output;
+            currentColSpan = result.currentColSpan;
 
-            output += `<td style="background-color: ${s.value};" `;
-            if (s.occurrence > 1) output += `colspan = ${s.occurrence}`;
-            output += `>&nbsp;</td>`;
-            currentColSpan += s.occurrence;
-
-            if (currentColSpan >= this.width) {
-                output += `</tr>\n`;
-                console.log(`Row ${rowId} colSpan = ${currentColSpan}`);
+            if (result.rowComplete) {
                 rowId++;
-                currentColSpan = 0;
             }
         });
 
@@ -55,9 +91,32 @@ class Compressor {
     }
 }
 
-function loadFile(event){
+class Filler extends Compressor{
+    constructor(imageWidth, filament){
+        super(imageWidth);
+        this.filament = filament;
+    }
 
+    generateCell(streak) {
+       let cell = `<td style="color: ${streak.value};" `;
+       if (streak.occurrence > 1) cell += `colspan="${streak.occurrence}"`;
+       const content = this.filament.repeat(streak.occurrence);
+       cell += `>${content}</td>`;
+       return cell;
+    }
+}
+
+function chooseFile4Compressor(event){
     const file = event.target.files[0];
+    loadFile('compressor', file);
+}
+
+function chooseFile4Filler(event){
+    const file = event.target.files[0];
+    loadFile('filler', file);
+}
+
+function loadFile(compressorType, file){
     let compressor = null;
 
     if (file) {
@@ -67,23 +126,12 @@ function loadFile(event){
             img.onload = function() {
                 canvas.width = img.width;
                 canvas.height = img.height;
-                compressor = new Compressor(canvas.width);
+                compressor = compressorType === 'compressor' ? new Compressor(canvas.width) : new Filler(canvas.width, '&#178;');
                 ctx.drawImage(img, 0, 0);
                 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                 const data = imageData.data;
 
-                for (let i = 0; i < data.length; i += 4) {
-                    const red = data[i];
-                    const green = data[i + 1];
-                    const blue = data[i + 2];
-                    const alpha = data[i + 3];
-                    const index = i / 4;
-                    const y = Math.floor(index/canvas.width);
-                    const x = index - (y*canvas.width);
-                    const htmlValue = rgbToHex(red, green, blue);
-                    console.log(`Pixel at index ${index} [${x}, ${y}]: R=${red}, G=${green}, B=${blue}, A=${alpha}, ${htmlValue}`);
-                    compressor.add(htmlValue);
-                }
+                compressor.processImageData(data);
 
                 const outputTextArea = document.getElementById('output');
                 compressor.dump(outputTextArea);
