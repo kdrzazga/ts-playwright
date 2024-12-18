@@ -1,11 +1,12 @@
     class Flake {
         constructor(id, canvasWidth, canvasHeight) {
             this.id = id;
-            this.x = Math.random() * canvasWidth; // Random horizontal position
-            this.y = 0; // Start from the top
+            this.enabled = true;
+            this.x = Math.random() * canvasWidth;
+            this.y = 0;
             this.speed = Math.random() * 2 + 1;
             this.amplitude = Math.random() * 6 + 6;
-            this.frequency = Math.random() * 0.005 + 0.005; // Random frequency for sinusoidal movement
+            this.frequency = Math.random() * 0.005 + 0.005;
             this.phase = Math.random() * Math.PI;
             this.canvasWidth = canvasWidth;
             this.canvasHeight = canvasHeight;
@@ -21,7 +22,7 @@
             this.y += this.speed;
             this.x += Math.sin(this.y * this.frequency + this.phase) * this.amplitude;
 
-            if (this.y > this.canvasHeight) {
+            if (this.y > this.canvasHeight && this.enabled) {
                 this.y = 0;
                 this.x = Math.random() * this.canvasWidth;
             }
@@ -59,24 +60,23 @@
         enableSnow() {
             setInterval(() => {
                 this.enabled = !this.enabled;
+                this.flakes.forEach(flake => flake.enabled = this.enabled);
             }, 77000);
         }
 
         animate() {
-            const periodicMultiplier = new Date().getSeconds() > 30 ? 0.3 : 0.7;
+            const periodicMultiplier = new Date().getSeconds() > 45 ? 0.6 : 0.8;
 
             this.flakes.forEach(flake => {
                 flake.update();
                 flake.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
 
-                if (this.enabled) {
-                    if (flake.id % 2 === 0) {
-                        flake.x *= periodicMultiplier;
-                        flake.x += 12 + 7 * flake.id;
-                        flake.y += flake.id / 3;
-                    }
-                    flake.draw(this.flakeImage);
+                if (flake.id % 2 === 0) {
+                    flake.x *= periodicMultiplier;
+                    flake.x += 5 + 7 * flake.id;
+                    flake.y += flake.id / 3;
                 }
+                flake.draw(this.flakeImage);
             });
 
             requestAnimationFrame(() => this.animate());
