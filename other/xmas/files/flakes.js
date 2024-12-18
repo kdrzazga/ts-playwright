@@ -33,54 +33,74 @@
         }
     }
 
-    class FlakeAnimation {
-        constructor(numFlakes) {
-            this.enabled = false; // Start with snow disabled
-            this.numFlakes = numFlakes;
-            this.flakes = [];
-            this.canvasWidth = window.innerWidth;
-            this.canvasHeight = window.innerHeight;
-            this.flakeImage = new Image();
-            this.flakeImage.src = 'files/flake.png';
-            this.startTime = Date.now(); // To track time elapsed
+class FlakeAnimation {
+    constructor(numFlakes) {
+        this.flakes = [];
+        this.enabled = false;
+        this.numFlakes = numFlakes;
+        this.canvasWidth = window.innerWidth;
+        this.canvasHeight = window.innerHeight;
+        this.flakeImage = new Image();
+        this.flakeImage.src = 'files/flake.png';
 
-            this.createFlakes();
-            this.flakeImage.onload = () => this.animate();
-            console.log('Starting snowing...');
-            this.enableSnow();
+        this.createFlakes();
+        this.flakeImage.onload = () => this.animate();
+        const timestamp = new Date().toISOString();
+        console.log(`${timestamp} Starting to snow...`);
 
-        }
+        this.startSnowingIntervals();
+    }
 
-        createFlakes() {
-            for (let i = 0; i < this.numFlakes; i++) {
-                this.flakes.push(new Flake(i, this.canvasWidth, this.canvasHeight));
-            }
-        }
-
-        enableSnow() {
-            setInterval(() => {
-                this.enabled = !this.enabled;
-                this.flakes.forEach(flake => flake.enabled = this.enabled);
-            }, 77000);
-        }
-
-        animate() {
-            const periodicMultiplier = new Date().getSeconds() > 45 ? 0.6 : 0.8;
-
-            this.flakes.forEach(flake => {
-                flake.update();
-                flake.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-
-                if (flake.id % 2 === 0) {
-                    flake.x *= periodicMultiplier;
-                    flake.x += 5 + 7 * flake.id;
-                    flake.y += flake.id / 3;
-                }
-                flake.draw(this.flakeImage);
-            });
-
-            requestAnimationFrame(() => this.animate());
+    createFlakes() {
+        for (let i = 0; i < this.numFlakes; i++) {
+            this.flakes.push(new Flake(i, this.canvasWidth, this.canvasHeight));
         }
     }
+
+    startSnowingIntervals() {
+        this.setEnableInterval();
+        setTimeout(() => {
+            this.setDisableInterval();
+            const initialDisableTimestamp = new Date().toISOString();
+            console.log(`${initialDisableTimestamp} Snowing will be disabled after 7 seconds.`);
+        }, 7000);
+    }
+
+    setEnableInterval() {
+        this.enableInterval = setInterval(() => {
+            this.enabled = true;
+            this.flakes.forEach(flake => flake.enabled = this.enabled);
+            const timestamp = new Date().toISOString();
+            console.log(`${timestamp} Snowing enabled.`);
+        }, 30000);
+    }
+
+    setDisableInterval() {
+        this.disableInterval = setInterval(() => {
+            this.enabled = false;
+            this.flakes.forEach(flake => flake.enabled = this.enabled);
+            const timestamp = new Date().toISOString();
+            console.log(`${timestamp} Snowing disabled.`);
+        }, 30000);
+    }
+
+    animate() {
+        const periodicMultiplier = new Date().getSeconds() > 45 ? 0.6 : 0.8;
+
+        this.flakes.forEach(flake => {
+            flake.update();
+            flake.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+
+            if (flake.id % 2 === 0) {
+                flake.x *= periodicMultiplier;
+                flake.x += 5 + 7 * flake.id;
+                flake.y += flake.id / 3;
+            }
+            flake.draw(this.flakeImage);
+        });
+
+        requestAnimationFrame(() => this.animate());
+    }
+}
 
     const snowAnimation = new FlakeAnimation(20);
