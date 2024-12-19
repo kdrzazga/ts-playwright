@@ -6,8 +6,10 @@ class MainScene extends Phaser.Scene {
 
     preload() {
         this.load.image('sprite', 'files/electrician.png');
-        this.load.image('rat1', 'files/rat.png');
-        this.load.image('rat2', 'files/rat.png');
+        for (let i = 1; i <= 8; i++) {
+            this.load.image(`rat${i}`, 'files/rat.png');
+        }
+
         this.load.image('ladder', 'files/ladder.png');
 
         this.load.image('floor0', 'files/attic.png');

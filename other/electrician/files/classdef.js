@@ -275,7 +275,7 @@ class Rat extends Enemy{
     }
 
     init(physics, y){
-        this.sprite = physics.add.sprite(180 + (this.id + 1)*110, y, 'rat' + this.id);
+        this.sprite = physics.add.sprite(180 + (this.id + 1)*44, y, 'rat' + this.id);
         this.sprite.velocity = { x: this.speed };
     }
 
@@ -295,12 +295,31 @@ class Creator{
 
         const rat1 = new Rat(1);
         rat1.init(physics, 589);
+
         const rat2 = new Rat(2);
         rat2.init(physics, 104);
         rat2.minX = 2 * 6 * Wire.SIZE;
         rat2.maxX = (6 + 22) * Wire.SIZE;
 
-        building.enemies.push(rat1, rat2);
+        const rat3 = new Rat(3);
+        rat3.init(physics, 589);
+        rat3.sprite.velocity = { x: 1.2 };
+
+        const rat4 = new Rat(4);
+        rat4.init(physics, 589);
+        rat4.sprite.velocity = { x: 1.4 };
+
+        const rat5 = new Rat(5);
+        rat5.init(physics, 328 - Floor.HEIGHT /2);
+        rat5.minX = 2*Floor.WIDTH/3 + 18;
+        rat5.sprite.velocity = { x: 1.4 };
+
+        const rat6 = new Rat(6);
+        rat6.init(physics, 328 - Floor.HEIGHT /2);
+        rat6.minX = 2*Floor.WIDTH/3 + 18;
+        rat6.sprite.velocity = { x: 0.8 };
+
+        building.enemies.push(rat1, rat2, rat3, rat4, rat5, rat6);
 
         return building;
     }
