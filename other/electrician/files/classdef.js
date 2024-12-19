@@ -287,39 +287,33 @@ class Rat extends Enemy{
     }
 }
 
-class Creator{
+class Creator {
     static create3storeBuilding(physics) {
         const building = new Building();
         building.init(3, physics);
         building.includeWiresInInfoFrame();
 
-        const rat1 = new Rat(1);
-        rat1.init(physics, 589);
+        const ratsData = [
+            { id: 1, y: 589 },
+            { id: 2, y: 104, minX: 2 * 6 * Wire.SIZE, maxX: (6 + 22) * Wire.SIZE },
+            { id: 3, y: 589, velocity: { x: 1.2 } },
+            { id: 4, y: 589, velocity: { x: 1.4 } },
+            { id: 5, y: 328 - Floor.HEIGHT / 2, minX: 2 * Floor.WIDTH / 3 + 18, velocity: { x: 1.4 } },
+            { id: 6, y: 328 - Floor.HEIGHT / 2, minX: 2 * Floor.WIDTH / 3 + 18, velocity: { x: 0.8 } },
+        ];
 
-        const rat2 = new Rat(2);
-        rat2.init(physics, 104);
-        rat2.minX = 2 * 6 * Wire.SIZE;
-        rat2.maxX = (6 + 22) * Wire.SIZE;
+        const createRat = (data) => {
+            const rat = new Rat(data.id);
+            rat.init(physics, data.y);
+            if (data.minX) rat.minX = data.minX;
+            if (data.maxX) rat.maxX = data.maxX;
+            if (data.velocity) rat.sprite.velocity = data.velocity;
+            return rat;
+        };
 
-        const rat3 = new Rat(3);
-        rat3.init(physics, 589);
-        rat3.sprite.velocity = { x: 1.2 };
+        const rats = ratsData.map(createRat);
 
-        const rat4 = new Rat(4);
-        rat4.init(physics, 589);
-        rat4.sprite.velocity = { x: 1.4 };
-
-        const rat5 = new Rat(5);
-        rat5.init(physics, 328 - Floor.HEIGHT /2);
-        rat5.minX = 2*Floor.WIDTH/3 + 18;
-        rat5.sprite.velocity = { x: 1.4 };
-
-        const rat6 = new Rat(6);
-        rat6.init(physics, 328 - Floor.HEIGHT /2);
-        rat6.minX = 2*Floor.WIDTH/3 + 18;
-        rat6.sprite.velocity = { x: 0.8 };
-
-        building.enemies.push(rat1, rat2, rat3, rat4, rat5, rat6);
+        building.enemies.push(...rats);  // Spread operator to add the array of rats
 
         return building;
     }
