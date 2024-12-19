@@ -79,6 +79,7 @@ class Building {
         this.ladder = new Ladder();
         this.floors = [];
         this.wires = [];
+        this.enemies = [];
         this.leftPowerLine = new PowerLine();
         this.rightPowerLine = new PowerLine();
     }
@@ -237,16 +238,44 @@ class Wire {
     }
 }
 
-class Rat {
+class Enemy {
     constructor(id){
+        this.sprite = null;
         this.id = id;
-        this.speed =1;
+        this.active = true;
+        this.speed = 1;
+        this.minX = 150;
+        this.maxX = Floor.WIDTH;
+    }
+
+    collide(player) {
+        const distanceX = player.x - this.sprite.x;
+        const distanceY = player.y - this.sprite.y;
+
+        const collisionVertical = -40 < distanceY && distanceY < 0;
+
+        if (!collisionVertical) return 0;
+
+        const threshold = 20;
+        if (Math.abs(distanceX) < threshold) {
+            if (distanceX < 0) {
+                return -1;
+            } else {
+                return 1;
+            }
+        }
+
+        return 0;
+    }
+}
+
+class Rat extends Enemy{
+    constructor(id){
+        super(id);
     }
 
     init(physics, y){
         this.sprite = physics.add.sprite(180 + (this.id + 1)*110, y, 'rat' + this.id);
-        this.minX = 150;
-        this.maxX = Floor.WIDTH;
         this.sprite.velocity = { x: this.speed };
     }
 
@@ -264,12 +293,14 @@ class Creator{
         building.init(3, physics);
         building.includeWiresInInfoFrame();
 
-        building.rat1 = new Rat(1);
-        building.rat1.init(physics, 589);
-        building.rat2 = new Rat(2);
-        building.rat2.init(physics, 104);
-        building.rat2.minX = 2 * 6 * Wire.SIZE;
-        building.rat2.maxX = (6 + 22) * Wire.SIZE;
+        const rat1 = new Rat(1);
+        rat1.init(physics, 589);
+        const rat2 = new Rat(2);
+        rat2.init(physics, 104);
+        rat2.minX = 2 * 6 * Wire.SIZE;
+        rat2.maxX = (6 + 22) * Wire.SIZE;
+
+        building.enemies.push(rat1, rat2);
 
         return building;
     }

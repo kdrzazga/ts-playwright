@@ -40,8 +40,9 @@ class MainScene extends Phaser.Scene {
 
     update() {
         this.handlePlayerMovement();
-        this.conditionalFallDown();
         this.handleEnemyMovement();
+        this.checkCollisions();
+        this.conditionalFallDown();
     }
 
     jump(direction) {
@@ -81,6 +82,13 @@ class MainScene extends Phaser.Scene {
         } else {
             this.player.setVelocityX(0); // No horizontal movement if just jumping
         }
+    }
+
+    checkCollisions(){
+        const collidingEnemy = this.building.enemies.find(e => e.collide(this.player) != 0);
+
+        if (collidingEnemy != null)
+            this.player.x += 15 * collidingEnemy.collide(this.player);
     }
 
     conditionalFallDown(){
@@ -150,8 +158,7 @@ class MainScene extends Phaser.Scene {
     }
 
     handleEnemyMovement(){
-        this.building.rat1.move();
-        this.building.rat2.move();
+        this.building.enemies.forEach(enemy => enemy.move());
     }
 
     writeFloorInfo(){
