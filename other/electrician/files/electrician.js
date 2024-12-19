@@ -6,6 +6,8 @@ class MainScene extends Phaser.Scene {
 
     preload() {
         this.load.image('sprite', 'files/electrician.png');
+        this.load.image('rat1', 'files/rat.png');
+        this.load.image('rat2', 'files/rat.png');
         this.load.image('ladder', 'files/ladder.png');
 
         this.load.image('floor0', 'files/attic.png');
@@ -37,8 +39,9 @@ class MainScene extends Phaser.Scene {
     }
 
     update() {
-        this.handleMovement();
+        this.handlePlayerMovement();
         this.conditionalFallDown();
+        this.handleEnemyMovement();
     }
 
     jump(direction) {
@@ -95,6 +98,7 @@ class MainScene extends Phaser.Scene {
             if (f.onFloor(this.player.x, this.player.y) && !this.building.ladder.onLadder(this.player.x)){
                 console.log('Floor met on y= ' + this.player.y);
                 velocity = 0; //Floor under feet prevents from falling
+                this.player.spriteCanJump = true;
                 return;
             }
         });
@@ -103,7 +107,7 @@ class MainScene extends Phaser.Scene {
         //console.log("Fall down y = ", this.player.y, " FloorLevels = " + flrs);
     }
 
-    handleMovement() {
+    handlePlayerMovement() {
         let velocityX = 0;
         let velocityY = 0;
 
@@ -143,6 +147,11 @@ class MainScene extends Phaser.Scene {
         }
 
         this.writeFloorInfo();
+    }
+
+    handleEnemyMovement(){
+        this.building.rat1.move();
+        this.building.rat2.move();
     }
 
     writeFloorInfo(){

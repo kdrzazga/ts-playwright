@@ -98,10 +98,11 @@ class Building {
        this.floors.forEach(floor => floor.init(physics));
        this.floors.forEach(floor => floor.calculateFloorLevel());
 
+       const connectionPointsCounts = [2, 6, 5];
        this.wires = this.floors.map((floor, i) => {
            const aboveFloor = this.floors[i] || null;
            const belowFloor = this.floors[i - 1] || null;
-           return new Wire(i, physics, belowFloor, aboveFloor);
+           return new Wire(i, physics, belowFloor, aboveFloor, connectionPointsCounts[i]);
        });
 
        this.leftPowerLine.init(physics, 'left');
@@ -147,6 +148,7 @@ class Building {
                 const match = upperFloor.bottomConnectors.filter(cnctr => cnctr == index);
                 if (match.length > 0){
                     this.wires[currentFloorNumber].place(currentFloor, player, WireSlot.WIRE_UP);
+                    this.wires[currentFloorNumber].actualFloorConnections.add(index);
                 }
             }
             else if(wireType === WireSlot.WIRE_DOWN) {
@@ -157,10 +159,16 @@ class Building {
                 const match = lowerFloor.ceilingConnectors.filter(cnctr => cnctr == index);
                 if (match.length > 0){
                     this.wires[currentFloorNumber].place(currentFloor, player, WireSlot.WIRE_DOWN);
+                    this.wires[currentFloorNumber].actualFloorConnections.add(index);
                 }
             }
-            else
-                this.wires[currentFloorNumber].place(currentFloor, player, wireType);
+            else {
+                this.wires[currentFloorNumber].place(currentFloor, player, WireSlot.WIRE_STRAIGHT);
+                const index = Math.floor((player.x - currentFloor.getLeftPosition()) / Wire.SIZE);
+                if (this.wires[currentFloorNumber].actualFloorConnections.has(index)) {
+                        this.wires[currentFloorNumber].actualFloorConnections.delete(index);
+                }
+            }
         }
     }
 }
@@ -176,19 +184,21 @@ class PowerLine {
 class Wire {
     static SIZE = 20;
 
-    constructor(id, physics, floor1, floor2) {
+    constructor(id, physics, floor1, floor2, expectedFloorConnectionsCnt) {
         this.id = id;
         this.physics = physics;
         this.x = floor1 ? floor1.sprite.x : 0;
         this.y = this.calculateY(floor1, floor2);
         this.slots = Array(Math.ceil(Floor.WIDTH / Wire.SIZE)).fill(WireSlot.EMPTY);
         this.sprites = [];
+        this.expectedFloorConnectionsCnt = expectedFloorConnectionsCnt;
+        this.actualFloorConnections = new Set();
 
         console.log(`Created ${this.slots.length} wire slots in wire.`);
     }
 
     calculateY(floor1, floor2) {
-        const y1 = floor1 ? floor1.sprite.y : 0;
+        const y1 = floor1?.sprite.y || 0;
         const y2 = floor2 ? floor2.sprite.y : 0;
         return (y1 + y2) / 2;
     }
@@ -223,7 +233,28 @@ class Wire {
         const filledSlots = this.slots.filter(slot => slot !== WireSlot.EMPTY).length;
         const percentage = Math.ceil((filledSlots / this.slots.length) * 100);
         const wireDiv = document.getElementById(`wire${this.id}`);
-        wireDiv.innerText = percentage === 100 ? 'CONNECTED' : `${percentage} %`;
+        wireDiv.innerText = percentage === 100 && this.expectedFloorConnectionsCnt == this.actualFloorConnections.size ? 'CONNECTED' : `${percentage} %`;
+    }
+}
+
+class Rat {
+    constructor(id){
+        this.id = id;
+        this.speed =1;
+    }
+
+    init(physics, y){
+        this.sprite = physics.add.sprite(180 + (this.id + 1)*110, y, 'rat' + this.id);
+        this.minX = 150;
+        this.maxX = Floor.WIDTH;
+        this.sprite.velocity = { x: this.speed };
+    }
+
+    move(){
+        this.sprite.x += this.sprite.velocity.x;
+        if (this.sprite.x >= this.maxX || this.sprite.x <= this.minX){
+            this.sprite.velocity.x *= -1;
+        }
     }
 }
 
@@ -232,6 +263,13 @@ class Creator{
         const building = new Building();
         building.init(3, physics);
         building.includeWiresInInfoFrame();
+
+        building.rat1 = new Rat(1);
+        building.rat1.init(physics, 589);
+        building.rat2 = new Rat(2);
+        building.rat2.init(physics, 104);
+        building.rat2.minX = 2 * 6 * Wire.SIZE;
+        building.rat2.maxX = (6 + 22) * Wire.SIZE;
 
         return building;
     }
