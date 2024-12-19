@@ -79,6 +79,7 @@ class Building {
         this.ladder = new Ladder();
         this.floors = [];
         this.wires = [];
+        this.enemies = [];
         this.leftPowerLine = new PowerLine();
         this.rightPowerLine = new PowerLine();
     }
@@ -98,10 +99,11 @@ class Building {
        this.floors.forEach(floor => floor.init(physics));
        this.floors.forEach(floor => floor.calculateFloorLevel());
 
+       const connectionPointsCounts = [2, 6, 5];
        this.wires = this.floors.map((floor, i) => {
            const aboveFloor = this.floors[i] || null;
            const belowFloor = this.floors[i - 1] || null;
-           return new Wire(i, physics, belowFloor, aboveFloor);
+           return new Wire(i, physics, belowFloor, aboveFloor, connectionPointsCounts[i]);
        });
 
        this.leftPowerLine.init(physics, 'left');
@@ -147,6 +149,7 @@ class Building {
                 const match = upperFloor.bottomConnectors.filter(cnctr => cnctr == index);
                 if (match.length > 0){
                     this.wires[currentFloorNumber].place(currentFloor, player, WireSlot.WIRE_UP);
+                    this.wires[currentFloorNumber].actualFloorConnections.add(index);
                 }
             }
             else if(wireType === WireSlot.WIRE_DOWN) {
@@ -157,10 +160,16 @@ class Building {
                 const match = lowerFloor.ceilingConnectors.filter(cnctr => cnctr == index);
                 if (match.length > 0){
                     this.wires[currentFloorNumber].place(currentFloor, player, WireSlot.WIRE_DOWN);
+                    this.wires[currentFloorNumber].actualFloorConnections.add(index);
                 }
             }
-            else
-                this.wires[currentFloorNumber].place(currentFloor, player, wireType);
+            else {
+                this.wires[currentFloorNumber].place(currentFloor, player, WireSlot.WIRE_STRAIGHT);
+                const index = Math.floor((player.x - currentFloor.getLeftPosition()) / Wire.SIZE);
+                if (this.wires[currentFloorNumber].actualFloorConnections.has(index)) {
+                        this.wires[currentFloorNumber].actualFloorConnections.delete(index);
+                }
+            }
         }
     }
 }
@@ -176,19 +185,21 @@ class PowerLine {
 class Wire {
     static SIZE = 20;
 
-    constructor(id, physics, floor1, floor2) {
+    constructor(id, physics, floor1, floor2, expectedFloorConnectionsCnt) {
         this.id = id;
         this.physics = physics;
         this.x = floor1 ? floor1.sprite.x : 0;
         this.y = this.calculateY(floor1, floor2);
         this.slots = Array(Math.ceil(Floor.WIDTH / Wire.SIZE)).fill(WireSlot.EMPTY);
         this.sprites = [];
+        this.expectedFloorConnectionsCnt = expectedFloorConnectionsCnt;
+        this.actualFloorConnections = new Set();
 
         console.log(`Created ${this.slots.length} wire slots in wire.`);
     }
 
     calculateY(floor1, floor2) {
-        const y1 = floor1 ? floor1.sprite.y : 0;
+        const y1 = floor1?.sprite.y || 0;
         const y2 = floor2 ? floor2.sprite.y : 0;
         return (y1 + y2) / 2;
     }
@@ -223,15 +234,106 @@ class Wire {
         const filledSlots = this.slots.filter(slot => slot !== WireSlot.EMPTY).length;
         const percentage = Math.ceil((filledSlots / this.slots.length) * 100);
         const wireDiv = document.getElementById(`wire${this.id}`);
-        wireDiv.innerText = percentage === 100 ? 'CONNECTED' : `${percentage} %`;
+        wireDiv.innerText = percentage === 100 && this.expectedFloorConnectionsCnt == this.actualFloorConnections.size ? 'CONNECTED' : `${percentage} %`;
     }
 }
 
-class Creator{
+class Enemy {
+    constructor(id){
+        this.sprite = null;
+        this.id = id;
+        this.active = true;
+        this.speed = 1;
+        this.minX = 150;
+        this.maxX = Floor.WIDTH;
+    }
+
+    collide(player) {
+        const distanceX = player.x - this.sprite.x;
+        const distanceY = player.y - this.sprite.y;
+
+        const collisionVertical = -40 < distanceY && distanceY < 0;
+
+        if (!collisionVertical) return 0;
+
+        const threshold = 20;
+        if (Math.abs(distanceX) < threshold) {
+            if (distanceX < 0) {
+                return -1;
+            } else {
+                return 1;
+            }
+        }
+
+        return 0;
+    }
+}
+
+class Bat extends Enemy{
+    constructor(id){
+        super(id);
+    }
+
+    init(physics, y){
+        this.sprite = physics.add.sprite(180 + (this.id + 1)*44, y, 'bat');
+        this.sprite.velocity = { y: this.speed };
+    }
+
+    move(){
+        this.sprite.y += this.sprite.velocity.y;
+        if (this.sprite.y >= this.maxX || this.sprite.y <= this.minX){
+            this.sprite.velocity.y *= -1;
+        }
+    }
+}
+
+class Rat extends Enemy{
+
+    init(physics, y){
+        this.sprite = physics.add.sprite(180 + (this.id + 1)*44, y, 'rat' + this.id);
+        this.sprite.velocity = { x: this.speed };
+    }
+
+    move(){
+        this.sprite.x += this.sprite.velocity.x;
+        if (this.sprite.x >= this.maxX || this.sprite.x <= this.minX){
+            this.sprite.velocity.x *= -1;
+        }
+    }
+}
+
+class Creator {
     static create3storeBuilding(physics) {
         const building = new Building();
         building.init(3, physics);
         building.includeWiresInInfoFrame();
+
+        const ratsData = [
+            { id: 1, y: 589 },
+            { id: 2, y: 104, minX: 2 * 6 * Wire.SIZE, maxX: (6 + 22) * Wire.SIZE },
+            { id: 3, y: 589, velocity: { x: 1.2 } },
+            { id: 4, y: 589, velocity: { x: 1.4 } },
+            { id: 5, y: 328 - Floor.HEIGHT / 2, minX: 2 * Floor.WIDTH / 3 + 18, velocity: { x: 1.4 } },
+            { id: 6, y: 328 - Floor.HEIGHT / 2, minX: 2 * Floor.WIDTH / 3 + 18, velocity: { x: 0.8 } },
+        ];
+
+        const createRat = (data) => {
+            const rat = new Rat(data.id);
+            rat.init(physics, data.y);
+            if (data.minX) rat.minX = data.minX;
+            if (data.maxX) rat.maxX = data.maxX;
+            if (data.velocity) rat.sprite.velocity = data.velocity;
+            return rat;
+        };
+
+        const rats = ratsData.map(createRat);
+
+        const bat = new Bat(0);
+        bat.init(physics, 555);
+        bat.sprite.x = Constants.SCREEN_WIDTH - 50;
+
+        building.enemies.push(...rats);
+        building.enemies.push(bat);
 
         return building;
     }
