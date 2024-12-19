@@ -269,10 +269,25 @@ class Enemy {
     }
 }
 
-class Rat extends Enemy{
+class Bat extends Enemy{
     constructor(id){
         super(id);
     }
+
+    init(physics, y){
+        this.sprite = physics.add.sprite(180 + (this.id + 1)*44, y, 'bat');
+        this.sprite.velocity = { y: this.speed };
+    }
+
+    move(){
+        this.sprite.y += this.sprite.velocity.y;
+        if (this.sprite.y >= this.maxX || this.sprite.y <= this.minX){
+            this.sprite.velocity.y *= -1;
+        }
+    }
+}
+
+class Rat extends Enemy{
 
     init(physics, y){
         this.sprite = physics.add.sprite(180 + (this.id + 1)*44, y, 'rat' + this.id);
@@ -313,7 +328,12 @@ class Creator {
 
         const rats = ratsData.map(createRat);
 
-        building.enemies.push(...rats);  // Spread operator to add the array of rats
+        const bat = new Bat(0);
+        bat.init(physics, 555);
+        bat.sprite.x = Constants.SCREEN_WIDTH - 50;
+
+        building.enemies.push(...rats);
+        building.enemies.push(bat);
 
         return building;
     }

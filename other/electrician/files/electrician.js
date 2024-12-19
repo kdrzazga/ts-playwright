@@ -9,6 +9,7 @@ class MainScene extends Phaser.Scene {
         for (let i = 1; i <= 8; i++) {
             this.load.image(`rat${i}`, 'files/rat.png');
         }
+        this.load.image('bat', 'files/bat.png');
 
         this.load.image('ladder', 'files/ladder.png');
 
