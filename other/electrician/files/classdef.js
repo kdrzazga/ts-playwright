@@ -198,7 +198,7 @@ class Wire {
     }
 
     calculateY(floor1, floor2) {
-        const y1 = floor1 ? floor1.sprite.y : 0;
+        const y1 = floor1?.sprite.y || 0;
         const y2 = floor2 ? floor2.sprite.y : 0;
         return (y1 + y2) / 2;
     }
@@ -233,7 +233,28 @@ class Wire {
         const filledSlots = this.slots.filter(slot => slot !== WireSlot.EMPTY).length;
         const percentage = Math.ceil((filledSlots / this.slots.length) * 100);
         const wireDiv = document.getElementById(`wire${this.id}`);
-        wireDiv.innerText = percentage === 100  && this.expectedFloorConnectionsCnt == this.actualFloorConnections.size ? 'CONNECTED' : `${percentage} %`;
+        wireDiv.innerText = percentage === 100 && this.expectedFloorConnectionsCnt == this.actualFloorConnections.size ? 'CONNECTED' : `${percentage} %`;
+    }
+}
+
+class Rat {
+    constructor(id){
+        this.id = id;
+        this.speed =1;
+    }
+
+    init(physics, y){
+        this.sprite = physics.add.sprite(180 + (this.id + 1)*110, y, 'rat' + this.id);
+        this.minX = 150;
+        this.maxX = Floor.WIDTH;
+        this.sprite.velocity = { x: this.speed };
+    }
+
+    move(){
+        this.sprite.x += this.sprite.velocity.x;
+        if (this.sprite.x >= this.maxX || this.sprite.x <= this.minX){
+            this.sprite.velocity.x *= -1;
+        }
     }
 }
 
@@ -242,6 +263,13 @@ class Creator{
         const building = new Building();
         building.init(3, physics);
         building.includeWiresInInfoFrame();
+
+        building.rat1 = new Rat(1);
+        building.rat1.init(physics, 589);
+        building.rat2 = new Rat(2);
+        building.rat2.init(physics, 104);
+        building.rat2.minX = 2 * 6 * Wire.SIZE;
+        building.rat2.maxX = (6 + 22) * Wire.SIZE;
 
         return building;
     }
