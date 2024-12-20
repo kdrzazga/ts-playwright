@@ -304,6 +304,11 @@ class Bat extends Enemy{
 
 class Rat extends Enemy{
 
+    constructor(id){
+        super(id);
+        this.wireId = -1;
+    }
+
     init(physics, y){
         this.sprite = physics.add.sprite(180 + (this.id + 1)*44, y, 'rat' + this.id);
         this.sprite.velocity = { x: this.speed };
@@ -313,6 +318,9 @@ class Rat extends Enemy{
         this.sprite.x += this.sprite.velocity.x;
         if (this.sprite.x >= this.maxX || this.sprite.x <= this.minX){
             this.sprite.velocity.x *= -1;
+        }
+        if (this.wireId !== undefined){
+            console.log(`rat ${this.id} [${this.sprite.x}, ${this.sprite.y}]- wire ${this.wireId} `);
         }
     }
 }
@@ -329,11 +337,11 @@ class Creator {
 
         const ratsData = [
             { id: 1, y: groundFloorLevel },
-            { id: 2, y: atticCeilingLevel, minX: 2 * 6 * Wire.SIZE, maxX: (6 + 22) * Wire.SIZE },
+            { id: 2, y: atticCeilingLevel, minX: 2 * 6 * Wire.SIZE, maxX: (6 + 22) * Wire.SIZE, wireId: 2 },
             { id: 3, y: groundFloorLevel, velocity: { x: 1.2 } },
             { id: 4, y: groundFloorLevel, velocity: { x: 1.4 } },
-            { id: 5, y: livingRoomCeilingLevel, minX: 2 * Floor.WIDTH / 3 + 18, velocity: { x: 1.4 } },
-            { id: 6, y: livingRoomCeilingLevel, minX: 2 * Floor.WIDTH / 3 + 18, velocity: { x: 0.8 } },
+            { id: 5, y: livingRoomCeilingLevel, minX: 2 * Floor.WIDTH / 3 + 18, velocity: { x: 1.3 }, wireId: 1 },
+            { id: 6, y: livingRoomCeilingLevel, minX: 2 * Floor.WIDTH / 3 + 18, velocity: { x: 0.9 }, wireId: 1 },
         ];
 
         const batsData = [
@@ -350,7 +358,8 @@ class Creator {
                 minX: data.minX || enemy.minX,
                 maxX: data.maxX || enemy.maxX,
                 angularSpeed: data.speed || enemy.angularSpeed,
-                currentAngle: data.currentAngle || enemy.currentAngle
+                currentAngle: data.currentAngle || enemy.currentAngle,
+                wireId: EnemyClass === Rat ? data.wireId : undefined
             });
 
             if (EnemyClass === Bat) {

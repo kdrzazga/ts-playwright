@@ -196,3 +196,7 @@ const config = {
 };
 
 const game = new Phaser.Game(config);
+/*
+game.scene.scenes[0].building
+game.scene.scenes[0].player
+*/
