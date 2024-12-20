@@ -20,13 +20,13 @@ class MainScene extends Phaser.Scene {
         this.load.image('floor0', 'files/attic.png');
         const ladderTexture = this.textures.get('floor0');
 
-
         this.load.image('floor1', 'files/livingRoom.png');
         this.load.image('floor2', 'files/kitchen.png');
 
         this.load.image('power-line-left', 'files/powerlineL.png');
         this.load.image('power-line-right', 'files/powerlineR.png');
 
+        this.load.image('empty-wire-section', 'files/wire.png');
         this.load.image('wire-section', 'files/wire.png');
         this.load.image('wire-section-up', 'files/wireUp.png');
         this.load.image('wire-section-down', 'files/wireDown.png');
@@ -111,7 +111,7 @@ class MainScene extends Phaser.Scene {
             flrs += " " + f.floorLevel;
 
             if (f.onFloor(this.player.x, this.player.y) && !this.building.ladder.onLadder(this.player.x)){
-                console.log('Floor met on y= ' + this.player.y);
+                //console.log('Floor met on y= ' + this.player.y);
                 velocity = 0; //Floor under feet prevents from falling
                 this.player.spriteCanJump = true;
                 return;
@@ -165,7 +165,26 @@ class MainScene extends Phaser.Scene {
     }
 
     handleEnemyMovement(){
-        this.building.enemies.forEach(enemy => enemy.move());
+        this.building.enemies.forEach(enemy => {
+            enemy.move();
+            if (enemy instanceof Rat){
+                if (enemy.wireId === undefined) return;
+
+                const wireId = enemy.wireId;
+                const wire = this.building.wires[wireId];
+                const anyFloor = this.building.floors[0];
+                const wireSlotIndexPair = wire.getSlotAtCoordinateX(anyFloor, enemy.sprite.x);
+                if (wireSlotIndexPair.slot === WireSlot.WIRE_DOWN){
+                    const i = wireSlotIndexPair.index;
+                    const currentFloor = this.building.floors[wireId];
+                    this.building.wires[wireId].place(currentFloor, enemy.sprite ,WireSlot.EMPTY);
+                    if (this.building.wires[wireId].actualFloorConnections.has(i)) {
+                        this.building.wires[wireId].actualFloorConnections.delete(i);
+                    }
+                    console.log(`Rat ${enemy.id} bit thru wire ${wireId}.`);
+                }
+            }
+        });
     }
 
     writeFloorInfo(){
@@ -196,3 +215,7 @@ const config = {
 };
 
 const game = new Phaser.Game(config);
+/*
+game.scene.scenes[0].building
+game.scene.scenes[0].player
+*/
