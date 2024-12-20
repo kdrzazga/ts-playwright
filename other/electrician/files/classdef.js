@@ -270,7 +270,7 @@ class Enemy {
 }
 
 class Bat extends Enemy{
-    static MOVE_RADIUS = 230;
+    static MOVE_RADIUS = 280;
 
     constructor(id){
         super(id);
@@ -286,6 +286,8 @@ class Bat extends Enemy{
 
     move(){
         const centerY = Floor.BUILDING_HEIGHT / 2;
+        const upperVerticalLimit = Floor.HEIGHT -16;
+        const lowerVerticalLimit = 2 * Floor.BUILDING_HEIGHT/ 3 + Floor.HEIGHT - 10 - 9 * this.id;
 
         this.currentAngle = this.currentAngle + this.angularSpeed;
         if (this.currentAngle > 2* Math.PI){
@@ -294,6 +296,9 @@ class Bat extends Enemy{
 
         this.sprite.x = this.centerX + Bat.MOVE_RADIUS * Math.cos(this.currentAngle);
         this.sprite.y = centerY + Bat.MOVE_RADIUS * Math.sin(this.currentAngle);
+
+        if (this.sprite.y < upperVerticalLimit) this.sprite.y = upperVerticalLimit;
+        if (this.sprite.y > lowerVerticalLimit) this.sprite.y = lowerVerticalLimit;
 
         //console.log(`${this.sprite.x}, ${this.sprite.y} angle = ${this.currentAngle}`);
     }
@@ -336,7 +341,7 @@ class Creator {
 
         const createEnemy = (EnemyClass, data, physics, positionAdjustment = 0) => {
             const enemy = new EnemyClass(data.id);
-            const y = EnemyClass === Rat ? data.y : 555 + 3 * data.id + positionAdjustment;
+            const y = EnemyClass === Rat ? data.y : 555 + 7 * data.id + positionAdjustment;
             enemy.init(physics, y);
 
             Object.assign(enemy, {
