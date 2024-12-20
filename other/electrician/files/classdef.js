@@ -299,8 +299,6 @@ class Bat extends Enemy{
 
         if (this.sprite.y < upperVerticalLimit) this.sprite.y = upperVerticalLimit;
         if (this.sprite.y > lowerVerticalLimit) this.sprite.y = lowerVerticalLimit;
-
-        //console.log(`${this.sprite.x}, ${this.sprite.y} angle = ${this.currentAngle}`);
     }
 }
 
@@ -325,13 +323,17 @@ class Creator {
         building.init(3, physics);
         building.includeWiresInInfoFrame();
 
+        const atticCeilingLevel = 104;
+        const livingRoomCeilingLevel = 328 - Floor.HEIGHT / 2;
+        const groundFloorLevel = 589; //under kitchen
+
         const ratsData = [
-            { id: 1, y: 589 },
-            { id: 2, y: 104, minX: 2 * 6 * Wire.SIZE, maxX: (6 + 22) * Wire.SIZE },
-            { id: 3, y: 589, velocity: { x: 1.2 } },
-            { id: 4, y: 589, velocity: { x: 1.4 } },
-            { id: 5, y: 328 - Floor.HEIGHT / 2, minX: 2 * Floor.WIDTH / 3 + 18, velocity: { x: 1.4 } },
-            { id: 6, y: 328 - Floor.HEIGHT / 2, minX: 2 * Floor.WIDTH / 3 + 18, velocity: { x: 0.8 } },
+            { id: 1, y: groundFloorLevel },
+            { id: 2, y: atticCeilingLevel, minX: 2 * 6 * Wire.SIZE, maxX: (6 + 22) * Wire.SIZE },
+            { id: 3, y: groundFloorLevel, velocity: { x: 1.2 } },
+            { id: 4, y: groundFloorLevel, velocity: { x: 1.4 } },
+            { id: 5, y: livingRoomCeilingLevel, minX: 2 * Floor.WIDTH / 3 + 18, velocity: { x: 1.4 } },
+            { id: 6, y: livingRoomCeilingLevel, minX: 2 * Floor.WIDTH / 3 + 18, velocity: { x: 0.8 } },
         ];
 
         const batsData = [
