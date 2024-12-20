@@ -329,37 +329,36 @@ class Creator {
             { id: 6, y: 328 - Floor.HEIGHT / 2, minX: 2 * Floor.WIDTH / 3 + 18, velocity: { x: 0.8 } },
         ];
 
-        const createRat = (data) => {
-            const rat = new Rat(data.id);
-            rat.init(physics, data.y);
-            if (data.minX) rat.minX = data.minX;
-            if (data.maxX) rat.maxX = data.maxX;
-            if (data.velocity) rat.sprite.velocity = data.velocity;
-            return rat;
-        };
-
-        const rats = ratsData.map(createRat);
-
         const batsData = [
-            { id:0, speed: -0.017},
-            { id:1, currentAngle: Math.PI/2}
+            { id: 0, speed: -0.017 },
+            { id: 1, currentAngle: Math.PI / 2 }
         ];
 
-        const createBats = (data) =>{
-            const bat = new Bat(data.id);
-            bat.init(physics, 555 + 3*data.id);
-            if (data.speed) bat.angularSpeed = data.speed;
-            if (data.currentAngle) bat.currentAngle = data.currentAngle;
+        const createEnemy = (EnemyClass, data, physics, positionAdjustment = 0) => {
+            const enemy = new EnemyClass(data.id);
+            const y = EnemyClass === Rat ? data.y : 555 + 3 * data.id + positionAdjustment;
+            enemy.init(physics, y);
 
-            bat.centerX = Constants.SCREEN_WIDTH/2 + 50 - 39 * data.id;
+            Object.assign(enemy, {
+                minX: data.minX || enemy.minX,
+                maxX: data.maxX || enemy.maxX,
+                angularSpeed: data.speed || enemy.angularSpeed,
+                currentAngle: data.currentAngle || enemy.currentAngle
+            });
 
-            return bat;
+            if (EnemyClass === Bat) {
+                enemy.centerX = Constants.SCREEN_WIDTH / 2 + 50 - 39 * data.id;
+            }
+
+            if (data.velocity) enemy.sprite.velocity = data.velocity;
+
+            return enemy;
         };
 
-        const bats = batsData.map(createBats);
+        const rats = ratsData.map(data => createEnemy(Rat, data, physics));
+        const bats = batsData.map(data => createEnemy(Bat, data, physics));
 
-        building.enemies.push(...rats);
-        building.enemies.push(...bats);
+        building.enemies.push(...rats, ...bats);
 
         return building;
     }
