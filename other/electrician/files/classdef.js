@@ -4,7 +4,7 @@ class Constants{
 }
 
 const WireSlot = Object.freeze({
-    EMPTY: {imageId: ''},
+    EMPTY: {imageId: 'empty-wire-section'},
     WIRE_STRAIGHT: {imageId: 'wire-section'},
     WIRE_UP: {imageId: 'wire-section-up'},
     WIRE_DOWN: {imageId: 'wire-section-down'},
@@ -145,7 +145,7 @@ class Building {
                 if (currentFloorNumber == 0) return;
 
                 const upperFloor = this.floors[currentFloorNumber-1];
-                const index = Math.floor((player.x - currentFloor.getLeftPosition()) / Wire.SIZE);
+                const index = Math.floor((player.x - currentFloor.getLeftPosition()) / Wire.SLOT_SIZE);
                 const match = upperFloor.bottomConnectors.filter(cnctr => cnctr == index);
                 if (match.length > 0){
                     this.wires[currentFloorNumber].place(currentFloor, player, WireSlot.WIRE_UP);
@@ -156,7 +156,7 @@ class Building {
                 if (currentFloorNumber > this.floors.length - 1) return;
 
                 const lowerFloor = currentFloor;
-                const index = Math.floor((player.x - currentFloor.getLeftPosition()) / Wire.SIZE);
+                const index = Math.floor((player.x - currentFloor.getLeftPosition()) / Wire.SLOT_SIZE);
                 const match = lowerFloor.ceilingConnectors.filter(cnctr => cnctr == index);
                 if (match.length > 0){
                     this.wires[currentFloorNumber].place(currentFloor, player, WireSlot.WIRE_DOWN);
@@ -165,7 +165,7 @@ class Building {
             }
             else {
                 this.wires[currentFloorNumber].place(currentFloor, player, WireSlot.WIRE_STRAIGHT);
-                const index = Math.floor((player.x - currentFloor.getLeftPosition()) / Wire.SIZE);
+                const index = Math.floor((player.x - currentFloor.getLeftPosition()) / Wire.SLOT_SIZE);
                 if (this.wires[currentFloorNumber].actualFloorConnections.has(index)) {
                         this.wires[currentFloorNumber].actualFloorConnections.delete(index);
                 }
@@ -183,14 +183,14 @@ class PowerLine {
 }
 
 class Wire {
-    static SIZE = 20;
+    static SLOT_SIZE = 20;
 
     constructor(id, physics, floor1, floor2, expectedFloorConnectionsCnt) {
         this.id = id;
         this.physics = physics;
         this.x = floor1 ? floor1.sprite.x : 0;
         this.y = this.calculateY(floor1, floor2);
-        this.slots = Array(Math.ceil(Floor.WIDTH / Wire.SIZE)).fill(WireSlot.EMPTY);
+        this.slots = Array(Math.ceil(Floor.WIDTH / Wire.SLOT_SIZE)).fill(WireSlot.EMPTY);
         this.sprites = [];
         this.expectedFloorConnectionsCnt = expectedFloorConnectionsCnt;
         this.actualFloorConnections = new Set();
@@ -208,8 +208,8 @@ class Wire {
         const extraInfoDiv = document.getElementById('extra-info');
         extraInfoDiv.innerText = `${floor.id} ${floor.floorLevel}`;
 
-        const index = Math.floor((sprite.x - floor.getLeftPosition()) / Wire.SIZE);
-        const x = floor.getLeftPosition() + index * Wire.SIZE;
+        const index = Math.floor((sprite.x - floor.getLeftPosition()) / Wire.SLOT_SIZE);
+        const x = floor.getLeftPosition() + index * Wire.SLOT_SIZE;
 
         if (this.slots[index] !== WireSlot.EMPTY) {
             this.removeOldWireSprite(index);
@@ -235,6 +235,11 @@ class Wire {
         const percentage = Math.ceil((filledSlots / this.slots.length) * 100);
         const wireDiv = document.getElementById(`wire${this.id}`);
         wireDiv.innerText = percentage === 100 && this.expectedFloorConnectionsCnt == this.actualFloorConnections.size ? 'CONNECTED' : `${percentage} %`;
+    }
+    
+    getSlotAtCoordinateX(floor, x) {
+        const index = Math.floor((x - floor.getLeftPosition()) / Wire.SLOT_SIZE);
+        return {'index' :index, 'slot': this.slots[index]};
     }
 }
 
@@ -306,7 +311,7 @@ class Rat extends Enemy{
 
     constructor(id){
         super(id);
-        this.wireId = -1;
+        this.wireId = undefined;
     }
 
     init(physics, y){
@@ -319,9 +324,10 @@ class Rat extends Enemy{
         if (this.sprite.x >= this.maxX || this.sprite.x <= this.minX){
             this.sprite.velocity.x *= -1;
         }
-        if (this.wireId !== undefined){
-            console.log(`rat ${this.id} [${this.sprite.x}, ${this.sprite.y}]- wire ${this.wireId} `);
-        }
+    }
+
+    getWireId(){
+        return this.wireId;
     }
 }
 
@@ -337,11 +343,11 @@ class Creator {
 
         const ratsData = [
             { id: 1, y: groundFloorLevel },
-            { id: 2, y: atticCeilingLevel, minX: 2 * 6 * Wire.SIZE, maxX: (6 + 22) * Wire.SIZE, wireId: 2 },
+            { id: 2, y: atticCeilingLevel, minX: 2 * 6 * Wire.SLOT_SIZE, maxX: (6 + 22) * Wire.SLOT_SIZE, wireId: 2 },
             { id: 3, y: groundFloorLevel, velocity: { x: 1.2 } },
             { id: 4, y: groundFloorLevel, velocity: { x: 1.4 } },
-            { id: 5, y: livingRoomCeilingLevel, minX: 2 * Floor.WIDTH / 3 + 18, velocity: { x: 1.3 }, wireId: 1 },
-            { id: 6, y: livingRoomCeilingLevel, minX: 2 * Floor.WIDTH / 3 + 18, velocity: { x: 0.9 }, wireId: 1 },
+            { id: 5, y: livingRoomCeilingLevel, minX: 2 * Floor.WIDTH / 4, velocity: { x: 1.3 }, wireId: 1 },
+            { id: 6, y: livingRoomCeilingLevel, minX: 2 * Floor.WIDTH / 4, velocity: { x: 0.9 }, wireId: 1 },
         ];
 
         const batsData = [
@@ -406,7 +412,7 @@ class FloorBuilder {
     }
 
     withLampInCenter() {
-        const lampConnectorX = Math.floor(Floor.WIDTH/Wire.SIZE /2);
+        const lampConnectorX = Math.floor(Floor.WIDTH/Wire.SLOT_SIZE /2);
         this.withCeilingConnector(lampConnectorX);
         return this;
     }
