@@ -270,20 +270,32 @@ class Enemy {
 }
 
 class Bat extends Enemy{
+    static MOVE_RADIUS = 230;
+
     constructor(id){
         super(id);
+        this.centerX = 0.6 * Floor.WIDTH;
     }
 
     init(physics, y){
         this.sprite = physics.add.sprite(180 + (this.id + 1)*44, y, 'bat');
-        this.sprite.velocity = { y: this.speed };
+        //this.sprite.velocity = { y: this.speed };
+        this.currentAngle = 0;
+        this.angularSpeed = 0.01
     }
 
     move(){
-        this.sprite.y += this.sprite.velocity.y;
-        if (this.sprite.y >= this.maxX || this.sprite.y <= this.minX){
-            this.sprite.velocity.y *= -1;
+        const centerY = Floor.BUILDING_HEIGHT / 2;
+
+        this.currentAngle = this.currentAngle + this.angularSpeed;
+        if (this.currentAngle > 2* Math.PI){
+            this.currentAngle -= 2* Math.PI;
         }
+
+        this.sprite.x = this.centerX + Bat.MOVE_RADIUS * Math.cos(this.currentAngle);
+        this.sprite.y = centerY + Bat.MOVE_RADIUS * Math.sin(this.currentAngle);
+
+        //console.log(`${this.sprite.x}, ${this.sprite.y} angle = ${this.currentAngle}`);
     }
 }
 
@@ -328,12 +340,26 @@ class Creator {
 
         const rats = ratsData.map(createRat);
 
-        const bat = new Bat(0);
-        bat.init(physics, 555);
-        bat.sprite.x = Constants.SCREEN_WIDTH - 50;
+        const batsData = [
+            { id:0, speed: -0.017},
+            { id:1, currentAngle: Math.PI/2}
+        ];
+
+        const createBats = (data) =>{
+            const bat = new Bat(data.id);
+            bat.init(physics, 555 + 3*data.id);
+            if (data.speed) bat.angularSpeed = data.speed;
+            if (data.currentAngle) bat.currentAngle = data.currentAngle;
+
+            bat.centerX = Constants.SCREEN_WIDTH/2 + 50 - 39 * data.id;
+
+            return bat;
+        };
+
+        const bats = batsData.map(createBats);
 
         building.enemies.push(...rats);
-        building.enemies.push(bat);
+        building.enemies.push(...bats);
 
         return building;
     }

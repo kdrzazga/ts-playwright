@@ -5,6 +5,10 @@ class MainScene extends Phaser.Scene {
     }
 
     preload() {
+        Floor.WIDTH = 617;//ladderTexture.getSourceImage().width;
+        Floor.HEIGHT = 110;//ladderTexture.getSourceImage().height;
+        console.log('Floor height = ' + Floor.HEIGHT);
+
         this.load.image('sprite', 'files/electrician.png');
         for (let i = 1; i <= 8; i++) {
             this.load.image(`rat${i}`, 'files/rat.png');
@@ -15,9 +19,7 @@ class MainScene extends Phaser.Scene {
 
         this.load.image('floor0', 'files/attic.png');
         const ladderTexture = this.textures.get('floor0');
-        Floor.WIDTH = 617;//ladderTexture.getSourceImage().width;
-        Floor.HEIGHT = 110;//ladderTexture.getSourceImage().height;
-        console.log('Floor height = ' + Floor.HEIGHT);
+
 
         this.load.image('floor1', 'files/livingRoom.png');
         this.load.image('floor2', 'files/kitchen.png');
@@ -90,8 +92,10 @@ class MainScene extends Phaser.Scene {
     checkCollisions(){
         const collidingEnemy = this.building.enemies.find(e => e.collide(this.player) != 0);
 
-        if (collidingEnemy != null)
-            this.player.x += 15 * collidingEnemy.collide(this.player);
+        if (collidingEnemy != null){
+            if (collidingEnemy instanceof Rat) this.player.x += 15 * collidingEnemy.collide(this.player);
+            else if (collidingEnemy instanceof Bat) this.player.y += Math.abs(29 * collidingEnemy.collide(this.player));
+        }
     }
 
     conditionalFallDown(){
