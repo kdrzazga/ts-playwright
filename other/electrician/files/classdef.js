@@ -343,16 +343,16 @@ class Creator {
 
         const ratsData = [
             { id: 1, y: groundFloorLevel },
-            { id: 2, y: atticCeilingLevel, minX: 2 * 6 * Wire.SLOT_SIZE, maxX: (6 + 22) * Wire.SLOT_SIZE, wireId: 2 },
+            { id: 2, y: atticCeilingLevel, minX: Floor.WIDTH / 3 + 30, maxX: 1.15*Floor.WIDTH, wireId: 2 },
             { id: 3, y: groundFloorLevel, velocity: { x: 1.2 } },
             { id: 4, y: groundFloorLevel, velocity: { x: 1.4 } },
-            { id: 5, y: livingRoomCeilingLevel, minX: 2 * Floor.WIDTH / 4, velocity: { x: 1.3 }, wireId: 1 },
-            { id: 6, y: livingRoomCeilingLevel, minX: 2 * Floor.WIDTH / 4, velocity: { x: 0.9 }, wireId: 1 },
+            { id: 5, y: livingRoomCeilingLevel, minX: 2 * Floor.WIDTH / 4, maxX: 1.15*Floor.WIDTH, velocity: { x: 1.4 }, wireId: 1 },
+            { id: 6, y: livingRoomCeilingLevel, minX: 2 * Ladder.WIDTH, velocity: { x: 0.85}, wireId: 1 },
         ];
 
         const batsData = [
             { id: 0, speed: -0.017 },
-            { id: 1, currentAngle: Math.PI / 2 }
+            { id: 1, currentAngle: Math.PI / 2, /*speed: 0.001*/ }
         ];
 
         const createEnemy = (EnemyClass, data, physics, positionAdjustment = 0) => {
