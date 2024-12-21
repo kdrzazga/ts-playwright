@@ -94,7 +94,11 @@ class MainScene extends Phaser.Scene {
 
         if (collidingEnemy != null){
             if (collidingEnemy instanceof Rat) this.player.x += 15 * collidingEnemy.collide(this.player);
-            else if (collidingEnemy instanceof Bat) this.player.y += Math.abs(29 * collidingEnemy.collide(this.player));
+            else if (collidingEnemy instanceof Bat) {
+                var audioBing = new Audio('files/bing.m4a');
+                audioBing.play();
+                this.player.y += Math.abs(29 * collidingEnemy.collide(this.player));
+            }
         }
     }
 
@@ -177,8 +181,8 @@ class MainScene extends Phaser.Scene {
 
                 if (wireSlotIndexPair.slot === WireSlot.WIRE_DOWN){
                     if (wire.isConnected()){
-                        var audio = new Audio('files/zap.m4a');
-                        audio.play();
+                        var audioZap = new Audio('files/zap.m4a');
+                        audioZap.play();
 
                         enemy.active = false; //Zapped Rat becomes immobile
                         return;
@@ -187,6 +191,9 @@ class MainScene extends Phaser.Scene {
                     const slotIndex = wireSlotIndexPair.index;
                     this.building.wires[wireId].place(currentFloor, enemy.sprite ,WireSlot.EMPTY);
                     if (this.building.wires[wireId].actualFloorConnections.has(slotIndex)) {
+                        var audioChrup = new Audio('files/chrup.m4a');
+                        audioChrup.play();
+
                         this.building.wires[wireId].actualFloorConnections.delete(slotIndex);
                     }
                     console.log(`Rat ${enemy.id} bit thru wire ${wireId}.`);
