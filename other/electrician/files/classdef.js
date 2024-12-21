@@ -348,15 +348,17 @@ class Creator {
 
         const atticCeilingLevel = 104;
         const livingRoomCeilingLevel = 328 - Floor.HEIGHT / 2;
+        const kitchenLevel = 438;
         const groundFloorLevel = 589; //under kitchen
 
         const ratsData = [
             { id: 1, active: true, y: groundFloorLevel },
-            { id: 2, active: true, y: atticCeilingLevel, minX: Floor.WIDTH / 3 + 30, maxX: 1.15*Floor.WIDTH, wireId: 0 },
-            { id: 3, active: true, y: groundFloorLevel, velocity: { x: 1.2 } },
-            { id: 4, active: true, y: groundFloorLevel, velocity: { x: 1.4 } },
-            { id: 5, active: true, y: livingRoomCeilingLevel, minX: 2 * Floor.WIDTH / 4, maxX: 1.15*Floor.WIDTH, velocity: { x: 1.4 }, wireId: 1 },
-            { id: 6, active: true, y: livingRoomCeilingLevel, minX: 2 * Ladder.WIDTH, velocity: { x: 0.85}, wireId: 1 },
+            { id: 2, active: true, y: groundFloorLevel, minX:  Floor.WIDTH / 2, maxX: 2 * Floor.WIDTH / 3, velocity: { x : 3} },
+            { id: 3, active: true, y: atticCeilingLevel, minX: Floor.WIDTH / 3 + 30, maxX: 1.15*Floor.WIDTH, wireId: 0 },
+            { id: 4, active: true, y: kitchenLevel, velocity: { x: 0.7 }, wireId: 2},
+            { id: 5, active: true, y: groundFloorLevel, velocity: { x: 1.4 } },
+            { id: 6, active: true, y: livingRoomCeilingLevel, minX: 2 * Floor.WIDTH / 4, maxX: 1.15*Floor.WIDTH, velocity: { x: 1.4 }, wireId: 1 },
+            { id: 7, active: true, y: livingRoomCeilingLevel, minX: 2 * Ladder.WIDTH, velocity: { x: 0.85}, wireId: 1 },
         ];
 
         const batsData = [
