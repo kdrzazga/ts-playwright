@@ -231,10 +231,19 @@ class Wire {
     }
 
     updateWiringInfo() {
-        const filledSlots = this.slots.filter(slot => slot !== WireSlot.EMPTY).length;
-        const percentage = Math.ceil((filledSlots / this.slots.length) * 100);
+        const percentage = this.calculateConnectedPercentage();
         const wireDiv = document.getElementById(`wire${this.id}`);
-        wireDiv.innerText = percentage === 100 && this.expectedFloorConnectionsCnt == this.actualFloorConnections.size ? 'CONNECTED' : `${percentage} %`;
+        wireDiv.innerText = this.isConnected() ? 'CONNECTED' : `${percentage} %`;
+    }
+
+    isConnected(){
+        const percentage = this.calculateConnectedPercentage();
+        return percentage === 100 && this.expectedFloorConnectionsCnt == this.actualFloorConnections.size;
+    }
+
+    calculateConnectedPercentage(){
+        const filledSlots = this.slots.filter(slot => slot !== WireSlot.EMPTY).length;
+        return Math.ceil((filledSlots / this.slots.length) * 100);
     }
     
     getSlotAtCoordinateX(floor, x) {

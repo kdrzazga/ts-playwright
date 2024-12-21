@@ -176,9 +176,13 @@ class MainScene extends Phaser.Scene {
                 const wireSlotIndexPair = wire.getSlotAtCoordinateX(currentFloor, enemy.sprite.x);
 
                 if (wireSlotIndexPair.slot === WireSlot.WIRE_DOWN){
-                    //TODO if wire is CONNECTED, zap the enemy (set active = false) instead of biting through the wire
-                    var audio = new Audio('files/zap.m4a');
-                    audio.play();
+                    if (wire.isConnected()){
+                        var audio = new Audio('files/zap.m4a');
+                        audio.play();
+
+                        enemy.active = false; //Zapped Rat becomes immobile
+                        return;
+                    }
 
                     const slotIndex = wireSlotIndexPair.index;
                     this.building.wires[wireId].place(currentFloor, enemy.sprite ,WireSlot.EMPTY);
@@ -220,9 +224,8 @@ const config = {
 
 const game = new Phaser.Game(config);
 /*
-game.scene.scenes[0].building
-game.scene.scenes[0].player
-
 Hacking:
+
 game.scene.scenes[0].building.enemies[7].active = false;
+game.scene.scenes[0].player.y=0;
 */
