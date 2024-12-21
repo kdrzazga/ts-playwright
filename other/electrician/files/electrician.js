@@ -165,21 +165,25 @@ class MainScene extends Phaser.Scene {
     }
 
     handleEnemyMovement(){
-        this.building.enemies.forEach(enemy => {
+        this.building.enemies.filter(e => e.active).forEach(enemy => {
             enemy.move();
             if (enemy instanceof Rat){
                 if (enemy.wireId === undefined) return;
 
                 const wireId = enemy.wireId;
                 const wire = this.building.wires[wireId];
-                const anyFloor = this.building.floors[0];
-                const wireSlotIndexPair = wire.getSlotAtCoordinateX(anyFloor, enemy.sprite.x);
+                const currentFloor = this.building.floors[wireId];
+                const wireSlotIndexPair = wire.getSlotAtCoordinateX(currentFloor, enemy.sprite.x);
+
                 if (wireSlotIndexPair.slot === WireSlot.WIRE_DOWN){
-                    const i = wireSlotIndexPair.index;
-                    const currentFloor = this.building.floors[wireId];
+                    //TODO if wire is CONNECTED, zap the enemy (set active = false) instead of biting through the wire
+                    var audio = new Audio('files/zap.m4a');
+                    audio.play();
+
+                    const slotIndex = wireSlotIndexPair.index;
                     this.building.wires[wireId].place(currentFloor, enemy.sprite ,WireSlot.EMPTY);
-                    if (this.building.wires[wireId].actualFloorConnections.has(i)) {
-                        this.building.wires[wireId].actualFloorConnections.delete(i);
+                    if (this.building.wires[wireId].actualFloorConnections.has(slotIndex)) {
+                        this.building.wires[wireId].actualFloorConnections.delete(slotIndex);
                     }
                     console.log(`Rat ${enemy.id} bit thru wire ${wireId}.`);
                 }
@@ -218,4 +222,7 @@ const game = new Phaser.Game(config);
 /*
 game.scene.scenes[0].building
 game.scene.scenes[0].player
+
+Hacking:
+game.scene.scenes[0].building.enemies[7].active = false;
 */
