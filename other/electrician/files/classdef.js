@@ -450,4 +450,4 @@ class FloorBuilder {
     }
 }
 
-module.exports = { Constants, Floor, Ladder, Building, PowerLine, Wire};
+module.exports = { Constants, Floor, Ladder, Building, PowerLine, Wire, WireSlot};
