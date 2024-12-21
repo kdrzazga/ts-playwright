@@ -94,7 +94,11 @@ class MainScene extends Phaser.Scene {
 
         if (collidingEnemy != null){
             if (collidingEnemy instanceof Rat) this.player.x += 15 * collidingEnemy.collide(this.player);
-            else if (collidingEnemy instanceof Bat) this.player.y += Math.abs(29 * collidingEnemy.collide(this.player));
+            else if (collidingEnemy instanceof Bat) {
+                var audioBing = new Audio('files/bing.m4a');
+                audioBing.play();
+                this.player.y += Math.abs(29 * collidingEnemy.collide(this.player));
+            }
         }
     }
 
@@ -165,21 +169,32 @@ class MainScene extends Phaser.Scene {
     }
 
     handleEnemyMovement(){
-        this.building.enemies.forEach(enemy => {
+        this.building.enemies.filter(e => e.active).forEach(enemy => {
             enemy.move();
             if (enemy instanceof Rat){
                 if (enemy.wireId === undefined) return;
 
                 const wireId = enemy.wireId;
                 const wire = this.building.wires[wireId];
-                const anyFloor = this.building.floors[0];
-                const wireSlotIndexPair = wire.getSlotAtCoordinateX(anyFloor, enemy.sprite.x);
+                const currentFloor = this.building.floors[wireId];
+                const wireSlotIndexPair = wire.getSlotAtCoordinateX(currentFloor, enemy.sprite.x);
+
                 if (wireSlotIndexPair.slot === WireSlot.WIRE_DOWN){
-                    const i = wireSlotIndexPair.index;
-                    const currentFloor = this.building.floors[wireId];
+                    if (wire.isConnected()){
+                        var audioZap = new Audio('files/zap.m4a');
+                        audioZap.play();
+
+                        enemy.active = false; //Zapped Rat becomes immobile
+                        return;
+                    }
+
+                    const slotIndex = wireSlotIndexPair.index;
                     this.building.wires[wireId].place(currentFloor, enemy.sprite ,WireSlot.EMPTY);
-                    if (this.building.wires[wireId].actualFloorConnections.has(i)) {
-                        this.building.wires[wireId].actualFloorConnections.delete(i);
+                    if (this.building.wires[wireId].actualFloorConnections.has(slotIndex)) {
+                        var audioChrup = new Audio('files/chrup.m4a');
+                        audioChrup.play();
+
+                        this.building.wires[wireId].actualFloorConnections.delete(slotIndex);
                     }
                     console.log(`Rat ${enemy.id} bit thru wire ${wireId}.`);
                 }
@@ -216,6 +231,8 @@ const config = {
 
 const game = new Phaser.Game(config);
 /*
-game.scene.scenes[0].building
-game.scene.scenes[0].player
+Hacking:
+
+game.scene.scenes[0].building.enemies[7].active = false;
+game.scene.scenes[0].player.y=0;
 */

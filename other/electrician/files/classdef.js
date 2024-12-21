@@ -231,10 +231,19 @@ class Wire {
     }
 
     updateWiringInfo() {
-        const filledSlots = this.slots.filter(slot => slot !== WireSlot.EMPTY).length;
-        const percentage = Math.ceil((filledSlots / this.slots.length) * 100);
+        const percentage = this.calculateConnectedPercentage();
         const wireDiv = document.getElementById(`wire${this.id}`);
-        wireDiv.innerText = percentage === 100 && this.expectedFloorConnectionsCnt == this.actualFloorConnections.size ? 'CONNECTED' : `${percentage} %`;
+        wireDiv.innerText = this.isConnected() ? 'CONNECTED' : `${percentage} %`;
+    }
+
+    isConnected(){
+        const percentage = this.calculateConnectedPercentage();
+        return percentage === 100 && this.expectedFloorConnectionsCnt == this.actualFloorConnections.size;
+    }
+
+    calculateConnectedPercentage(){
+        const filledSlots = this.slots.filter(slot => slot !== WireSlot.EMPTY).length;
+        return Math.ceil((filledSlots / this.slots.length) * 100);
     }
     
     getSlotAtCoordinateX(floor, x) {
@@ -247,7 +256,7 @@ class Enemy {
     constructor(id){
         this.sprite = null;
         this.id = id;
-        this.active = true;
+        this.active = false;
         this.speed = 1;
         this.minX = 150;
         this.maxX = Floor.WIDTH;
@@ -339,24 +348,27 @@ class Creator {
 
         const atticCeilingLevel = 104;
         const livingRoomCeilingLevel = 328 - Floor.HEIGHT / 2;
+        const kitchenLevel = 438;
         const groundFloorLevel = 589; //under kitchen
 
         const ratsData = [
-            { id: 1, y: groundFloorLevel },
-            { id: 2, y: atticCeilingLevel, minX: Floor.WIDTH / 3 + 30, maxX: 1.15*Floor.WIDTH, wireId: 2 },
-            { id: 3, y: groundFloorLevel, velocity: { x: 1.2 } },
-            { id: 4, y: groundFloorLevel, velocity: { x: 1.4 } },
-            { id: 5, y: livingRoomCeilingLevel, minX: 2 * Floor.WIDTH / 4, maxX: 1.15*Floor.WIDTH, velocity: { x: 1.4 }, wireId: 1 },
-            { id: 6, y: livingRoomCeilingLevel, minX: 2 * Ladder.WIDTH, velocity: { x: 0.85}, wireId: 1 },
+            { id: 1, active: true, y: groundFloorLevel },
+            { id: 2, active: true, y: groundFloorLevel, minX:  Floor.WIDTH / 2, maxX: 2 * Floor.WIDTH / 3, velocity: { x : 3} },
+            { id: 3, active: true, y: atticCeilingLevel, minX: Floor.WIDTH / 3 + 30, maxX: 1.15*Floor.WIDTH, wireId: 0 },
+            { id: 4, active: true, y: kitchenLevel, velocity: { x: 0.7 }, wireId: 2},
+            { id: 5, active: true, y: groundFloorLevel, velocity: { x: 1.4 } },
+            { id: 6, active: true, y: livingRoomCeilingLevel, minX: 2 * Floor.WIDTH / 4, maxX: 1.15*Floor.WIDTH, velocity: { x: 1.4 }, wireId: 1 },
+            { id: 7, active: true, y: livingRoomCeilingLevel, minX: 2 * Ladder.WIDTH, velocity: { x: 0.85}, wireId: 1 },
         ];
 
         const batsData = [
-            { id: 0, speed: -0.017 },
-            { id: 1, currentAngle: Math.PI / 2, /*speed: 0.001*/ }
+            { id: 0, active: true, speed: -0.017 },
+            { id: 1, active: true, currentAngle: Math.PI / 2, /*speed: 0.001*/ }
         ];
 
         const createEnemy = (EnemyClass, data, physics, positionAdjustment = 0) => {
             const enemy = new EnemyClass(data.id);
+            enemy.active = data.active;
             const y = EnemyClass === Rat ? data.y : 555 + 7 * data.id + positionAdjustment;
             enemy.init(physics, y);
 
@@ -438,4 +450,4 @@ class FloorBuilder {
     }
 }
 
-module.exports = { Constants, Floor, Ladder, Building, PowerLine, Wire};
+module.exports = { Constants, Floor, Ladder, Building, PowerLine, Wire, WireSlot};

@@ -1,4 +1,4 @@
-const { Floor, Ladder, Building, PowerLine } = require('./classdef.js');
+const { Floor, Ladder, Building, PowerLine, Wire, WireSlot } = require('./classdef.js');
 
 describe('Floor Class', () => {
     let floor;
@@ -93,4 +93,73 @@ test('Building2: should create floors correctly', () => {
    for (let i = 0; i < building.floors; i++){
         console.log(`Floor ${i} level ${building.floors[i].floorLevel}`);
    }
+});
+
+describe('Wire Class', () => {
+    let wire;
+    let mockPhysics;
+    let mockFloor1;
+    let mockFloor2;
+
+    beforeEach(() => {
+        mockPhysics = {
+            add: {
+                sprite: jest.fn().mockReturnValue({
+                    destroy: jest.fn(),
+                }),
+            },
+        };
+
+        mockFloor1 = {
+            id: 'F1',
+            floorLevel: 1,
+            sprite: { x: 10, y: 20 },
+            getLeftPosition: jest.fn().mockReturnValue(10),
+        };
+
+        mockFloor2 = {
+            id: 'F2',
+            floorLevel: 2,
+            sprite: { x: 30, y: 40 },
+            getLeftPosition: jest.fn().mockReturnValue(30),
+        };
+
+        wire = new Wire('W1', mockPhysics, mockFloor1, mockFloor2, 3);
+    });
+
+    test('should create wire with correct slot configuration', () => {
+        expect(wire.slots.length).toBe(Math.ceil(Floor.WIDTH / Wire.SLOT_SIZE));
+        expect(wire.slots).toEqual(Array(Math.ceil(Floor.WIDTH / Wire.SLOT_SIZE)).fill(WireSlot.EMPTY));
+        expect(wire.sprites).toEqual([]);
+    });
+
+    test('should calculate connected percentage correctly 1 (100%)', () => {
+        for (var i = 0; i < 10; i++){
+            wire.slots[i] = WireSlot.WIRE_STRAIGHT;
+            if (i%4 == 0) wire.slots[i] = WireSlot.WIRE_UP;
+            else if (i%3 == 0) wire.slots[i] = WireSlot.WIRE_DOWN;
+        }
+        expect(wire.calculateConnectedPercentage()).toBe(100);
+    });
+
+    test('should calculate connected percentage correctly 2 (40%)', () => {
+        wire.slots[4] = WireSlot.WIRE_STRAIGHT;
+        wire.slots[6] = WireSlot.WIRE_UP;
+        wire.slots[9] = WireSlot.WIRE_DOWN;
+
+        expect(wire.calculateConnectedPercentage()).toBe(30);
+    });
+
+
+    test('should correctly get slot at a coordinate x', () => {
+        const result = wire.getSlotAtCoordinateX(mockFloor1, 15);
+        expect(result.index).toBe(0);
+        expect(result.slot).toBe(WireSlot.EMPTY);
+    });
+
+    test('should handle out of bounds index correctly', () => {
+        const result = wire.getSlotAtCoordinateX(mockFloor1, 5);
+        expect(result.index).toBe(-1);
+        expect(result.slot).toBe(undefined);
+    });
 });
