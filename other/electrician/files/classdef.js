@@ -88,26 +88,6 @@ class Building {
 
     init(physics){
        this.ladder.init(physics);
-/*
-       const floorBuilder1 = new FloorBuilder();
-       this.floors.push(floorBuilder1.withName('attic').withBottomConnector(3).withBottomConnector(11)
-            .withCeilingConnector(5).withCeilingConnector(25).withBottomConnector(28).build());
-       const floorBuilder2 = new FloorBuilder();
-       this.floors.push(floorBuilder2.withName('living room').withCeilingConnector(2).withCeilingConnector(29)
-            .withLampInCenter().withTVInCenterLeft().build());
-       const kitchenBuilder = new FloorBuilder();
-       this.floors.push(kitchenBuilder.withName('kitchen').withFridgeOnLeft().withLampInCenter().withKitchenSegmentOnRight().build());
-
-       this.floors.forEach(floor => floor.init(physics));
-       this.floors.forEach(floor => floor.calculateFloorLevel());
-
-       const connectionPointsCounts = [2, 6, 5];
-       this.wires = this.floors.map((floor, i) => {
-           const aboveFloor = this.floors[i] || null;
-           const belowFloor = this.floors[i - 1] || null;
-           return new Wire(i, physics, belowFloor, aboveFloor, connectionPointsCounts[i]);
-       });
-*/
        this.leftPowerLine.init(physics, 'left');
        this.rightPowerLine.init(physics, 'right');
     }
