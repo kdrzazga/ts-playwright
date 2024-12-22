@@ -231,3 +231,16 @@ class Level1Scene extends LevelScene{
          this.load.image('floor2', 'files/kitchen.png');
     }
 }
+
+class Level2Scene extends LevelScene{
+
+    constructor() {
+        super('Level2');
+    }
+
+    loadFloorImages(){
+         this.load.image('floor0', 'files/office.png');
+         this.load.image('floor1', 'files/gym.png');
+         this.load.image('floor2', 'files/garage.png');
+    }
+}
