@@ -90,13 +90,14 @@ class Creator {
         .build());
 
        const garageBuilder = new FloorBuilder();
-       building.floors.push(garageBuilder.withName('garage').withCeilingConnector(5).withCeilingConnector(22)
+       building.floors.push(garageBuilder.withName('garage').withCeilingConnector(5).withCeilingConnector(20)
+        .withCeilingConnector(22)
         .build());
 
        building.floors.forEach(floor => floor.init(physics));
        building.floors.forEach(floor => floor.calculateFloorLevel());
 
-       const connectionPointsCounts = [4, 8, 2];
+       const connectionPointsCounts = [4, 8, 3];
        building.wires = building.floors.map((floor, index) => {
            const aboveFloor = building.floors[index] || null;
            const belowFloor = building.floors[index - 1] || null;
