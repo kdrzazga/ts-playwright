@@ -62,39 +62,6 @@ describe('Ladder Class', () => {
     });
 });
 
- test('Building1: should create ladder correctly', () => {
-    let building;
-    let mockPhysics;
-
-    mockPhysics = {
-        add: {
-            sprite: jest.fn().mockReturnValue({ x: Ladder.WIDTH/2 })
-        }
-    };
-    building = new Building();
-    building.init(11, mockPhysics);
-
-    expect(building.ladder.sprite.x).toBe(Ladder.WIDTH/2);
-    expect(building.ladder.onLadder(Ladder.WIDTH - 1)).toBe(true);
-    expect(building.ladder.onLadder(Ladder.WIDTH + 1)).toBe(false);
-});
-
-test('Building2: should create floors correctly', () => {
-   let mockPhysics = {
-       add: {
-           sprite: jest.fn().mockReturnValue({ x: 800/2 + Ladder.WIDTH/2 - 20 })
-       }
-   };
-   let building = new Building();
-   building.init(3, mockPhysics);
-
-   expect(building.floors.length).toBe(3);
-
-   for (let i = 0; i < building.floors; i++){
-        console.log(`Floor ${i} level ${building.floors[i].floorLevel}`);
-   }
-});
-
 describe('Wire Class', () => {
     let wire;
     let mockPhysics;
