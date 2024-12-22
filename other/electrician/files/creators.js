@@ -1,6 +1,6 @@
 class Creator {
     static create3storeBuilding(physics) {
-       let building = new Building();
+       let building = new Building('House');
        building.init(physics); // Initializes ladder and power lines
 
        const floorBuilder1 = new FloorBuilder();
@@ -77,7 +77,7 @@ class Creator {
     }
 
     static createOfficeGymGarage(physics){
-        let building = new Building();
+        let building = new Building('Office Gym Garage');
         building.init(physics); // Initializes ladder and power lines
 
         const officeBuilder = new FloorBuilder();

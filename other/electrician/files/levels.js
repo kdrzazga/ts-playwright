@@ -3,6 +3,7 @@ class LevelScene extends Phaser.Scene {
         super({ key: levelName });
         this.playerCanJump = true;
         this.playerFalling = false;
+        this.nextLevel = '';
     }
 
     preload() {
@@ -50,6 +51,7 @@ class LevelScene extends Phaser.Scene {
         this.handleEnemyMovement();
         this.checkCollisions();
         this.conditionalFallDown();
+        this.checkVictory();
     }
 
     jump(direction) {
@@ -217,12 +219,21 @@ class LevelScene extends Phaser.Scene {
         let prettyCurrentFloorText = realCurrentFloor < 0 ? ' ' : prettyCurrentFloor;
         floorInfo.innerText = `${prettyCurrentFloorText} (${realCurrentFloor})`;
     }
+
+    checkVictory(){
+        const allConnected = this.building.wires.every(wire => wire.isConnected());
+        if (allConnected){
+            console.log(`All floors are connected. Advancing to the next level ${this.nextLevel}`);
+            this.scene.start(this.nextLevel); //TODO does not work and no idea why
+        }
+    }
 }
 
 class Level1Scene extends LevelScene{
 
     constructor() {
         super('Level1');
+        this.nextLevel = 'Level2Scene';
     }
 
     loadFloorImages(){
@@ -236,6 +247,7 @@ class Level2Scene extends LevelScene{
 
     constructor() {
         super('Level2');
+        this.nextLevel = 'Level1Scene'; //TODO: looped game
     }
 
     loadFloorImages(){
