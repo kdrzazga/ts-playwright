@@ -1,7 +1,8 @@
 class MainScene extends Phaser.Scene {
     constructor() {
         super({ key: 'MainScene' });
-        this.spriteCanJump = true;
+        this.playerCanJump = true;
+        this.playerFalling = false;
     }
 
     preload() {
@@ -51,9 +52,9 @@ class MainScene extends Phaser.Scene {
     }
 
     jump(direction) {
-        if (!this.spriteCanJump) return;
+        if (!this.playerCanJump || this.playerFalling) return;
 
-        this.spriteCanJump = false;
+        this.playerCanJump = false;
         const jumpHeight = 45;
         const duration = 750;
 
@@ -71,7 +72,7 @@ class MainScene extends Phaser.Scene {
                     ease: 'Linear',
                     onComplete: () => {
                         // Re-enable jumping after 1 second
-                        this.spriteCanJump = true;
+                        this.playerCanJump = true;
                     }
                 };
                 this.tweens.add(comeDownTween);
@@ -106,18 +107,20 @@ class MainScene extends Phaser.Scene {
         let flrs = ""
 
         if (this.building.ladder.onLadder(this.player.x)){
+            this.playerFalling = false;
             return; //Ladder prevents from falling;
         }
 
+        this.playerFalling = true;
         let velocity = 160;
 
         this.building.floors.forEach(f => {
             flrs += " " + f.floorLevel;
 
-            if (f.onFloor(this.player.x, this.player.y) && !this.building.ladder.onLadder(this.player.x)){
+            if (Building.GROUND_FLOOR_LEVEL - this.player.y <=16.5 || (f.onFloor(this.player.x, this.player.y) && !this.building.ladder.onLadder(this.player.x))){
                 //console.log('Floor met on y= ' + this.player.y);
                 velocity = 0; //Floor under feet prevents from falling
-                this.player.spriteCanJump = true;
+                this.playerFalling = false;
                 return;
             }
         });
