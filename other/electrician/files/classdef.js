@@ -86,9 +86,9 @@ class Building {
         this.rightPowerLine = new PowerLine();
     }
 
-    init(floorCount, physics){
+    init(physics){
        this.ladder.init(physics);
-
+/*
        const floorBuilder1 = new FloorBuilder();
        this.floors.push(floorBuilder1.withName('attic').withBottomConnector(3).withBottomConnector(11)
             .withCeilingConnector(5).withCeilingConnector(25).withBottomConnector(28).build());
@@ -107,7 +107,7 @@ class Building {
            const belowFloor = this.floors[i - 1] || null;
            return new Wire(i, physics, belowFloor, aboveFloor, connectionPointsCounts[i]);
        });
-
+*/
        this.leftPowerLine.init(physics, 'left');
        this.rightPowerLine.init(physics, 'right');
     }
@@ -344,8 +344,30 @@ class Rat extends Enemy{
 
 class Creator {
     static create3storeBuilding(physics) {
-        const building = new Building();
-        building.init(3, physics);
+       let building = new Building();
+       building.init(physics); // Initializes ladder and power lines
+
+       const floorBuilder1 = new FloorBuilder();
+       building.floors.push(floorBuilder1.withName('attic').withBottomConnector(3).withBottomConnector(11)
+           .withCeilingConnector(5).withCeilingConnector(25).withBottomConnector(28).build());
+
+       const floorBuilder2 = new FloorBuilder();
+       building.floors.push(floorBuilder2.withName('living room').withCeilingConnector(2).withCeilingConnector(29)
+           .withLampInCenter().withTVInCenterLeft().build());
+
+       const kitchenBuilder = new FloorBuilder();
+       building.floors.push(kitchenBuilder.withName('kitchen').withFridgeOnLeft().withLampInCenter().withKitchenSegmentOnRight().build());
+
+       building.floors.forEach(floor => floor.init(physics));
+       building.floors.forEach(floor => floor.calculateFloorLevel());
+
+       const connectionPointsCounts = [2, 6, 5];
+       building.wires = building.floors.map((floor, index) => {
+           const aboveFloor = building.floors[index] || null;
+           const belowFloor = building.floors[index - 1] || null;
+           return new Wire(index, physics, belowFloor, aboveFloor, connectionPointsCounts[index]);
+       });
+
         building.includeWiresInInfoFrame();
 
         const atticCeilingLevel = 104;

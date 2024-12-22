@@ -1,6 +1,6 @@
-class MainScene extends Phaser.Scene {
+class Level1Scene extends Phaser.Scene {
     constructor() {
-        super({ key: 'MainScene' });
+        super({ key: 'Level1' });
         this.playerCanJump = true;
         this.playerFalling = false;
     }
@@ -229,7 +229,7 @@ const config = {
             debug: false
         }
     },
-    scene: MainScene
+    scene: Level1Scene
 };
 
 const game = new Phaser.Game(config);
