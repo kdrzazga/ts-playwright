@@ -243,4 +243,15 @@ class Level2Scene extends LevelScene{
          this.load.image('floor1', 'files/gym.png');
          this.load.image('floor2', 'files/garage.png');
     }
+
+    create() {
+        this.physics.world.setBounds(0, 0, 800, 600);
+
+        this.building = Creator.createOfficeGymGarage(this.physics);
+
+        this.player = this.physics.add.sprite(100, 400, 'sprite');
+        this.player.setCollideWorldBounds(true);
+
+        this.cursors = this.input.keyboard.createCursorKeys();
+    }
 }
