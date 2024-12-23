@@ -1,3 +1,12 @@
+const levelsJson = {'lvl1' : Level1Scene, 'lvl2': Level2Scene}
+
+let level = sessionStorage.getItem("level");
+let levelObject = Level1Scene;
+if (level == null) levelObject = Level1Scene;
+else {
+    levelObject = levelsJson[level];
+}
+
 const config = {
     type: Phaser.AUTO,
     width: Constants.SCREEN_WIDTH,
@@ -9,10 +18,10 @@ const config = {
             debug: false
         }
     },
-    scene: [Level1Scene, Level2Scene]
+    scene: [levelObject]
 };
 
-const game = new Phaser.Game(config);
+let game = new Phaser.Game(config);
 /*
 Hacking:
 

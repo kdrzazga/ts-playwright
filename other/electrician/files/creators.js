@@ -104,7 +104,6 @@ class Creator {
            return new Wire(index, physics, belowFloor, aboveFloor, connectionPointsCounts[index]);
        });
 
-
         building.includeWiresInInfoFrame();
 
         return building;
