@@ -1,4 +1,9 @@
 class Creator {
+
+    static THREE_STOREY_HIGH_FLOOR_LEVEL = 104;
+    static THREE_STOREY_MID_FLOOR_LEVEL = 328 - Floor.HEIGHT / 2;
+    static THREE_STOREY_LOW_FLOOR_LEVEL = 438;
+
     static create3storeBuilding(physics) {
        let building = new Building('House');
        building.init(physics); // Initializes ladder and power lines
@@ -26,9 +31,9 @@ class Creator {
 
         building.includeWiresInInfoFrame();
 
-        const atticCeilingLevel = 104;
-        const livingRoomCeilingLevel = 328 - Floor.HEIGHT / 2;
-        const kitchenLevel = 438;
+        const atticCeilingLevel = Creator.THREE_STOREY_HIGH_FLOOR_LEVEL;
+        const livingRoomCeilingLevel = Creator.THREE_STOREY_MID_FLOOR_LEVEL;
+        const kitchenLevel = Creator.THREE_STOREY_LOW_FLOOR_LEVEL;
 
         const ratsData = [
             { id: 1, active: true, y: Building.GROUND_FLOOR_LEVEL },
@@ -45,31 +50,8 @@ class Creator {
             { id: 1, active: true, currentAngle: Math.PI / 2, /*speed: 0.001*/ }
         ];
 
-        const createEnemy = (EnemyClass, data, physics, positionAdjustment = 0) => {
-            const enemy = new EnemyClass(data.id);
-            enemy.active = data.active;
-            const y = EnemyClass === Rat ? data.y : 555 + 7 * data.id + positionAdjustment;
-            enemy.init(physics, y);
-
-            Object.assign(enemy, {
-                minX: data.minX || enemy.minX,
-                maxX: data.maxX || enemy.maxX,
-                angularSpeed: data.speed || enemy.angularSpeed,
-                currentAngle: data.currentAngle || enemy.currentAngle,
-                wireId: EnemyClass === Rat ? data.wireId : undefined
-            });
-
-            if (EnemyClass === Bat) {
-                enemy.centerX = Constants.SCREEN_WIDTH / 2 + 50 - 39 * data.id;
-            }
-
-            if (data.velocity) enemy.sprite.velocity = data.velocity;
-
-            return enemy;
-        };
-
-        const rats = ratsData.map(data => createEnemy(Rat, data, physics));
-        const bats = batsData.map(data => createEnemy(Bat, data, physics));
+        const rats = ratsData.map(data => Creator.createEnemy(Rat, data, physics));
+        const bats = batsData.map(data => Creator.createEnemy(Bat, data, physics));
 
         building.enemies.push(...rats, ...bats);
 
@@ -107,5 +89,28 @@ class Creator {
         building.includeWiresInInfoFrame();
 
         return building;
+    }
+
+    static createEnemy(EnemyClass, data, physics, positionAdjustment = 0) {
+        const enemy = new EnemyClass(data.id);
+        enemy.active = data.active;
+        const y = EnemyClass === Rat ? data.y : 555 + 7 * data.id + positionAdjustment;
+        enemy.init(physics, y);
+
+        Object.assign(enemy, {
+            minX: data.minX || enemy.minX,
+            maxX: data.maxX || enemy.maxX,
+            angularSpeed: data.speed || enemy.angularSpeed,
+            currentAngle: data.currentAngle || enemy.currentAngle,
+            wireId: EnemyClass === Rat ? data.wireId : undefined
+        });
+
+        if (EnemyClass === Bat) {
+            enemy.centerX = Constants.SCREEN_WIDTH / 2 + 50 - 39 * data.id;
+        }
+
+        if (data.velocity) enemy.sprite.velocity = data.velocity;
+
+        return enemy;
     }
 }
