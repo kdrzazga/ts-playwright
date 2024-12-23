@@ -50,12 +50,18 @@ class Creator {
             { id: 1, active: true, currentAngle: Math.PI / 2, /*speed: 0.001*/ }
         ];
 
+        building.enemies = Creator.createEnemies(ratsData, batsData, physics);
+
+        return building;
+    }
+
+    static createEnemies(ratsData, batsData, physics){
+        let enemies = [];
         const rats = ratsData.map(data => Creator.createEnemy(Rat, data, physics));
         const bats = batsData.map(data => Creator.createEnemy(Bat, data, physics));
 
-        building.enemies.push(...rats, ...bats);
-
-        return building;
+        enemies.push(...rats, ...bats);
+        return enemies;
     }
 
     static createOfficeGymGarage(physics){
@@ -87,6 +93,19 @@ class Creator {
        });
 
         building.includeWiresInInfoFrame();
+
+        const ratsData = [
+            { id: 1, active: true, y: Building.GROUND_FLOOR_LEVEL },
+            { id: 2, active: true, y: Creator.THREE_STOREY_LOW_FLOOR_LEVEL, velocity: { x: 0.7 }, wireId: 2},
+            //{ id: 4, active: true, y: Creator.THREE_STOREY_MID_FLOOR_LEVEL, velocity: { x: 0.85}, wireId: 1},
+            { id: 3, active: true, y: Creator.THREE_STOREY_HIGH_FLOOR_LEVEL, wireId: 0}
+        ];
+
+        const batsData = [
+            { id: 0, active: true, speed: -0.007 }
+        ];
+
+        building.enemies = Creator.createEnemies(ratsData, batsData, physics);
 
         return building;
     }
