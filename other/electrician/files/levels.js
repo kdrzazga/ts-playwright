@@ -3,6 +3,7 @@ class LevelScene extends Phaser.Scene {
         super({ key: levelName });
         this.playerCanJump = true;
         this.playerFalling = false;
+        this.nextLevel = '';
     }
 
     preload() {
@@ -50,6 +51,7 @@ class LevelScene extends Phaser.Scene {
         this.handleEnemyMovement();
         this.checkCollisions();
         this.conditionalFallDown();
+        this.checkVictory();
     }
 
     jump(direction) {
@@ -217,17 +219,52 @@ class LevelScene extends Phaser.Scene {
         let prettyCurrentFloorText = realCurrentFloor < 0 ? ' ' : prettyCurrentFloor;
         floorInfo.innerText = `${prettyCurrentFloorText} (${realCurrentFloor})`;
     }
+
+    checkVictory(){
+        const allConnected = this.building.wires.every(wire => wire.isConnected());
+        if (allConnected){
+            console.log(`All floors are connected. Advancing to the next level ${this.nextLevel}`);
+            sessionStorage.setItem('level', this.nextLevel);
+            location.reload();
+        }
+    }
 }
 
 class Level1Scene extends LevelScene{
 
     constructor() {
         super('Level1');
+        this.nextLevel = 'lvl2';
     }
 
     loadFloorImages(){
          this.load.image('floor0', 'files/attic.png');
          this.load.image('floor1', 'files/livingRoom.png');
          this.load.image('floor2', 'files/kitchen.png');
+    }
+}
+
+class Level2Scene extends LevelScene{
+
+    constructor() {
+        super('Level2');
+        this.nextLevel = 'lvl1'; //TODO: looped game
+    }
+
+    loadFloorImages(){
+         this.load.image('floor0', 'files/office.png');
+         this.load.image('floor1', 'files/gym.png');
+         this.load.image('floor2', 'files/garage.png');
+    }
+
+    create() {
+        this.physics.world.setBounds(0, 0, 800, 600);
+
+        this.building = Creator.createOfficeGymGarage(this.physics);
+
+        this.player = this.physics.add.sprite(100, 400, 'sprite');
+        this.player.setCollideWorldBounds(true);
+
+        this.cursors = this.input.keyboard.createCursorKeys();
     }
 }
