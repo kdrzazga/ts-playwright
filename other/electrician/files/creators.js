@@ -75,4 +75,37 @@ class Creator {
 
         return building;
     }
+
+    static createOfficeGymGarage(physics){
+        let building = new Building();
+        building.init(physics); // Initializes ladder and power lines
+
+        const officeBuilder = new FloorBuilder();
+        building.floors.push(officeBuilder.withName('office').withBottomConnector(5).withBottomConnector(9)
+            .withBottomConnector(13).withBottomConnector(16).withBottomConnector(19).withBottomConnector(26)
+            .withCeilingConnector(5).withCeilingConnector(12).withCeilingConnector(20).withCeilingConnector(26).build());
+
+       const gymBuilder = new FloorBuilder();
+       building.floors.push(gymBuilder.withName('gym').withCeilingConnector(7).withCeilingConnector(23)
+        .build());
+
+       const garageBuilder = new FloorBuilder();
+       building.floors.push(garageBuilder.withName('garage').withCeilingConnector(5).withCeilingConnector(22)
+        .build());
+
+       building.floors.forEach(floor => floor.init(physics));
+       building.floors.forEach(floor => floor.calculateFloorLevel());
+
+       const connectionPointsCounts = [4, 8, 2];
+       building.wires = building.floors.map((floor, index) => {
+           const aboveFloor = building.floors[index] || null;
+           const belowFloor = building.floors[index - 1] || null;
+           return new Wire(index, physics, belowFloor, aboveFloor, connectionPointsCounts[index]);
+       });
+
+
+        building.includeWiresInInfoFrame();
+
+        return building;
+    }
 }
