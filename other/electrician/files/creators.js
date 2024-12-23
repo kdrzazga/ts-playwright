@@ -99,13 +99,13 @@ class Creator {
         .build());
 
        const garageBuilder = new FloorBuilder();
-       building.floors.push(garageBuilder.withName('garage').withCeilingConnector(5).withCeilingConnector(22)
-        .build());
+       building.floors.push(garageBuilder.withName('garage').withCeilingConnector(5).withCeilingConnector(20)
+        .withCeilingConnector(22).withCeilingConnector(29).build());
 
        building.floors.forEach(floor => floor.init(physics));
        building.floors.forEach(floor => floor.calculateFloorLevel());
 
-       const connectionPointsCounts = [4, 8, 2];
+       const connectionPointsCounts = [4, 8, 4];
        building.wires = building.floors.map((floor, index) => {
            const aboveFloor = building.floors[index] || null;
            const belowFloor = building.floors[index - 1] || null;
@@ -140,21 +140,22 @@ class Creator {
         building.init(physics); // Initializes ladder and power lines
 
         const atticBuilder = new FloorBuilder();
-        building.floors.push(atticBuilder.withName('attic').withCeilingConnector(12).build());
+        building.floors.push(atticBuilder.withName('floor2').withCeilingConnector(7).withCeilingConnector(12)
+            .withCeilingConnector(23).withBottomConnector(23).withBottomConnector(24).withBottomConnector(25).build());
 
        const gymBuilder = new FloorBuilder();
-       building.floors.push(gymBuilder.withName('gym').withCeilingConnector(7).withCeilingConnector(23)
-        .build());
+       building.floors.push(gymBuilder.withName('power-room').withCeilingConnector(7).withCeilingConnector(12)
+            .withCeilingConnector(19).withCeilingConnector(20).withCeilingConnector(21).withCeilingConnector(26)
+            .withCeilingConnector(27).withCeilingConnector(28).build());
 
        const garageBuilder = new FloorBuilder();
-       building.floors.push(garageBuilder.withName('garage').withCeilingConnector(5).withCeilingConnector(20)
-        .withCeilingConnector(22)
-        .build());
+       building.floors.push(garageBuilder.withName('basement').withCeilingConnector(7).withCeilingConnector(12)
+            .withCeilingConnector(23).build());
 
        building.floors.forEach(floor => floor.init(physics));
        building.floors.forEach(floor => floor.calculateFloorLevel());
 
-       const connectionPointsCounts = [4, 8, 3];
+       const connectionPointsCounts = [3, 11, 3];
        building.wires = building.floors.map((floor, index) => {
            const aboveFloor = building.floors[index] || null;
            const belowFloor = building.floors[index - 1] || null;
