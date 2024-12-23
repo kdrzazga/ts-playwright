@@ -77,7 +77,8 @@ class Building {
 
     static GROUND_FLOOR_LEVEL = 589;
 
-    constructor(){
+    constructor(label){
+        this.label = label;
         this.ladder = new Ladder();
         this.floors = [];
         this.wires = [];
