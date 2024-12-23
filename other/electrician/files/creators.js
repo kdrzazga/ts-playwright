@@ -1,8 +1,7 @@
 class Creator {
 
-    static THREE_STOREY_HIGH_FLOOR_LEVEL = 104;
-    static THREE_STOREY_MID_FLOOR_LEVEL = 328 - Floor.HEIGHT / 2;
-    static THREE_STOREY_LOW_FLOOR_LEVEL = 438;
+    static HIGH_FLOOR_LEVEL = 104;
+    static LOW_FLOOR_LEVEL = 438;
 
     static create3storeBuilding(physics) {
        let building = new Building('House');
@@ -30,19 +29,16 @@ class Creator {
        });
 
         building.includeWiresInInfoFrame();
-
-        const atticCeilingLevel = Creator.THREE_STOREY_HIGH_FLOOR_LEVEL;
-        const livingRoomCeilingLevel = Creator.THREE_STOREY_MID_FLOOR_LEVEL;
-        const kitchenLevel = Creator.THREE_STOREY_LOW_FLOOR_LEVEL;
+        const MID_FLOOR_LEVEL = 328 - Floor.HEIGHT / 2;
 
         const ratsData = [
             { id: 1, active: true, y: Building.GROUND_FLOOR_LEVEL },
             { id: 2, active: true, y: Building.GROUND_FLOOR_LEVEL, minX:  Floor.WIDTH / 2, maxX: 2 * Floor.WIDTH / 3, velocity: { x : 3} },
             { id: 3, active: true, y: Building.GROUND_FLOOR_LEVEL, velocity: { x: 1.4 } },
-            { id: 4, active: true, y: kitchenLevel, velocity: { x: 0.7 }, wireId: 2},
-            { id: 5, active: true, y: livingRoomCeilingLevel, minX: 2 * Floor.WIDTH / 4, maxX: 1.15*Floor.WIDTH, velocity: { x: 1.4 }, wireId: 1 },
-            { id: 6, active: true, y: livingRoomCeilingLevel, minX: 2 * Ladder.WIDTH, velocity: { x: 0.85}, wireId: 1 },
-            { id: 7, active: true, y: atticCeilingLevel, minX: Floor.WIDTH / 3 + 30, maxX: 1.15*Floor.WIDTH, wireId: 0 }
+            { id: 4, active: true, y: Creator.LOW_FLOOR_LEVEL, velocity: { x: 0.7 }, wireId: 2},
+            { id: 5, active: true, y: MID_FLOOR_LEVEL, minX: 2 * Floor.WIDTH / 4, maxX: 1.15*Floor.WIDTH, velocity: { x: 1.4 }, wireId: 1 },
+            { id: 6, active: true, y: MID_FLOOR_LEVEL, minX: 2 * Ladder.WIDTH, velocity: { x: 0.85}, wireId: 1 },
+            { id: 7, active: true, y: Creator.HIGH_FLOOR_LEVEL, minX: Floor.WIDTH / 3 + 30, maxX: 1.15*Floor.WIDTH, wireId: 0 }
         ];
 
         const batsData = [
@@ -96,9 +92,9 @@ class Creator {
 
         const ratsData = [
             { id: 1, active: true, y: Building.GROUND_FLOOR_LEVEL },
-            { id: 2, active: true, y: Creator.THREE_STOREY_LOW_FLOOR_LEVEL, velocity: { x: 0.7 }, wireId: 2},
-            //{ id: 4, active: true, y: Creator.THREE_STOREY_MID_FLOOR_LEVEL, velocity: { x: 0.85}, wireId: 1},
-            { id: 3, active: true, y: Creator.THREE_STOREY_HIGH_FLOOR_LEVEL, wireId: 0}
+            { id: 2, active: true, y: Creator.LOW_FLOOR_LEVEL, velocity: { x: 0.7 }, wireId: 2},
+            //{ id: 4, active: true, y: MID_FLOOR_LEVEL, velocity: { x: 0.85}, wireId: 1},
+            { id: 3, active: true, y: Creator.HIGH_FLOOR_LEVEL, wireId: 0}
         ];
 
         const batsData = [
@@ -138,11 +134,12 @@ class Creator {
 
         building.includeWiresInInfoFrame();
 
+        //const MID_FLOOR_LEVEL = 328 - Floor.HEIGHT / 2;
         const ratsData = [
             { id: 1, active: true, y: Building.GROUND_FLOOR_LEVEL },
-            { id: 2, active: true, y: Creator.THREE_STOREY_LOW_FLOOR_LEVEL, velocity: { x: 0.7 }, wireId: 2},
-            //{ id: 4, active: true, y: Creator.THREE_STOREY_MID_FLOOR_LEVEL, velocity: { x: 0.85}, wireId: 1},
-            { id: 3, active: true, y: Creator.THREE_STOREY_HIGH_FLOOR_LEVEL, wireId: 0}
+            { id: 2, active: true, y: Creator.LOW_FLOOR_LEVEL, velocity: { x: 0.7 }, wireId: 2},
+            //{ id: 4, active: true, y: MID_FLOOR_LEVEL, velocity: { x: 0.85}, wireId: 1},
+            { id: 3, active: true, y: Creator.HIGH_FLOOR_LEVEL, wireId: 0}
         ];
 
         const batsData = [
