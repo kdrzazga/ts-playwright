@@ -110,6 +110,50 @@ class Creator {
         return building;
     }
 
+    static createBuilding(physics){
+        let building = new Building('Home 2');
+        building.init(physics); // Initializes ladder and power lines
+
+        const atticBuilder = new FloorBuilder();
+        building.floors.push(atticBuilder.withName('attic').withCeilingConnector(12).build());
+
+       const gymBuilder = new FloorBuilder();
+       building.floors.push(gymBuilder.withName('gym').withCeilingConnector(7).withCeilingConnector(23)
+        .build());
+
+       const garageBuilder = new FloorBuilder();
+       building.floors.push(garageBuilder.withName('garage').withCeilingConnector(5).withCeilingConnector(20)
+        .withCeilingConnector(22)
+        .build());
+
+       building.floors.forEach(floor => floor.init(physics));
+       building.floors.forEach(floor => floor.calculateFloorLevel());
+
+       const connectionPointsCounts = [4, 8, 3];
+       building.wires = building.floors.map((floor, index) => {
+           const aboveFloor = building.floors[index] || null;
+           const belowFloor = building.floors[index - 1] || null;
+           return new Wire(index, physics, belowFloor, aboveFloor, connectionPointsCounts[index]);
+       });
+
+        building.includeWiresInInfoFrame();
+
+        const ratsData = [
+            { id: 1, active: true, y: Building.GROUND_FLOOR_LEVEL },
+            { id: 2, active: true, y: Creator.THREE_STOREY_LOW_FLOOR_LEVEL, velocity: { x: 0.7 }, wireId: 2},
+            //{ id: 4, active: true, y: Creator.THREE_STOREY_MID_FLOOR_LEVEL, velocity: { x: 0.85}, wireId: 1},
+            { id: 3, active: true, y: Creator.THREE_STOREY_HIGH_FLOOR_LEVEL, wireId: 0}
+        ];
+
+        const batsData = [
+            { id: 0, active: true, speed: -0.007 }
+        ];
+
+        building.enemies = Creator.createEnemies(ratsData, batsData, physics);
+
+        return building;
+    }
+
     static createEnemy(EnemyClass, data, physics, positionAdjustment = 0) {
         const enemy = new EnemyClass(data.id);
         enemy.active = data.active;

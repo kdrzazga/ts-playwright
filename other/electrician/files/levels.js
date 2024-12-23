@@ -248,7 +248,7 @@ class Level2Scene extends LevelScene{
 
     constructor() {
         super('Level2');
-        this.nextLevel = 'lvl1'; //TODO: looped game
+        this.nextLevel = 'lvl3';
     }
 
     loadFloorImages(){
@@ -261,6 +261,31 @@ class Level2Scene extends LevelScene{
         this.physics.world.setBounds(0, 0, 800, 600);
 
         this.building = Creator.createOfficeGymGarage(this.physics);
+
+        this.player = this.physics.add.sprite(100, 400, 'sprite');
+        this.player.setCollideWorldBounds(true);
+
+        this.cursors = this.input.keyboard.createCursorKeys();
+    }
+}
+
+class Level3Scene extends LevelScene {
+
+    constructor() {
+        super('Level3');
+        this.nextLevel = 'lvl1'; //TODO: looped game
+    }
+
+    loadFloorImages(){
+         this.load.image('floor0', 'files/attic2.png');
+         this.load.image('floor1', 'files/home1.png');
+         this.load.image('floor2', 'files/basement.png');
+    }
+
+    create() {
+        this.physics.world.setBounds(0, 0, 800, 600);
+
+        this.building = Creator.createBuilding(this.physics);
 
         this.player = this.physics.add.sprite(100, 400, 'sprite');
         this.player.setCollideWorldBounds(true);
