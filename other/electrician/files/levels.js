@@ -230,7 +230,7 @@ class LevelScene extends Phaser.Scene {
     }
 }
 
-class Level1Scene extends LevelScene{
+class Level1Scene extends LevelScene {
 
     constructor() {
         super('Level1');
@@ -238,9 +238,20 @@ class Level1Scene extends LevelScene{
     }
 
     loadFloorImages(){
-         this.load.image('floor0', 'files/attic.png');
-         this.load.image('floor1', 'files/livingRoom.png');
-         this.load.image('floor2', 'files/kitchen.png');
+         this.load.image('floor0', 'files/attic2.png');
+         this.load.image('floor1', 'files/home1.png');
+         this.load.image('floor2', 'files/basement.png');
+    }
+
+    create() {
+        this.physics.world.setBounds(0, 0, 800, 600);
+
+        this.building = Creator.createBuilding(this.physics);
+
+        this.player = this.physics.add.sprite(100, 400, 'sprite');
+        this.player.setCollideWorldBounds(true);
+
+        this.cursors = this.input.keyboard.createCursorKeys();
     }
 }
 
@@ -269,27 +280,16 @@ class Level2Scene extends LevelScene{
     }
 }
 
-class Level3Scene extends LevelScene {
+class Level3Scene extends LevelScene{
 
     constructor() {
         super('Level3');
-        this.nextLevel = 'lvl1'; //TODO: looped game
+        this.nextLevel = 'lvl1';
     }
 
     loadFloorImages(){
-         this.load.image('floor0', 'files/attic2.png');
-         this.load.image('floor1', 'files/home1.png');
-         this.load.image('floor2', 'files/basement.png');
-    }
-
-    create() {
-        this.physics.world.setBounds(0, 0, 800, 600);
-
-        this.building = Creator.createBuilding(this.physics);
-
-        this.player = this.physics.add.sprite(100, 400, 'sprite');
-        this.player.setCollideWorldBounds(true);
-
-        this.cursors = this.input.keyboard.createCursorKeys();
+         this.load.image('floor0', 'files/attic.png');
+         this.load.image('floor1', 'files/livingRoom.png');
+         this.load.image('floor2', 'files/kitchen.png');
     }
 }
